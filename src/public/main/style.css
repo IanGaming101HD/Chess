@@ -1,0 +1,28 @@
+.board {
+    margin-left: 37.5%;
+}
+
+.rows {
+    display: flex;
+}
+
+.square {
+    width: 75px;
+    height: 75px;
+}
+
+.white {
+    background-color: #f0d9b5;
+}
+
+.black {
+    background-color: #b58863;
+}
+
+.pieces {
+    margin-top: 1%;
+    margin-left: -1%;
+    height: 100%;
+    /* display: block;
+    text-align: center; */
+}
