@@ -13,7 +13,7 @@ class Piece {
     }
 
     potentialMoves() {}
-    
+
     move() {}
 
     create() {
@@ -27,6 +27,11 @@ class Piece {
         piece.draggable = true;
 
         position.appendChild(piece);
+
+        piece.addEventListener('dragStart', (event) => {
+            console.log('hi')
+            event.dataTransfer.setData('text/html', event.target.id);
+        })
     }
 }
 
@@ -99,7 +104,7 @@ function normalGame() {
     let blackPawn6 = new Pawn('black', 'f7');
     let blackPawn7 = new Pawn('black', 'g7');
     let blackPawn8 = new Pawn('black', 'h7');
-    
+
     whiteRook.create();
     whiteKnight.create();
     whiteBishop.create();
@@ -135,3 +140,19 @@ function normalGame() {
 }
 
 normalGame()
+
+Array.from(squares).forEach((square) => {
+    square.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    })
+
+    square.addEventListener('drop', (event) => {
+        event.preventDefault();
+        
+        let data = event.dataTransfer.getData('text/html');
+        console.log(event)
+        console.log(event.target)
+        console.log(data)
+        event.target.appendChild(document.getElementById(data));
+    })
+})
