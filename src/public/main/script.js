@@ -1,5 +1,6 @@
 const squares = document.getElementsByClassName('square')
 const positions = Array.from(squares, (square) => square.id)
+let id = 0
 
 class Piece {
     constructor(name, color, originalPosition) {
@@ -13,7 +14,7 @@ class Piece {
     }
 
     potentialMoves() {}
-    
+
     move() {}
 
     create() {
@@ -21,6 +22,9 @@ class Piece {
 
         let position = document.getElementById(this.originalPosition)
         let piece = document.createElement('img');
+
+        id += 1
+        piece.id = String(id)
 
         piece.classList.add('pieces')
         piece.src = `../../images/pieces/${this.color}/${this.name}.png`;
@@ -98,7 +102,7 @@ function normalGame() {
     let blackPawn6 = new Pawn('black', 'f7');
     let blackPawn7 = new Pawn('black', 'g7');
     let blackPawn8 = new Pawn('black', 'h7');
-    
+
     whiteRook.create();
     whiteKnight.create();
     whiteBishop.create();
@@ -134,3 +138,32 @@ function normalGame() {
 }
 
 normalGame()
+
+let pieces = document.getElementsByClassName('pieces')
+Array.from(pieces).forEach((element) => {
+    element.addEventListener('dragstart', (event) => {
+        console.log(event.target.id)
+        console.log(typeof event.target.id)
+        event.dataTransfer.setData('text/plain', event.target.id);
+    })
+})
+
+let random = document.getElementById('a6')
+Array.from(squares).forEach((element) => {
+    element.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    });
+
+    // blackRook.addEventListener('dragleave', (event) => {
+    //     event.preventDefault();
+    // });
+
+    element.addEventListener('drop', (event) => {
+        event.preventDefault();
+
+        let data = event.dataTransfer.getData('text/plain');
+        let element = document.getElementById(data)
+
+        event.target.appendChild(element);
+    })
+})
