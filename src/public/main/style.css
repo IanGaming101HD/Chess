@@ -1,5 +1,17 @@
+html {
+    user-select: none;
+}
+
+.container {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
 .board {
-    margin-left: 37.5%;
+    margin-left: 34.5%;
 }
 
 .rows {
@@ -11,11 +23,11 @@
     height: 75px;
 }
 
-.white {
+.whiteSquare {
     background-color: #f0d9b5;
 }
 
-.black {
+.blackSquare {
     background-color: #b58863;
 }
 
