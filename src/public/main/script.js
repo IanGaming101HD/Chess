@@ -58,13 +58,14 @@ class Piece {
 
         let position = document.getElementById(this.coordinate)
         let piece = document.createElement('img');
-        Piece.id ++
 
         piece.id = String(Piece.id)
         piece.classList.add('pieces')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
         piece.src = `../../images/pieces/${this.colour}/${this.name}.png`;
+
+        Piece.id++
 
         position.appendChild(piece);
     }
@@ -203,7 +204,7 @@ class Pawn extends Piece {
 }
 
 function normalGame() {
-    let whiteRook = new Rook('white', 'a3');
+    let whiteRook = new Rook('white', 'a6');
     let whiteKnight = new Knight('white', 'b1');
     let whiteBishop = new Bishop('white', 'c1');
     let whiteQueen = new Queen('white', 'd1');
@@ -240,42 +241,48 @@ function normalGame() {
     let getPieceFromId = (id) => piecesArray.filter((element) => String(element.id) === id)[0]
 
     console.log(whiteRook.moves())
-    console.log(getPieceFromId('5'))
-    console.log(getPieceFromId('5').name)
+    console.log(getPieceFromId('1').moves())
 
     let pieces = document.getElementsByClassName('pieces')
 
-    Array.from(pieces).forEach((element) => {
-        element.addEventListener('dragstart', (event) => {
+    Array.from(pieces).forEach((piece) => {
+        piece.addEventListener('dragstart', (event) => {
+            console.log(event.target.id)
             event.dataTransfer.setData('text/plain', event.target.id);
         })
     })
 
-    Array.from(squares).forEach((element) => {
-        element.addEventListener('dragover', (event) => {
+    Array.from(squares).forEach((square) => {
+        square.addEventListener('dragover', (event) => {
             event.preventDefault();
         });
 
-        element.addEventListener('drop', (event) => {
+        square.addEventListener('drop', (event) => {
             event.preventDefault();
 
             let data = event.dataTransfer.getData('text/plain');
             let element = document.getElementById(data)
 
-            if (element.id === event.target.id) return
+            console.log(element)
+            // if (square.id === event.target.id) return
 
-            if (!whiteRook.moves().includes(event.target.id)) return
-            
-                if (event.target.tagName.toLowerCase() === 'img') {
-                    if (Array.from(event.target.classList).includes('king')) return
+            console.log(getPieceFromId(element.id))
+            console.log(getPieceFromId(element.id).moves())
 
-                    whiteRook.coordinate = event.target.parentNode.id
-                    event.target.parentNode.appendChild(element)
-                    event.target.remove()
-                } else {
-                    whiteRook.coordinate = event.target.id
-                    event.target.appendChild(element);
-                }
+
+            if (event.target.tagName.toLowerCase() === 'img') {
+                if (!getPieceFromId(element.id).moves().includes(event.target.parentNode.id)) return
+
+                if (Array.from(event.target.classList).includes('king')) return
+
+                // whiteRook.coordinate = event.target.parentNode.id
+                event.target.parentNode.appendChild(element)
+                event.target.remove()
+            } else {
+                if (!getPieceFromId(element.id).moves().includes(event.target.id)) return
+                // whiteRook.coordinate = event.target.id
+                event.target.appendChild(element);
+            }
         })
     })
 }
