@@ -31,14 +31,17 @@ class Piece {
         this.colour = colour;
         this.coordinate = coordinate;
         this.id = Piece.id
-        this.create()
     }
 
     toString() {
         return `${this.name} ${this.colour} ${this.coordinate} ${this.id}`;
     }
 
-    moves() {}
+    getMoves() {}
+
+    changeCoordinates(newCoordinate) {
+        this.coordinate = newCoordinate
+    }
 
     left(coordinate) {
         return decrement(coordinate[0]) + coordinate[1]
@@ -74,9 +77,10 @@ class Piece {
 class Rook extends Piece {
     constructor(colour, coordinate) {
         super('rook', colour, coordinate)
+        this.create()
     }
 
-    moves() {
+    getMoves() {
         let coordinates = []
         let possibleCoordinates = []
 
@@ -204,7 +208,7 @@ class Pawn extends Piece {
 }
 
 function normalGame() {
-    let whiteRook = new Rook('white', 'a6');
+    let whiteRook = new Rook('white', 'd4');
     let whiteKnight = new Knight('white', 'b1');
     let whiteBishop = new Bishop('white', 'c1');
     let whiteQueen = new Queen('white', 'd1');
@@ -237,11 +241,9 @@ function normalGame() {
     let blackPawn7 = new Pawn('black', 'g7');
     let blackPawn8 = new Pawn('black', 'h7');
 
-    let piecesArray = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-    let getPieceFromId = (id) => piecesArray.filter((element) => String(element.id) === id)[0]
+    let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].filter((element) => String(element.id) === id)[0]
 
-    console.log(whiteRook.moves())
-    console.log(getPieceFromId('1').moves())
+    console.log(whiteRook.getMoves())
 
     let pieces = document.getElementsByClassName('pieces')
 
@@ -264,23 +266,26 @@ function normalGame() {
             let element = document.getElementById(data)
 
             console.log(element)
-            // if (square.id === event.target.id) return
+            console.log(getPieceFromId(element.id).coordinate)
+            console.log(event.target)
+            if (element.id === event.target.id) return
 
             console.log(getPieceFromId(element.id))
-            console.log(getPieceFromId(element.id).moves())
-
+            console.log(getPieceFromId(element.id).getMoves())
 
             if (event.target.tagName.toLowerCase() === 'img') {
-                if (!getPieceFromId(element.id).moves().includes(event.target.parentNode.id)) return
+                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
 
                 if (Array.from(event.target.classList).includes('king')) return
 
-                // whiteRook.coordinate = event.target.parentNode.id
-                event.target.parentNode.appendChild(element)
+                // getPieceFromId(element.id).coordinate = square.id
+                getPieceFromId(element.id).changeCoordinates(square.id)
+                square.appendChild(element)
                 event.target.remove()
             } else {
-                if (!getPieceFromId(element.id).moves().includes(event.target.id)) return
-                // whiteRook.coordinate = event.target.id
+                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
+                // getPieceFromId(element.id).coordinate = square.id
+                getPieceFromId(element.id).changeCoordinates(square.id)
                 event.target.appendChild(element);
             }
         })
