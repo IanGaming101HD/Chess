@@ -60,8 +60,7 @@ class Piece {
         let piece = document.createElement('img');
         Piece.id ++
 
-        console.log(Piece.id)
-        piece.id = Piece.id
+        piece.id = String(Piece.id)
         piece.classList.add('pieces')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
@@ -89,8 +88,6 @@ class Rook extends Piece {
                 if (!coordinates.includes(newCoordinate)) {
                     coordinates.push(newCoordinate)
                 }
-
-                console.log('left', originalCoordinate, newCoordinate)
 
                 let element = document.getElementById(newCoordinate)
                 if (element.children.length > 0) {
@@ -126,8 +123,6 @@ class Rook extends Piece {
                     coordinates.push(newCoordinate)
                 }
 
-                console.log('up', originalCoordinate, newCoordinate)
-
                 let element = document.getElementById(newCoordinate)
                 if (element.children.length > 0) {
                     newCoordinate = originalCoordinate
@@ -144,8 +139,6 @@ class Rook extends Piece {
                 if (!coordinates.includes(newCoordinate)) {
                     coordinates.push(newCoordinate)
                 }
-
-                console.log('down', originalCoordinate, newCoordinate)
 
                 let element = document.getElementById(newCoordinate)
                 if (element.children.length > 0) {
@@ -244,17 +237,14 @@ function normalGame() {
     let blackPawn8 = new Pawn('black', 'h7');
 
     let piecesArray = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-
-    piecesArray.forEach((element) => {
-        console.log(element.id)
-        // element.create()
-    })
+    let getPieceFromId = (id) => piecesArray.filter((element) => String(element.id) === id)[0]
 
     console.log(whiteRook.moves())
-    console.log(piecesArray)
-    console.log(piecesArray.map((element) => element.id))
+    console.log(getPieceFromId('5'))
+    console.log(getPieceFromId('5').name)
 
     let pieces = document.getElementsByClassName('pieces')
+
     Array.from(pieces).forEach((element) => {
         element.addEventListener('dragstart', (event) => {
             event.dataTransfer.setData('text/plain', event.target.id);

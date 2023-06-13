@@ -23,12 +23,12 @@ h1 {
     height: 75px;
 }
 
-.whiteSquare {
-    background-color: #f0d9b5;
+.black_square {
+    background-color: #b58863;
 }
 
-.blackSquare {
-    background-color: #b58863;
+.white_square {
+    background-color: #f0d9b5;
 }
 
 .pieces {
@@ -37,4 +37,36 @@ h1 {
     height: 100%;
     /* display: block;
     text-align: center; */
+}
+
+.label {
+    position: absolute;
+}
+
+.number {
+    font-size: 20px;
+    margin-left: 0.25%;
+    margin-top: 0.25%;
+}
+
+.letter {
+    font-size: 20px;
+    margin-left: 4.5%;
+    margin-top: 3.75%;
+}
+
+.black_number {
+    color: #b58863;
+}
+
+.white_number {
+    color: #f0d9b5;
+}
+
+.black_letter {
+    color: #b58863;
+}
+
+.white_letter {
+    color: #f0d9b5;
 }
