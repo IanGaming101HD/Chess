@@ -1,6 +1,5 @@
 const squares = document.getElementsByClassName('square')
 const positions = Array.from(squares, (square) => square.id)
-let id = 0
 
 function increment(value) {
     this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'y', 'z'];
@@ -25,39 +24,21 @@ function decrement(value) {
 }
 
 class Piece {
+    static id = 1;
+
     constructor(name, colour, coordinate) {
         this.name = name;
         this.colour = colour;
         this.coordinate = coordinate;
+        this.id = Piece.id
+        this.create()
     }
 
     toString() {
-        return `${this.name} ${this.colour} ${this.coordinate}`;
+        return `${this.name} ${this.colour} ${this.coordinate} ${this.id}`;
     }
 
     moves() {}
-
-    possibleMoves() {
-        let possibleCoordinates = []
-        this.moves().forEach((element) => {
-            if (Array.from(document.getElementById(element).children).length !== 0) {
-                if (!Array.from(Array.from(document.getElementById(element).children)[0].classList).includes(this.colour)) {
-                    if (Array.from(Array.from(document.getElementById(element).children)[0].classList).includes('king')) {
-                        /*
-                        set king to check
-                        Update: I believe this will never run, the king will never be open to any piece as it would be check.
-                        */
-                    } else {
-                        possibleCoordinates.push(element)
-                        console.log(possibleCoordinates, 'hi3')
-                    }
-                }
-            } else {
-                possibleCoordinates.push(element)
-            }
-        })
-        return possibleCoordinates
-    }
 
     left(coordinate) {
         return decrement(coordinate[0]) + coordinate[1]
@@ -77,10 +58,10 @@ class Piece {
 
         let position = document.getElementById(this.coordinate)
         let piece = document.createElement('img');
+        Piece.id ++
 
-        id += 1
-        piece.id = String(id)
-
+        console.log(Piece.id)
+        piece.id = Piece.id
         piece.classList.add('pieces')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
@@ -96,6 +77,7 @@ class Rook extends Piece {
     }
 
     moves() {
+        let coordinates = []
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
@@ -104,8 +86,8 @@ class Rook extends Piece {
         while (true) {
             newCoordinate = this.left(newCoordinate)
             if (positions.includes(newCoordinate)) {
-                if (!possibleCoordinates.includes(newCoordinate)) {
-                    possibleCoordinates.push(newCoordinate)
+                if (!coordinates.includes(newCoordinate)) {
+                    coordinates.push(newCoordinate)
                 }
 
                 console.log('left', originalCoordinate, newCoordinate)
@@ -123,8 +105,8 @@ class Rook extends Piece {
         while (true) {
             newCoordinate = this.right(newCoordinate)
             if (positions.includes(newCoordinate)) {
-                if (!possibleCoordinates.includes(newCoordinate)) {
-                    possibleCoordinates.push(newCoordinate)
+                if (!coordinates.includes(newCoordinate)) {
+                    coordinates.push(newCoordinate)
                 }
 
                 let element = document.getElementById(newCoordinate)
@@ -140,8 +122,8 @@ class Rook extends Piece {
         while (true) {
             newCoordinate = this.up(newCoordinate)
             if (positions.includes(newCoordinate)) {
-                if (!possibleCoordinates.includes(newCoordinate)) {
-                    possibleCoordinates.push(newCoordinate)
+                if (!coordinates.includes(newCoordinate)) {
+                    coordinates.push(newCoordinate)
                 }
 
                 console.log('up', originalCoordinate, newCoordinate)
@@ -159,8 +141,8 @@ class Rook extends Piece {
         while (true) {
             newCoordinate = this.down(newCoordinate)
             if (positions.includes(newCoordinate)) {
-                if (!possibleCoordinates.includes(newCoordinate)) {
-                    possibleCoordinates.push(newCoordinate)
+                if (!coordinates.includes(newCoordinate)) {
+                    coordinates.push(newCoordinate)
                 }
 
                 console.log('down', originalCoordinate, newCoordinate)
@@ -175,6 +157,24 @@ class Rook extends Piece {
                 break
             }
         }
+
+        coordinates.forEach((element) => {
+            if (Array.from(document.getElementById(element).children).length !== 0) {
+                if (!Array.from(Array.from(document.getElementById(element).children)[0].classList).includes(this.colour)) {
+                    if (Array.from(Array.from(document.getElementById(element).children)[0].classList).includes('king')) {
+                        /*
+                        set king to check
+                        Update: I believe this will never run, the king will never be open to any piece as it would be check.
+                        This if statement condition is unnecessary and should be removed.
+                        */
+                    } else {
+                        possibleCoordinates.push(element)
+                    }
+                }
+            } else {
+                possibleCoordinates.push(element)
+            }
+        })
         return possibleCoordinates
     }
 }
@@ -243,41 +243,16 @@ function normalGame() {
     let blackPawn7 = new Pawn('black', 'g7');
     let blackPawn8 = new Pawn('black', 'h7');
 
-    whiteRook.create();
-    whiteKnight.create();
-    whiteBishop.create();
-    whiteQueen.create();
-    whiteKing.create();
-    whiteBishop2.create();
-    whiteKnight2.create();
-    whiteRook2.create();
-    whitePawn.create();
-    whitePawn2.create();
-    whitePawn3.create();
-    whitePawn4.create();
-    whitePawn5.create();
-    whitePawn6.create();
-    whitePawn7.create();
-    whitePawn8.create();
-    blackRook.create();
-    blackKnight.create();
-    blackBishop.create();
-    blackQueen.create();
-    blackKing.create();
-    blackBishop2.create();
-    blackKnight2.create();
-    blackRook2.create();
-    blackPawn.create();
-    blackPawn2.create();
-    blackPawn3.create();
-    blackPawn4.create();
-    blackPawn5.create();
-    blackPawn6.create();
-    blackPawn7.create();
-    blackPawn8.create();
+    let piecesArray = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
+
+    piecesArray.forEach((element) => {
+        console.log(element.id)
+        // element.create()
+    })
 
     console.log(whiteRook.moves())
-    console.log(whiteRook.possibleMoves())
+    console.log(piecesArray)
+    console.log(piecesArray.map((element) => element.id))
 
     let pieces = document.getElementsByClassName('pieces')
     Array.from(pieces).forEach((element) => {
@@ -299,14 +274,16 @@ function normalGame() {
 
             if (element.id === event.target.id) return
 
-            if (!whiteRook.possibleMoves().includes(event.target.id)) return
-
+            if (!whiteRook.moves().includes(event.target.id)) return
+            
                 if (event.target.tagName.toLowerCase() === 'img') {
                     if (Array.from(event.target.classList).includes('king')) return
 
+                    whiteRook.coordinate = event.target.parentNode.id
                     event.target.parentNode.appendChild(element)
                     event.target.remove()
                 } else {
+                    whiteRook.coordinate = event.target.id
                     event.target.appendChild(element);
                 }
         })
