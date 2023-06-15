@@ -105,7 +105,7 @@ class Rook extends Piece {
                 }
 
                 let element = document.getElementById(newCoordinate)
-                if (element.children.length > 0) {
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     newCoordinate = originalCoordinate
                     break
                 }
@@ -123,7 +123,7 @@ class Rook extends Piece {
                 }
 
                 let element = document.getElementById(newCoordinate)
-                if (element.children.length > 0) {
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     newCoordinate = originalCoordinate
                     break
                 }
@@ -141,7 +141,7 @@ class Rook extends Piece {
                 }
 
                 let element = document.getElementById(newCoordinate)
-                if (element.children.length > 0) {
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     newCoordinate = originalCoordinate
                     break
                 }
@@ -159,7 +159,7 @@ class Rook extends Piece {
                 }
 
                 let element = document.getElementById(newCoordinate)
-                if (element.children.length > 0) {
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     newCoordinate = originalCoordinate
                     break
                 }
@@ -220,40 +220,67 @@ class Pawn extends Piece {
     }
 
     getMoves() {
-        let coordinates = []
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = this.coordinate;
+        let newCoordinate = originalCoordinate;
 
-        while (true) {
-            console.log(newCoordinate)
-            newCoordinate = this.up(newCoordinate)
-            console.log(newCoordinate)
-            console.log(positions.includes(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
+        console.log(this.colour)
 
-                let element = document.getElementById(newCoordinate)
-                if (element.children.length > 0) {
-                    newCoordinate = originalCoordinate
-                    break
+        if (this.colour === 'white') {
+            if (originalCoordinate.charAt(1) === '2') {
+                for (let x = 0; x < 2; x++) {
+                    newCoordinate = this.up(newCoordinate)
+                    if (positions.includes(newCoordinate)) {
+                        let element = document.getElementById(newCoordinate)
+                        if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                            possibleCoordinates.push(newCoordinate)
+                        } else {
+                            break
+                        }
+                    }
                 }
             } else {
-                newCoordinate = originalCoordinate
-                break
+                newCoordinate = this.up(newCoordinate)
+                if (positions.includes(newCoordinate)) {
+                    let element = document.getElementById(newCoordinate)
+                    if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                        possibleCoordinates.push(newCoordinate)
+                    }
+                }
+            }
+        } else if (this.colour === 'black') {
+            if (originalCoordinate.charAt(1) === '7') {
+                for (let x = 0; x < 2; x++) {
+                    newCoordinate = this.up(newCoordinate)
+                    if (positions.includes(newCoordinate)) {
+                        let element = document.getElementById(newCoordinate)
+                        if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                            possibleCoordinates.push(newCoordinate)
+                        } else {
+                            break
+                        }
+                    }
+                }
+            } else {
+                newCoordinate = this.up(newCoordinate)
+                if (positions.includes(newCoordinate)) {
+                    let element = document.getElementById(newCoordinate)
+                    if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                        possibleCoordinates.push(newCoordinate)
+                    }
+                }
             }
         }
 
-        return possibleCoordinates, coordinates
+        return possibleCoordinates
     }
 }
 
 function normalGame() {
-    let whiteRook = new Rook('white', 'a1');
-    // let whiteRook = new Rook('white', 'd4');
+    // let whiteRook = new Rook('white', 'a1');
+    let whiteRook = new Rook('white', 'd4');
+    // let whiteRook = new Rook('white', 'a3');
     let whiteKnight = new Knight('white', 'b1');
     let whiteBishop = new Bishop('white', 'c1');
     let whiteQueen = new Queen('white', 'd1');
@@ -288,7 +315,7 @@ function normalGame() {
 
     let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].filter((element) => String(element.id) === id)[0]
 
-    // console.log(whiteRook.getMoves())
+    console.log(whiteRook.getMoves())
     console.log(whitePawn.getMoves())
 
     let pieces = document.getElementsByClassName('pieces')
