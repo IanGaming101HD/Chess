@@ -95,10 +95,7 @@ class Rook extends Piece {
         let newCoordinate = this.coordinate;
 
         while (true) {
-            console.log(newCoordinate)
             newCoordinate = this.left(newCoordinate)
-            console.log(newCoordinate)
-            console.log(positions.includes(newCoordinate))
             if (positions.includes(newCoordinate)) {
                 if (!coordinates.includes(newCoordinate)) {
                     coordinates.push(newCoordinate)
@@ -194,6 +191,8 @@ class Knight extends Piece {
     constructor(colour, coordinate) {
         super('knight', colour, coordinate)
     }
+
+    getMoves() {}
 }
 
 class Bishop extends Piece {
@@ -212,6 +211,46 @@ class King extends Piece {
     constructor(colour, coordinate) {
         super('king', colour, coordinate)
     }
+
+    getMoves() {
+        let possibleCoordinates = []
+
+        let originalCoordinate = this.coordinate;
+        let newCoordinate = originalCoordinate;
+
+        newCoordinate = this.left(newCoordinate)
+        if (positions.includes(newCoordinate)) {
+            let element = document.getElementById(newCoordinate)
+            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                possibleCoordinates.push(newCoordinate)
+            }
+        }
+
+        newCoordinate = this.right(newCoordinate)
+        if (positions.includes(newCoordinate)) {
+            let element = document.getElementById(newCoordinate)
+            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                possibleCoordinates.push(newCoordinate)
+            }
+        }
+
+        newCoordinate = this.up(newCoordinate)
+        if (positions.includes(newCoordinate)) {
+            let element = document.getElementById(newCoordinate)
+            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                possibleCoordinates.push(newCoordinate)
+            }
+        }
+
+        newCoordinate = this.down(newCoordinate)
+        if (positions.includes(newCoordinate)) {
+            let element = document.getElementById(newCoordinate)
+            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                possibleCoordinates.push(newCoordinate)
+            }
+        }
+        return possibleCoordinates
+    }
 }
 
 class Pawn extends Piece {
@@ -224,8 +263,6 @@ class Pawn extends Piece {
 
         let originalCoordinate = this.coordinate;
         let newCoordinate = originalCoordinate;
-
-        console.log(this.colour)
 
         if (this.colour === 'white') {
             if (originalCoordinate.charAt(1) === '2') {
@@ -284,7 +321,7 @@ function normalGame() {
     let whiteKnight = new Knight('white', 'b1');
     let whiteBishop = new Bishop('white', 'c1');
     let whiteQueen = new Queen('white', 'd1');
-    let whiteKing = new King('white', 'e1');
+    let whiteKing = new King('white', 'g5');
     let whiteBishop2 = new Bishop('white', 'f1');
     let whiteKnight2 = new Knight('white', 'g1');
     let whiteRook2 = new Rook('white', 'h1');
@@ -315,8 +352,8 @@ function normalGame() {
 
     let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].filter((element) => String(element.id) === id)[0]
 
+    console.log(whiteKing.getMoves())
     console.log(whiteRook.getMoves())
-    console.log(whitePawn.getMoves())
 
     let pieces = document.getElementsByClassName('pieces')
 

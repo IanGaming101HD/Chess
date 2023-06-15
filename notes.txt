@@ -1,0 +1,2 @@
+pawn -> en passent and promotion
+king -> getting castling, checked and checkmated
