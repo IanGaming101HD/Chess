@@ -1,2 +1,11 @@
 pawn -> en passent and promotion
 king -> getting castling, checked and checkmated
+
+
+Fix
+Rook
+Knight
+King - diagnonally
+
+Create
+Queen
