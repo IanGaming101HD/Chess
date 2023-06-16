@@ -428,8 +428,8 @@ class King extends Piece {
             let element = document.getElementById(newCoordinate)
             if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                 possibleCoordinates.push(newCoordinate)
-                newCoordinate = originalCoordinate
             }
+            newCoordinate = originalCoordinate
         }
 
         newCoordinate = this.right(newCoordinate)
@@ -437,8 +437,8 @@ class King extends Piece {
             let element = document.getElementById(newCoordinate)
             if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                 possibleCoordinates.push(newCoordinate)
-                newCoordinate = originalCoordinate
             }
+            newCoordinate = originalCoordinate
         }
 
         newCoordinate = this.up(newCoordinate)
@@ -446,40 +446,39 @@ class King extends Piece {
             let element = document.getElementById(newCoordinate)
             if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                 possibleCoordinates.push(newCoordinate)
-                newCoordinate = originalCoordinate
             }
+            newCoordinate = originalCoordinate
         }
 
         newCoordinate = this.down(newCoordinate)
-        console.log(newCoordinate)
         if (positions.includes(newCoordinate)) {
             let element = document.getElementById(newCoordinate)
             if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                 possibleCoordinates.push(newCoordinate)
-                newCoordinate = originalCoordinate
             }
+            newCoordinate = originalCoordinate
         }
 
         for (let x = 0; x < 2; x++) {
+            console.log(originalCoordinate)
             console.log(newCoordinate)
             newCoordinate = this.up(newCoordinate)
-            console.log(newCoordinate)
             if (x === 0) {
                 if (positions.includes(newCoordinate)) {
                     newCoordinate = this.left(newCoordinate)
                     let element = document.getElementById(newCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                         possibleCoordinates.push(newCoordinate)
-                        newCoordinate = originalCoordinate
                     }
+                    newCoordinate = originalCoordinate
                 } else if (x === 1) {
                     newCoordinate = this.right(newCoordinate)
                     if (positions.includes(newCoordinate)) {
                         let element = document.getElementById(newCoordinate)
                         if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                             possibleCoordinates.push(newCoordinate)
-                            newCoordinate = originalCoordinate
                         }
+                        newCoordinate = originalCoordinate
                     }
                 }
             }
@@ -492,16 +491,16 @@ class King extends Piece {
                     let element = document.getElementById(newCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                         possibleCoordinates.push(newCoordinate)
-                        newCoordinate = originalCoordinate
                     }
+                    newCoordinate = originalCoordinate
                 } else if (x === 1) {
                     newCoordinate = this.right(newCoordinate)
                     if (positions.includes(newCoordinate)) {
                         let element = document.getElementById(newCoordinate)
                         if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
                             possibleCoordinates.push(newCoordinate)
-                            newCoordinate = originalCoordinate
                         }
+                        newCoordinate = originalCoordinate
                     }
                 }
             }
@@ -660,5 +659,10 @@ function normalGame() {
         })
     })
 }
+
+const gameContainer = document.getElementById('game_container')
+gameContainer.addEventListener('contextmenu', (event) => {
+    event.preventDefault()
+});
 
 normalGame()
