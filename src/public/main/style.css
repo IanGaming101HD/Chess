@@ -1,4 +1,5 @@
 html {
+    background-color: #302e2b;
     user-select: none;
 }
 
@@ -6,8 +7,20 @@ html {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.game_container {
+    margin-top: 2%;
+    border-radius: 10px;
+    transform: scale(1.2);
+}
+
+
 h1 {
+    color: #ffffff;
     text-align: center;
+}
+
+p {
+    color: #ffffff;
 }
 
 .board {
@@ -35,8 +48,7 @@ h1 {
     margin-top: 1%;
     margin-left: -1%;
     height: 100%;
-    /* display: block;
-    text-align: center; */
+    transform: scale(.9);
 }
 
 .label {
@@ -52,7 +64,7 @@ h1 {
 .letter {
     font-size: 20px;
     margin-left: 3%;
-    margin-top: 2.6%;
+    margin-top: 2.75%;
 }
 
 .black_number {

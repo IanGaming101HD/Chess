@@ -47,8 +47,8 @@ class Piece {
 
     getMoves() {}
 
-    changeCoordinates(tempCoordinate) {
-        this.coordinate = tempCoordinate
+    updateCoordinate(newCoordinate) {
+        this.coordinate = newCoordinate
     }
 
     left(coordinate) {
@@ -74,7 +74,7 @@ class Piece {
         piece.classList.add('pieces')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
-        piece.src = `../../images/pieces/${this.colour}/${this.name}.png`;
+        piece.src = `./images/pieces/${this.colour}/${this.name}.png`;
 
         Piece.id++
 
@@ -215,6 +215,54 @@ class Queen extends Piece {
     constructor(colour, coordinate) {
         super('queen', colour, coordinate)
     }
+
+        getMoves() {
+        let sequences = [
+            ['left'],
+            ['right'],
+            ['up'],
+            ['down'],
+            ['left', 'up'],
+            ['right', 'up'],
+            ['left', 'down'],
+            ['right', 'down']
+        ];
+
+        let coordinates = [];
+        let possibleCoordinates = [];
+        let originalCoordinate = this.coordinate;
+
+        for (let sequence of sequences) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                if (sequence.length === 1) {
+                    tempCoordinate = this[sequence](tempCoordinate);
+                } else if (sequence.length === 2) {
+                    tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                }
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+                coordinates.push(tempCoordinate);
+
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+            }
+        }
+
+        coordinates.forEach((element) => {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
+                possibleCoordinates.push(element);
+            }
+        });
+
+        return possibleCoordinates;
+    }
 }
 
 class King extends Piece {
@@ -348,12 +396,12 @@ function testGame() {
 
                 if (Array.from(event.target.classList).includes('king')) return
 
-                getPieceFromId(element.id).changeCoordinates(square.id)
+                getPieceFromId(element.id).updateCoordinate(square.id)
                 square.appendChild(element)
                 event.target.remove()
             } else {
                 if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
-                getPieceFromId(element.id).changeCoordinates(square.id)
+                getPieceFromId(element.id).updateCoordinate(square.id)
                 event.target.appendChild(element);
             }
         })
@@ -431,13 +479,13 @@ function normalGame() {
                 if (Array.from(event.target.classList).includes('king')) return
 
                 // getPieceFromId(element.id).coordinate = square.id
-                getPieceFromId(element.id).changeCoordinates(square.id)
+                getPieceFromId(element.id).updateCoordinate(square.id)
                 square.appendChild(element)
                 event.target.remove()
             } else {
                 if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
                 // getPieceFromId(element.id).coordinate = square.id
-                getPieceFromId(element.id).changeCoordinates(square.id)
+                getPieceFromId(element.id).updateCoordinate(square.id)
                 event.target.appendChild(element);
             }
         })
