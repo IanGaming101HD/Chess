@@ -74,7 +74,7 @@ class Piece {
         piece.classList.add('pieces')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
-        piece.src = `./images/pieces/${this.colour}/${this.name}.png`;
+        piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
 
         Piece.id++
 
@@ -328,14 +328,33 @@ class Pawn extends Piece {
                         }
                     }
                 }
+                tempCoordinate = originalCoordinate;
             } else {
                 tempCoordinate = this.up(tempCoordinate)
                 if (positions.includes(tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                         possibleCoordinates.push(tempCoordinate)
+                        tempCoordinate = originalCoordinate;
                     }
                 }
+                
+                let sequences = [['up', 'left'], ['up', 'right']]
+
+                sequences.forEach((sequence) => {
+                    tempCoordinate = this[sequence[0]](tempCoordinate)
+                    console.log(tempCoordinate, 1)
+                    tempCoordinate = this[sequence[1]](tempCoordinate)
+                    console.log(tempCoordinate, 2)
+
+                    if (positions.includes(tempCoordinate)) {
+                        let element = document.getElementById(tempCoordinate)
+                        if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                            possibleCoordinates.push(tempCoordinate)
+                        }
+                    }
+                    tempCoordinate = originalCoordinate;
+                })
             }
         } else if (this.colour === 'black') {
             if (originalCoordinate.charAt(1) === '7') {
@@ -350,6 +369,7 @@ class Pawn extends Piece {
                         }
                     }
                 }
+                tempCoordinate = originalCoordinate;
             } else {
                 tempCoordinate = this.down(tempCoordinate)
                 if (positions.includes(tempCoordinate)) {
