@@ -47,8 +47,8 @@ class Piece {
 
     getMoves() {}
 
-    changeCoordinates(newCoordinate) {
-        this.coordinate = newCoordinate
+    changeCoordinates(tempCoordinate) {
+        this.coordinate = tempCoordinate
     }
 
     left(coordinate) {
@@ -93,76 +93,76 @@ class Rook extends Piece {
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = this.coordinate;
+        let tempCoordinate = this.coordinate;
 
         while (true) {
-            newCoordinate = this.left(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.left(tempCoordinate)
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
 
         while (true) {
-            newCoordinate = this.right(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.right(tempCoordinate)
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
 
         while (true) {
-            newCoordinate = this.up(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.up(tempCoordinate)
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
 
         while (true) {
-            newCoordinate = this.down(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.down(tempCoordinate)
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
@@ -228,76 +228,76 @@ class Bishop extends Piece {
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = this.coordinate;
+        let tempCoordinate = this.coordinate;
 
         while (true) {
-            newCoordinate = this.left(this.up(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.left(this.up(tempCoordinate))
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
 
         while (true) {
-            newCoordinate = this.right(this.up(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.right(this.up(tempCoordinate))
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
 
         while (true) {
-            newCoordinate = this.left(this.down(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.left(this.down(tempCoordinate))
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
 
         while (true) {
-            newCoordinate = this.right(this.down(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+            tempCoordinate = this.right(this.down(tempCoordinate))
+            if (positions.includes(tempCoordinate)) {
+                if (!coordinates.includes(tempCoordinate)) {
+                    coordinates.push(tempCoordinate)
                 }
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate)
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
+                    tempCoordinate = originalCoordinate
                     break
                 }
             } else {
-                newCoordinate = originalCoordinate
+                tempCoordinate = originalCoordinate
                 break
             }
         }
@@ -368,49 +368,49 @@ class Pawn extends Piece {
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = originalCoordinate;
+        let tempCoordinate = originalCoordinate;
 
         if (this.colour === 'white') {
             if (originalCoordinate.charAt(1) === '2') {
                 for (let x = 0; x < 2; x++) {
-                    newCoordinate = this.up(newCoordinate)
-                    if (positions.includes(newCoordinate)) {
-                        let element = document.getElementById(newCoordinate)
+                    tempCoordinate = this.up(tempCoordinate)
+                    if (positions.includes(tempCoordinate)) {
+                        let element = document.getElementById(tempCoordinate)
                         if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                            possibleCoordinates.push(newCoordinate)
+                            possibleCoordinates.push(tempCoordinate)
                         } else {
                             break
                         }
                     }
                 }
             } else {
-                newCoordinate = this.up(newCoordinate)
-                if (positions.includes(newCoordinate)) {
-                    let element = document.getElementById(newCoordinate)
+                tempCoordinate = this.up(tempCoordinate)
+                if (positions.includes(tempCoordinate)) {
+                    let element = document.getElementById(tempCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                        possibleCoordinates.push(newCoordinate)
+                        possibleCoordinates.push(tempCoordinate)
                     }
                 }
             }
         } else if (this.colour === 'black') {
             if (originalCoordinate.charAt(1) === '7') {
                 for (let x = 0; x < 2; x++) {
-                    newCoordinate = this.up(newCoordinate)
-                    if (positions.includes(newCoordinate)) {
-                        let element = document.getElementById(newCoordinate)
+                    tempCoordinate = this.up(tempCoordinate)
+                    if (positions.includes(tempCoordinate)) {
+                        let element = document.getElementById(tempCoordinate)
                         if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                            possibleCoordinates.push(newCoordinate)
+                            possibleCoordinates.push(tempCoordinate)
                         } else {
                             break
                         }
                     }
                 }
             } else {
-                newCoordinate = this.up(newCoordinate)
-                if (positions.includes(newCoordinate)) {
-                    let element = document.getElementById(newCoordinate)
+                tempCoordinate = this.up(tempCoordinate)
+                if (positions.includes(tempCoordinate)) {
+                    let element = document.getElementById(tempCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                        possibleCoordinates.push(newCoordinate)
+                        possibleCoordinates.push(tempCoordinate)
                     }
                 }
             }
