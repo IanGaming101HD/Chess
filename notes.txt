@@ -1,9 +1,6 @@
 date: unknown
-pawn -> en passent and promotion
+pawn -> diag killing, en passent and promotion
 king -> castling, checked and checkmated
-
-Fix:
-Rook
 
 Create
 Queen
