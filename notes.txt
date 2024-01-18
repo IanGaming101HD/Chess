@@ -1,11 +1,12 @@
+date: unknown
 pawn -> en passent and promotion
-king -> getting castling, checked and checkmated
+king -> castling, checked and checkmated
 
-
-Fix
+Fix:
 Rook
-Knight
-King - diagnonally
 
 Create
 Queen
+
+date: 17/01/2023
+knight issues moving, moving function is broken, messes up when edge of board - Fixed
