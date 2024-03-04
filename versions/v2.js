@@ -47,7 +47,7 @@ class Piece {
 
     getMoves() {}
 
-    changeCoordinates(newCoordinate) {
+    updateCoordinate(newCoordinate) {
         this.coordinate = newCoordinate
     }
 
@@ -74,7 +74,7 @@ class Piece {
         piece.classList.add('pieces')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
-        piece.src = `../../images/pieces/${this.colour}/${this.name}.png`;
+        piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
 
         Piece.id++
 
@@ -84,107 +84,45 @@ class Piece {
 
 class Rook extends Piece {
     constructor(colour, coordinate) {
-        super('rook', colour, coordinate)
-        // this.create()
+        super('rook', colour, coordinate);
     }
 
     getMoves() {
-        let coordinates = []
-        let possibleCoordinates = []
+        let directions = ['left', 'right', 'up', 'down'];
 
+        let coordinates = [];
+        let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
-        let newCoordinate = this.coordinate;
 
-        while (true) {
-            newCoordinate = this.left(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+        for (let direction of directions) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                tempCoordinate = this[direction](tempCoordinate);
+
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
                 }
 
-                let element = document.getElementById(newCoordinate)
+                coordinates.push(tempCoordinate);
+
+                let element = document.getElementById(tempCoordinate);
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
+                    tempCoordinate = originalCoordinate;
+                    break;
                 }
-            } else {
-                newCoordinate = originalCoordinate
-                break
-            }
-        }
-
-        while (true) {
-            newCoordinate = this.right(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
-
-                let element = document.getElementById(newCoordinate)
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
-                }
-            } else {
-                newCoordinate = originalCoordinate
-                break
-            }
-        }
-
-        while (true) {
-            newCoordinate = this.up(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
-
-                let element = document.getElementById(newCoordinate)
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
-                }
-            } else {
-                newCoordinate = originalCoordinate
-                break
-            }
-        }
-
-        while (true) {
-            newCoordinate = this.down(newCoordinate)
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
-
-                let element = document.getElementById(newCoordinate)
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
-                }
-            } else {
-                newCoordinate = originalCoordinate
-                break
             }
         }
 
         coordinates.forEach((element) => {
-            if (Array.from(document.getElementById(element).children).length !== 0) {
-                if (!Array.from(Array.from(document.getElementById(element).children)[0].classList).includes(this.colour)) {
-                    if (Array.from(Array.from(document.getElementById(element).children)[0].classList).includes('king')) {
-                        /*
-                        set king to check
-                        Update: I believe this will never run, the king will never be open to any piece as it would be check.
-                        This if statement condition is unnecessary and should be removed.
-                        */
-                    } else {
-                        possibleCoordinates.push(element)
-                    }
-                }
-            } else {
-                possibleCoordinates.push(element)
+            const children = Array.from(document.getElementById(element).children);
+            if (!children.length || !children[0].classList.contains(this.colour)) {
+                possibleCoordinates.push(element);
             }
-        })
-        return possibleCoordinates
+        });
+
+        return possibleCoordinates;
     }
 }
 
@@ -197,70 +135,31 @@ class Knight extends Piece {
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = originalCoordinate;
+        let tempCoordinate = originalCoordinate;
 
-        for (let x = 0; x < 4; x++) {
-            newCoordinate = originalCoordinate;
-            if ([0, 1].includes(x)) {
-                if (x === 0) {
-                    newCoordinate = this.up(newCoordinate)
-                    newCoordinate = this.up(newCoordinate)
-                } else if (x === 1) {
-                    newCoordinate = this.down(newCoordinate)
-                    newCoordinate = this.down(newCoordinate)
-                }
-                for (let y = 0; y < 2; y++) {
-                    if (y === 0) {
-                        newCoordinate = this.left(newCoordinate)
-                        if (positions.includes(newCoordinate)) {
-                            let element = document.getElementById(newCoordinate)
-                            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                                possibleCoordinates.push(newCoordinate)
-                                newCoordinate = originalCoordinate
-                            }
-                        }
-                    } else if (y === 1) {
-                        newCoordinate = this.right(newCoordinate)
-                        if (positions.includes(newCoordinate)) {
-                            let element = document.getElementById(newCoordinate)
-                            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                                possibleCoordinates.push(newCoordinate)
-                                newCoordinate = originalCoordinate
-                            }
-                        }
-                    }
-                }
-            } else if ([2, 3].includes(x)) {
-                // if (x === 2) {
-                //     newCoordinate = this.left(newCoordinate)
-                //     newCoordinate = this.left(newCoordinate)
-                // } else if (x === 3) {
-                //     newCoordinate = this.right(newCoordinate)
-                //     newCoordinate = this.right(newCoordinate)
-                // }
-                // for (let y = 0; y < 2; y++) {
-                //     if (y === 0) {
-                //         newCoordinate = this.up(newCoordinate)
-                //         if (positions.includes(newCoordinate)) {
-                //             let element = document.getElementById(newCoordinate)
-                //             if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                //                 possibleCoordinates.push(newCoordinate)
-                //                 newCoordinate = originalCoordinate
-                //             }
-                //         }
-                //     } else if (y === 1) {
-                //         newCoordinate = this.down(newCoordinate)
-                //         if (positions.includes(newCoordinate)) {
-                //             let element = document.getElementById(newCoordinate)
-                //             if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                //                 possibleCoordinates.push(newCoordinate)
-                //                 newCoordinate = originalCoordinate
-                //             }
-                //         }
-                //     }
-                // }
+        let sequences = [
+            ['up', 'up', 'left'],
+            ['up', 'up', 'right'],
+            ['down', 'down', 'left'],
+            ['down', 'down', 'right'],
+            ['left', 'left', 'up'],
+            ['left', 'left', 'down'],
+            ['right', 'right', 'up'],
+            ['right', 'right', 'down']
+        ]
+
+        for (let sequence of sequences) {
+            for (let direction of sequence) {
+                tempCoordinate = this[direction](tempCoordinate);
             }
 
+            if (positions.includes(tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                    possibleCoordinates.push(tempCoordinate);
+                }
+            }
+            tempCoordinate = originalCoordinate;
         }
         return possibleCoordinates
     }
@@ -268,112 +167,101 @@ class Knight extends Piece {
 
 class Bishop extends Piece {
     constructor(colour, coordinate) {
-        super('bishop', colour, coordinate)
+        super('bishop', colour, coordinate);
     }
 
     getMoves() {
-        let coordinates = []
-        let possibleCoordinates = []
+        let sequences = [
+            ['left', 'up'],
+            ['right', 'up'],
+            ['left', 'down'],
+            ['right', 'down']
+        ];
 
+        let coordinates = [];
+        let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
-        let newCoordinate = this.coordinate;
 
-        while (true) {
-            newCoordinate = this.left(this.up(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
+        for (let sequence of sequences) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
                 }
+                coordinates.push(tempCoordinate);
 
-                let element = document.getElementById(newCoordinate)
+                let element = document.getElementById(tempCoordinate);
                 if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
+                    tempCoordinate = originalCoordinate;
+                    break;
                 }
-            } else {
-                newCoordinate = originalCoordinate
-                break
-            }
-        }
-
-        while (true) {
-            newCoordinate = this.right(this.up(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
-
-                let element = document.getElementById(newCoordinate)
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
-                }
-            } else {
-                newCoordinate = originalCoordinate
-                break
-            }
-        }
-
-        while (true) {
-            newCoordinate = this.left(this.down(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
-
-                let element = document.getElementById(newCoordinate)
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
-                }
-            } else {
-                newCoordinate = originalCoordinate
-                break
-            }
-        }
-
-        while (true) {
-            newCoordinate = this.right(this.down(newCoordinate))
-            if (positions.includes(newCoordinate)) {
-                if (!coordinates.includes(newCoordinate)) {
-                    coordinates.push(newCoordinate)
-                }
-
-                let element = document.getElementById(newCoordinate)
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    newCoordinate = originalCoordinate
-                    break
-                }
-            } else {
-                newCoordinate = originalCoordinate
-                break
             }
         }
 
         coordinates.forEach((element) => {
-            if (Array.from(document.getElementById(element).children).length !== 0) {
-                if (!Array.from(Array.from(document.getElementById(element).children)[0].classList).includes(this.colour)) {
-                    if (Array.from(Array.from(document.getElementById(element).children)[0].classList).includes('king')) {
-                        /*
-                        set king to check
-                        Update: I believe this will never run, the king will never be open to any piece as it would be check.
-                        This if statement condition is unnecessary and should be removed.
-                        */
-                    } else {
-                        possibleCoordinates.push(element)
-                    }
-                }
-            } else {
-                possibleCoordinates.push(element)
+            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
+                possibleCoordinates.push(element);
             }
-        })
-        return possibleCoordinates
+        });
+
+        return possibleCoordinates;
     }
 }
 
 class Queen extends Piece {
     constructor(colour, coordinate) {
         super('queen', colour, coordinate)
+    }
+
+        getMoves() {
+        let sequences = [
+            ['left'],
+            ['right'],
+            ['up'],
+            ['down'],
+            ['left', 'up'],
+            ['right', 'up'],
+            ['left', 'down'],
+            ['right', 'down']
+        ];
+
+        let coordinates = [];
+        let possibleCoordinates = [];
+        let originalCoordinate = this.coordinate;
+
+        for (let sequence of sequences) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                if (sequence.length === 1) {
+                    tempCoordinate = this[sequence](tempCoordinate);
+                } else if (sequence.length === 2) {
+                    tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                }
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+                coordinates.push(tempCoordinate);
+
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+            }
+        }
+
+        coordinates.forEach((element) => {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
+                possibleCoordinates.push(element);
+            }
+        });
+
+        return possibleCoordinates;
     }
 }
 
@@ -386,89 +274,31 @@ class King extends Piece {
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = originalCoordinate;
+        let tempCoordinate = originalCoordinate;
 
-        newCoordinate = this.left(newCoordinate)
-        if (positions.includes(newCoordinate)) {
-            let element = document.getElementById(newCoordinate)
-            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                possibleCoordinates.push(newCoordinate)
+        let sequences = [
+            ['left'],
+            ['right'],
+            ['up'],
+            ['down'],
+            ['left', 'up'],
+            ['left', 'down'],
+            ['right', 'up'],
+            ['right', 'down']
+        ]
+
+        for (let sequence of sequences) {
+            for (let direction of sequence) {
+                tempCoordinate = this[direction](tempCoordinate);
             }
-            newCoordinate = originalCoordinate
-        }
 
-        newCoordinate = this.right(newCoordinate)
-        if (positions.includes(newCoordinate)) {
-            let element = document.getElementById(newCoordinate)
-            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                possibleCoordinates.push(newCoordinate)
-            }
-            newCoordinate = originalCoordinate
-        }
-
-        newCoordinate = this.up(newCoordinate)
-        if (positions.includes(newCoordinate)) {
-            let element = document.getElementById(newCoordinate)
-            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                possibleCoordinates.push(newCoordinate)
-            }
-            newCoordinate = originalCoordinate
-        }
-
-        newCoordinate = this.down(newCoordinate)
-        if (positions.includes(newCoordinate)) {
-            let element = document.getElementById(newCoordinate)
-            if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                possibleCoordinates.push(newCoordinate)
-            }
-            newCoordinate = originalCoordinate
-        }
-
-        for (let x = 0; x < 2; x++) {
-            // console.log(originalCoordinate)
-            // console.log(newCoordinate)
-            newCoordinate = this.up(newCoordinate)
-            if (x === 0) {
-                if (positions.includes(newCoordinate)) {
-                    newCoordinate = this.left(newCoordinate)
-                    let element = document.getElementById(newCoordinate)
-                    if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                        possibleCoordinates.push(newCoordinate)
-                    }
-                    newCoordinate = originalCoordinate
-                } else if (x === 1) {
-                    newCoordinate = this.right(newCoordinate)
-                    if (positions.includes(newCoordinate)) {
-                        let element = document.getElementById(newCoordinate)
-                        if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                            possibleCoordinates.push(newCoordinate)
-                        }
-                        newCoordinate = originalCoordinate
-                    }
+            if (positions.includes(tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                    possibleCoordinates.push(tempCoordinate);
                 }
             }
-        }
-        for (let x = 0; x < 2; x++) {
-            newCoordinate = this.down(newCoordinate)
-            if (x === 0) {
-                if (positions.includes(newCoordinate)) {
-                    newCoordinate = this.left(newCoordinate)
-                    let element = document.getElementById(newCoordinate)
-                    if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                        possibleCoordinates.push(newCoordinate)
-                    }
-                    newCoordinate = originalCoordinate
-                } else if (x === 1) {
-                    newCoordinate = this.right(newCoordinate)
-                    if (positions.includes(newCoordinate)) {
-                        let element = document.getElementById(newCoordinate)
-                        if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                            possibleCoordinates.push(newCoordinate)
-                        }
-                        newCoordinate = originalCoordinate
-                    }
-                }
-            }
+            tempCoordinate = originalCoordinate;
         }
         return possibleCoordinates
     }
@@ -483,49 +313,69 @@ class Pawn extends Piece {
         let possibleCoordinates = []
 
         let originalCoordinate = this.coordinate;
-        let newCoordinate = originalCoordinate;
+        let tempCoordinate = originalCoordinate;
 
         if (this.colour === 'white') {
             if (originalCoordinate.charAt(1) === '2') {
                 for (let x = 0; x < 2; x++) {
-                    newCoordinate = this.up(newCoordinate)
-                    if (positions.includes(newCoordinate)) {
-                        let element = document.getElementById(newCoordinate)
+                    tempCoordinate = this.up(tempCoordinate)
+                    if (positions.includes(tempCoordinate)) {
+                        let element = document.getElementById(tempCoordinate)
                         if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                            possibleCoordinates.push(newCoordinate)
+                            possibleCoordinates.push(tempCoordinate)
                         } else {
                             break
                         }
                     }
                 }
+                tempCoordinate = originalCoordinate;
             } else {
-                newCoordinate = this.up(newCoordinate)
-                if (positions.includes(newCoordinate)) {
-                    let element = document.getElementById(newCoordinate)
+                tempCoordinate = this.up(tempCoordinate)
+                if (positions.includes(tempCoordinate)) {
+                    let element = document.getElementById(tempCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                        possibleCoordinates.push(newCoordinate)
+                        possibleCoordinates.push(tempCoordinate)
+                        tempCoordinate = originalCoordinate;
                     }
                 }
+                
+                let sequences = [['up', 'left'], ['up', 'right']]
+
+                sequences.forEach((sequence) => {
+                    tempCoordinate = this[sequence[0]](tempCoordinate)
+                    console.log(tempCoordinate, 1)
+                    tempCoordinate = this[sequence[1]](tempCoordinate)
+                    console.log(tempCoordinate, 2)
+
+                    if (positions.includes(tempCoordinate)) {
+                        let element = document.getElementById(tempCoordinate)
+                        if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                            possibleCoordinates.push(tempCoordinate)
+                        }
+                    }
+                    tempCoordinate = originalCoordinate;
+                })
             }
         } else if (this.colour === 'black') {
             if (originalCoordinate.charAt(1) === '7') {
                 for (let x = 0; x < 2; x++) {
-                    newCoordinate = this.up(newCoordinate)
-                    if (positions.includes(newCoordinate)) {
-                        let element = document.getElementById(newCoordinate)
+                    tempCoordinate = this.down(tempCoordinate)
+                    if (positions.includes(tempCoordinate)) {
+                        let element = document.getElementById(tempCoordinate)
                         if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                            possibleCoordinates.push(newCoordinate)
+                            possibleCoordinates.push(tempCoordinate)
                         } else {
                             break
                         }
                     }
                 }
+                tempCoordinate = originalCoordinate;
             } else {
-                newCoordinate = this.up(newCoordinate)
-                if (positions.includes(newCoordinate)) {
-                    let element = document.getElementById(newCoordinate)
+                tempCoordinate = this.down(tempCoordinate)
+                if (positions.includes(tempCoordinate)) {
+                    let element = document.getElementById(tempCoordinate)
                     if (!Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                        possibleCoordinates.push(newCoordinate)
+                        possibleCoordinates.push(tempCoordinate)
                     }
                 }
             }
@@ -535,14 +385,85 @@ class Pawn extends Piece {
     }
 }
 
+function testGame() {
+    let whiteBishop = new Bishop('white', 'd5');
+
+    let getPieceFromId = (id) => [whiteBishop].filter((element) => String(element.id) === id)[0]
+
+    let pieces = document.getElementsByClassName('pieces')
+
+    Array.from(pieces).forEach((piece) => {
+        piece.addEventListener('dragstart', (event) => {
+            // console.log(event.target.id)
+            event.dataTransfer.setData('text/plain', event.target.id);
+        })
+    })
+
+    Array.from(squares).forEach((square) => {
+        square.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
+
+        square.addEventListener('drop', (event) => {
+            event.preventDefault();
+
+            let data = event.dataTransfer.getData('text/plain');
+            let element = document.getElementById(data)
+            if (element.id === event.target.id) return
+
+            if (event.target.tagName.toLowerCase() === 'img') {
+                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
+
+                if (Array.from(event.target.classList).includes('king')) return
+
+                getPieceFromId(element.id).updateCoordinate(square.id)
+                square.appendChild(element)
+                event.target.remove()
+            } else {
+                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
+                getPieceFromId(element.id).updateCoordinate(square.id)
+                event.target.appendChild(element);
+            }
+        })
+    })
+}
+
+
 function normalGame() {
-    let whiteKnight = new Knight('white', 'e4');
+    let whiteRook = new Rook('white', 'a1');
+    let whiteKnight = new Knight('white', 'b1');
+    let whiteBishop = new Bishop('white', 'c1');
+    let whiteQueen = new Queen('white', 'd1');
+    let whiteKing = new King('white', 'e1');
+    let whiteBishop2 = new Bishop('white', 'f1');
+    let whiteKnight2 = new Knight('white', 'g1');
+    let whiteRook2 = new Rook('white', 'h1');
+    let whitePawn = new Pawn('white', 'a2');
+    let whitePawn2 = new Pawn('white', 'b2');
+    let whitePawn3 = new Pawn('white', 'c2');
+    let whitePawn4 = new Pawn('white', 'd2');
+    let whitePawn5 = new Pawn('white', 'e2');
+    let whitePawn6 = new Pawn('white', 'f2');
+    let whitePawn7 = new Pawn('white', 'g2');
+    let whitePawn8 = new Pawn('white', 'h2');
+    let blackRook = new Rook('black', 'a8');
+    let blackKnight = new Knight('black', 'b8');
+    let blackBishop = new Bishop('black', 'c8');
+    let blackQueen = new Queen('black', 'd8');
+    let blackKing = new King('black', 'e8');
+    let blackBishop2 = new Bishop('black', 'f8');
+    let blackKnight2 = new Knight('black', 'g8');
+    let blackRook2 = new Rook('black', 'h8');
+    let blackPawn = new Pawn('black', 'a7');
+    let blackPawn2 = new Pawn('black', 'b7');
+    let blackPawn3 = new Pawn('black', 'c7');
+    let blackPawn4 = new Pawn('black', 'd7');
+    let blackPawn5 = new Pawn('black', 'e7');
+    let blackPawn6 = new Pawn('black', 'f7');
+    let blackPawn7 = new Pawn('black', 'g7');
+    let blackPawn8 = new Pawn('black', 'h7');
 
-    // let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].filter((element) => String(element.id) === id)[0]
-    let getPieceFromId = (id) => [whiteKnight].filter((element) => String(element.id) === id)[0]
-
-    // console.log(whiteKing.getMoves())
-    console.log(`White Knight Moves: ${whiteKnight.getMoves()}`)
+    let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].filter((element) => String(element.id) === id)[0]
 
     let pieces = document.getElementsByClassName('pieces')
 
@@ -571,7 +492,6 @@ function normalGame() {
 
             // console.log(getPieceFromId(element.id))
             // console.log(getPieceFromId(element.id).getMoves())
-            console.log(`White Knight Moves: ${whiteKnight.getMoves()}`)
 
             if (event.target.tagName.toLowerCase() === 'img') {
                 if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
@@ -579,13 +499,13 @@ function normalGame() {
                 if (Array.from(event.target.classList).includes('king')) return
 
                 // getPieceFromId(element.id).coordinate = square.id
-                getPieceFromId(element.id).changeCoordinates(square.id)
+                getPieceFromId(element.id).updateCoordinate(square.id)
                 square.appendChild(element)
                 event.target.remove()
             } else {
                 if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
                 // getPieceFromId(element.id).coordinate = square.id
-                getPieceFromId(element.id).changeCoordinates(square.id)
+                getPieceFromId(element.id).updateCoordinate(square.id)
                 event.target.appendChild(element);
             }
         })

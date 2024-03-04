@@ -216,7 +216,7 @@ class Queen extends Piece {
         super('queen', colour, coordinate)
     }
 
-    getMoves() {
+        getMoves() {
         let sequences = [
             ['left'],
             ['right'],
@@ -343,7 +343,7 @@ class Pawn extends Piece {
 
                     if (positions.includes(tempCoordinate)) {
                         let element = document.getElementById(tempCoordinate)
-                        if (Array.from(element.children).find((value) => value.tagName === 'IMG')?!Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
+                        if (Array.from(element.children).find((value) => value.tagName === 'IMG') ? !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
                             possibleCoordinates.push(tempCoordinate)
                             tempCoordinate = originalCoordinate;
                         }
@@ -378,7 +378,7 @@ class Pawn extends Piece {
 
                     if (positions.includes(tempCoordinate)) {
                         let element = document.getElementById(tempCoordinate)
-                        if (Array.from(element.children).find((value) => value.tagName === 'IMG')?!Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
+                        if (Array.from(element.children).find((value) => value.tagName === 'IMG') ? !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
                             possibleCoordinates.push(tempCoordinate)
                             tempCoordinate = originalCoordinate;
                         }
@@ -387,6 +387,8 @@ class Pawn extends Piece {
                 tempCoordinate = originalCoordinate;
             }
         }
+
+        console.log(possibleCoordinates, 'possible cords')
         return possibleCoordinates
     }
 }
@@ -475,6 +477,7 @@ function normalGame() {
 
     Array.from(pieces).forEach((piece) => {
         piece.addEventListener('dragstart', (event) => {
+            // console.log(event.target.id)
             event.dataTransfer.setData('text/plain', event.target.id);
         })
     })
@@ -490,30 +493,32 @@ function normalGame() {
             let data = event.dataTransfer.getData('text/plain');
             let element = document.getElementById(data)
 
+            // console.log(element)
+            // console.log(getPieceFromId(element.id).coordinate)
+            // console.log(event.target)
             if (element.id === event.target.id) return
 
-            console.log(getPieceFromId(element.id).getMoves(), 123)
+            // console.log(getPieceFromId(element.id))
+            // console.log(getPieceFromId(element.id).getMoves())
 
             if (event.target.tagName.toLowerCase() === 'img') {
                 if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
 
                 if (Array.from(event.target.classList).includes('king')) return
 
+                // getPieceFromId(element.id).coordinate = square.id
                 getPieceFromId(element.id).updateCoordinate(square.id)
                 square.appendChild(element)
                 event.target.remove()
             } else {
                 if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
+                // getPieceFromId(element.id).coordinate = square.id
                 getPieceFromId(element.id).updateCoordinate(square.id)
                 event.target.appendChild(element);
             }
         })
     })
 }
-
-jQuery('.board').bind('DOMSubtreeModified', () => {
-    console.log('changed');
-});
 
 const gameContainer = document.getElementById('game_container')
 gameContainer.addEventListener('contextmenu', (event) => {
