@@ -2,16 +2,14 @@ class Game {
     constructor() {
         this.players_turn = 'white'
         this.GameOver = false
-        this.createBoard()
-        this.pieces = this.createDefaultPieces()
-        this.mainGame()
+        this.normalGame()
     }
 
     createBoard() {
         console.log('hi')
     }
 
-    createDefaultPieces() {
+    normalGame() {
         let whiteRook = new Rook('white', 'a1');
         let whiteKnight = new Knight('white', 'b1');
         let whiteBishop = new Bishop('white', 'c1');
@@ -44,11 +42,10 @@ class Game {
         let blackPawn6 = new Pawn('black', 'f7');
         let blackPawn7 = new Pawn('black', 'g7');
         let blackPawn8 = new Pawn('black', 'h7');
-        return [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8]
-    }
 
-    mainGame() {
-        let pieces = this.pieces
+        let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].find((element) => String(element.id) === id)
+
+        let pieces = document.getElementsByClassName('pieces')
 
         Array.from(pieces).forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
