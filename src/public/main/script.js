@@ -511,11 +511,12 @@ function normalGame() {
     })
 }
 
-jQuery('.board').bind('DOMSubtreeModified', () => {
-    console.log('changed');
-});
+// jQuery('.board').bind('DOMSubtreeModified', () => {
+//     console.log('changed');
+// });
 
-const gameContainer = document.getElementById('game_container')
+const gameContainer = document.getElementById('game-container')
+console.log(gameContainer)
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault()
 });

@@ -7,7 +7,7 @@ html {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.game_container {
+.game-container {
     margin-top: 2%;
     border-radius: 10px;
     transform: scale(1.2);
@@ -36,11 +36,11 @@ p {
     height: 75px;
 }
 
-.black_square {
+.black-square {
     background-color: #b58863;
 }
 
-.white_square {
+.white-square {
     background-color: #f0d9b5;
 }
 
@@ -67,18 +67,18 @@ p {
     margin-top: 2.75%;
 }
 
-.black_number {
+.black-number {
     color: #b58863;
 }
 
-.white_number {
+.white-number {
     color: #f0d9b5;
 }
 
-.black_letter {
+.black-letter {
     color: #b58863;
 }
 
-.white_letter {
+.white-letter {
     color: #f0d9b5;
 }
