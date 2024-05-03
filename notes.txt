@@ -15,16 +15,3 @@ Queen moves to pawn on a1 -> Qxa1
 Queen moves on a1 and checks -> Qa1+
 Pawn is only exception to being named, its the only unnamed piece in chess notation, if pawn moves from C4 and goes forward
 Example of chess notation: [1. b4 d5  2. c4 dxc4 ]
-
-Bugs (03/04/2024): 
-Dragging and dropping pieces -> when trying to kill a piece it doesnt die and both pieces in same coordinate, 
-somehow you can swap pieces (just add turn system to fix 50% of the problem), with knight it looks like it goes
-somewhere else but it just not fitting in the coordinate coz of bug and the piece not dieing
-
-
-
-
-
-
-
-MAIN ISSUE RIGHT NOW IS THAT SOMETIMES PIECES ARENT DELETING PROPERLY
