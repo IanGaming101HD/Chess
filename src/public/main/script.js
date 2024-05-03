@@ -511,12 +511,25 @@ function normalGame() {
     })
 }
 
-// jQuery('.board').bind('DOMSubtreeModified', () => {
-//     console.log('changed');
-// });
-
 const gameContainer = document.getElementById('game-container')
-console.log(gameContainer)
+const mutationObserver = new MutationObserver((mutations, observer) => {
+    console.log(mutations)
+    // if (observer.takeRecords().length === 0) return;
+
+    mutations.forEach((mutation) => {
+        if (mutation.type === 'childList') {
+            console.log(observer.addedNodes[0])
+        }
+    })
+});
+
+mutationObserver.observe(gameContainer, {
+    attributes: true,
+    childList: true,
+    subtree: true
+});
+// mutationObserver.disconnect();
+
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault()
 });
