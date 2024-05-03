@@ -72,11 +72,15 @@ class Piece {
 
         piece.id = String(Piece.id)
         piece.classList.add('pieces')
+<<<<<<< HEAD
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
         piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
 
         Piece.id++
+=======
+        piece.src = `../../images/pieces/${this.color}/${this.name}.png`;
+>>>>>>> parent of fd1c1b0 (a)
 
         position.appendChild(piece);
     }

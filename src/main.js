@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require('express');
 const fs = require('fs');
 
@@ -33,3 +34,5 @@ app.listen(port, () => {
   console.log(`http://localhost:${port}/`);
   console.log(`App listening on port ${port}`);
 });
+=======
+>>>>>>> parent of fd1c1b0 (a)
