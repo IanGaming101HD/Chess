@@ -1,5 +1,5 @@
 Notes:
-Add pawn diag killing, en passent and promotion
+Add pawn en passent and promotion
 Add king castling, checked and checkmated
 Add player turns
 Add chess notations when moving pieces
@@ -20,3 +20,11 @@ Bugs (03/04/2024):
 Dragging and dropping pieces -> when trying to kill a piece it doesnt die and both pieces in same coordinate, 
 somehow you can swap pieces (just add turn system to fix 50% of the problem), with knight it looks like it goes
 somewhere else but it just not fitting in the coordinate coz of bug and the piece not dieing
+
+
+
+
+
+
+
+MAIN ISSUE RIGHT NOW IS THAT SOMETIMES PIECES ARENT DELETING PROPERLY

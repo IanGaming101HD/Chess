@@ -44,8 +44,7 @@ class Game {
         let blackPawn8 = new Pawn('black', 'h7');
 
         let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].find((element) => String(element.id) === id)
-
-        let pieces = document.getElementsByClassName('pieces')
+        let pieces = document.getElementsByClassName('piece')
 
         Array.from(pieces).forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
@@ -66,21 +65,20 @@ class Game {
 
                 if (element.id === event.target.id) return
 
-                console.log(getPieceFromId(element.id).getMoves(), 123)
+                // console.log(getPieceFromId(element.id).getMoves(), 123)
+                // console.log(event.target.tagName)
 
-                if (event.target.tagName.toLowerCase() === 'img') {
-                    if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
+                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
+                if (Array.from(event.target.classList).includes('king')) return
+                console.log(event.target)
 
-                    if (Array.from(event.target.classList).includes('king')) return
-
-                    getPieceFromId(element.id).updateCoordinate(square.id)
-                    square.appendChild(element)
-                    event.target.remove()
-                } else {
-                    if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
-                    getPieceFromId(element.id).updateCoordinate(square.id)
-                    event.target.appendChild(element);
+                let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
+                if (enemyPiece) {
+                    enemyPiece.remove()
                 }
+
+                getPieceFromId(element.id).updateCoordinate(square.id)
+                square.appendChild(element)
             })
         })
     }
@@ -161,7 +159,7 @@ class Piece {
         let piece = document.createElement('img');
 
         piece.id = String(Piece.id)
-        piece.classList.add('pieces')
+        piece.classList.add('piece')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
         piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
@@ -481,53 +479,52 @@ class Pawn extends Piece {
     }
 }
 
-function testGame() {
-    let whiteBishop = new Bishop('white', 'd5');
+// function testGame() {
+//     let whiteBishop = new Bishop('white', 'd5');
+//     let getPieceFromId = (id) => [whiteBishop].find((element) => String(element.id) === id)
+//     let pieces = document.getElementsByClassName('piece')
 
-    let getPieceFromId = (id) => [whiteBishop].filter((element) => String(element.id) === id)[0]
+//     Array.from(pieces).forEach((piece) => {
+//         piece.addEventListener('dragstart', (event) => {
+//             // console.log(event.target.id)
+//             event.dataTransfer.setData('text/plain', event.target.id);
+//         })
+//     })
 
-    let pieces = document.getElementsByClassName('pieces')
+//     Array.from(squares).forEach((square) => {
+//         square.addEventListener('dragover', (event) => {
+//             event.preventDefault();
+//         });
 
-    Array.from(pieces).forEach((piece) => {
-        piece.addEventListener('dragstart', (event) => {
-            // console.log(event.target.id)
-            event.dataTransfer.setData('text/plain', event.target.id);
-        })
-    })
+//         square.addEventListener('drop', (event) => {
+//             event.preventDefault();
 
-    Array.from(squares).forEach((square) => {
-        square.addEventListener('dragover', (event) => {
-            event.preventDefault();
-        });
+//             let data = event.dataTransfer.getData('text/plain');
+//             let element = document.getElementById(data)
+//             if (element.id === event.target.id) return
 
-        square.addEventListener('drop', (event) => {
-            event.preventDefault();
+//             if (event.target.tagName.toLowerCase() === 'img') {
+//                 if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
 
-            let data = event.dataTransfer.getData('text/plain');
-            let element = document.getElementById(data)
-            if (element.id === event.target.id) return
+//                 if (Array.from(event.target.classList).includes('king')) return
 
-            if (event.target.tagName.toLowerCase() === 'img') {
-                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
-
-                if (Array.from(event.target.classList).includes('king')) return
-
-                getPieceFromId(element.id).updateCoordinate(square.id)
-                square.appendChild(element)
-                event.target.remove()
-            } else {
-                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
-                getPieceFromId(element.id).updateCoordinate(square.id)
-                event.target.appendChild(element);
-            }
-        })
-    })
-}
+//                 getPieceFromId(element.id).updateCoordinate(square.id)
+//                 square.appendChild(element)
+//                 event.target.remove()
+//             } else {
+//                 if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
+//                 getPieceFromId(element.id).updateCoordinate(square.id)
+//                 event.target.appendChild(element);
+//             }
+//         })
+//     })
+// }
 
 const squares = document.getElementsByClassName('square')
 const positions = Array.from(squares, (square) => square.id)
 const gameContainer = document.getElementById('game-container')
 const game = new Game()
+// testGame()
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault()
