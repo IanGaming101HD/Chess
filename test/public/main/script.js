@@ -13,7 +13,7 @@ class Piece {
     }
 
     potentialMoves() {}
-    
+
     move() {}
 
     create() {
@@ -23,22 +23,15 @@ class Piece {
         let piece = document.createElement('img');
 
         piece.classList.add('pieces')
-<<<<<<< HEAD
-<<<<<<< HEAD
-        piece.classList.add(this.name)
-        piece.classList.add(this.colour)
-        piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
-
-        Piece.id++
-=======
-        piece.src = `../../images/pieces/${this.color}/${this.name}.png`;
->>>>>>> parent of fd1c1b0 (a)
-=======
         piece.src = `../../images/pieces/${this.color}/${this.name}.png`;
         piece.draggable = true;
->>>>>>> parent of 5120216 (a)
 
         position.appendChild(piece);
+
+        piece.addEventListener('dragStart', (event) => {
+            console.log('hi')
+            event.dataTransfer.setData('text/html', event.target.id);
+        })
     }
 }
 
@@ -111,7 +104,7 @@ function normalGame() {
     let blackPawn6 = new Pawn('black', 'f7');
     let blackPawn7 = new Pawn('black', 'g7');
     let blackPawn8 = new Pawn('black', 'h7');
-    
+
     whiteRook.create();
     whiteKnight.create();
     whiteBishop.create();
@@ -147,3 +140,19 @@ function normalGame() {
 }
 
 normalGame()
+
+Array.from(squares).forEach((square) => {
+    square.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    })
+
+    square.addEventListener('drop', (event) => {
+        event.preventDefault();
+        
+        let data = event.dataTransfer.getData('text/html');
+        console.log(event)
+        console.log(event.target)
+        console.log(data)
+        event.target.appendChild(document.getElementById(data));
+    })
+})

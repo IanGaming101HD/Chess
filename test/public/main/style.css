@@ -1,23 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-html {
-    background-color: #302e2b;
-    user-select: none;
-}
-
-.container {
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-.game_container {
-    margin-top: 2%;
-    border-radius: 10px;
-    transform: scale(1.2);
-}
-
-
-=======
->>>>>>> parent of 5120216 (a)
 h1 {
     text-align: center;
 }
@@ -26,8 +6,6 @@ h1 {
     transform: scale(.75);
 } */
 
-=======
->>>>>>> parent of fd1c1b0 (a)
 .board {
     margin-left: 37.5%;
 }
@@ -37,8 +15,8 @@ h1 {
 }
 
 .square {
-    width: 75px;
-    height: 75px;
+    width: 50px;
+    height: 50px;
 }
 
 .white {
