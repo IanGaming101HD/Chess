@@ -1,0 +1,7 @@
+Notes:
+Add pawn diag killing, en passent and promotion
+Add king castling, checked and checkmated
+Add player turns
+
+18/01/2023
+Please update chess pieces - they are low quality and not Ocean pieces (the one i like to use)
