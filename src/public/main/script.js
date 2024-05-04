@@ -65,12 +65,9 @@ class Game {
 
                 if (element.id === event.target.id) return
 
-                // console.log(getPieceFromId(element.id).getMoves(), 123)
-                // console.log(event.target.tagName)
-
-                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
-                if (Array.from(event.target.classList).includes('king')) return
-                console.log(event.target)
+                console.log(Array.from(square.children).find((child) => Array.from(child.classList).includes('king')))
+                if (!getPieceFromId(element.id).getMoves().includes(square.id) || Array.from(event.target.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
+                // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
                 if (enemyPiece) {
@@ -81,6 +78,39 @@ class Game {
                 square.appendChild(element)
             })
         })
+        
+        // I was confused whilst making this, make this right
+        // let observer = new MutationObserver((mutations, observer) => {
+        //     mutations.forEach((mutation) => {
+        //         if (mutation.type === 'childList') {
+        //         // if ([mutation.type, observer.type].includes('childList') && observer.target) {
+        //             function getPieceCharacter(piece) {
+        //                 let chararacter = ''
+                        
+        //                 if (!piece.classList.contains('pawn')) {
+        //                     chararacter = Array.from(piece.classList).find((x) => !['piece', 'black', 'white'].includes(x)).charAt(0).toUpperCase()
+        //                 }
+
+        //                 return chararacter
+        //             }
+        //             let piece = mutation.target
+        //             let notation = `${getPieceCharacter(piece)}.id`
+
+        //             if (game.players_turn ===  'white') {
+        //                 notations.push([notation])
+        //             } else if (game.players_turn ===  'black') {
+        //                 notations[notations.length - 1].push(notation)
+        //             }
+        //             console.log('hiiiiiiii', notations)
+        //         }
+        //     })
+        // });
+        // observer.observe(gameContainer, {
+        //     attributes: true,
+        //     childList: true,
+        //     subtree: true
+        // });
+        // observer.disconnect();
     }
 }
 
@@ -173,6 +203,7 @@ class Piece {
 class Rook extends Piece {
     constructor(colour, coordinate) {
         super('rook', colour, coordinate);
+        this.canCastle = true
     }
 
     getMoves() {
@@ -356,6 +387,7 @@ class Queen extends Piece {
 class King extends Piece {
     constructor(colour, coordinate) {
         super('king', colour, coordinate)
+        this.canCastle = true
     }
 
     getMoves() {
@@ -524,6 +556,7 @@ const squares = document.getElementsByClassName('square')
 const positions = Array.from(squares, (square) => square.id)
 const gameContainer = document.getElementById('game-container')
 const game = new Game()
+const notations = []
 // testGame()
 
 gameContainer.addEventListener('contextmenu', (event) => {

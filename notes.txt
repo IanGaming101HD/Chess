@@ -1,11 +1,14 @@
 Notes:
+Pieces:
 Add pawn en passent and promotion
 Add king castling, checked and checkmated
+
 Add player turns
 Add chess notations when moving pieces
 Add undo/redo feature
+Add possible positions markers + add click to move instead of drag on possible positions
 Add markings feature
-Add markers/positions to show possible positions + add click to move instead of drag on possible positions
+Add flip board feature
 
 Chess Notations:
 x represents piece being taken
@@ -15,3 +18,4 @@ Queen moves to pawn on a1 -> Qxa1
 Queen moves on a1 and checks -> Qa1+
 Pawn is only exception to being named, its the only unnamed piece in chess notation, if pawn moves from C4 and goes forward
 Example of chess notation: [1. b4 d5  2. c4 dxc4 ]
+There is also notations for castling like O-O
