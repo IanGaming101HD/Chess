@@ -9,7 +9,7 @@ class Game {
     createBoard() {
         console.log('hi')
     }
-
+    
     normalGame() {
         let whiteRook = new Rook('white', 'a1');
         let whiteKnight = new Knight('white', 'b1');
@@ -62,6 +62,7 @@ class Game {
             piece.addEventListener('dragend', (event) => {
                 let squares = Array.from(document.getElementsByClassName('square'))
                 squares.forEach((square) => {
+                    console.log(this.method.convertRgbToHex(getComputedStyle(square).backgroundColor))
                     if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
                         square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.white-square')).backgroundColor)
                     } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
@@ -102,7 +103,9 @@ class Game {
 
                 let pieceId = event.dataTransfer.getData('text/plain');
                 if (pieceId === event.target.id) return;
+
                 let piece = document.getElementById(pieceId)
+                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white'))) return;
 
                 if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
                 // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
@@ -121,6 +124,7 @@ class Game {
 
                 getPieceFromId(pieceId).updateCoordinate(square.id)
                 square.appendChild(piece)
+                game.endTurn()
             })
         })
 
@@ -156,6 +160,14 @@ class Game {
         //     subtree: true
         // });
         // observer.disconnect();
+    }
+
+    endTurn () {
+        if (this.players_turn === 'white') {
+            this.players_turn = 'black'
+        } else if (this.players_turn === 'black') {
+            this.players_turn = 'white'
+        }
     }
 }
 
