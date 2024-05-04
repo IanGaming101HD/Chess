@@ -9,7 +9,7 @@ class Game {
     createBoard() {
         console.log('hi')
     }
-    
+
     normalGame() {
         let whiteRook = new Rook('white', 'a1');
         let whiteKnight = new Knight('white', 'b1');
@@ -162,7 +162,7 @@ class Game {
         // observer.disconnect();
     }
 
-    endTurn () {
+    endTurn() {
         if (this.players_turn === 'white') {
             this.players_turn = 'black'
         } else if (this.players_turn === 'black') {
@@ -528,19 +528,19 @@ class Pawn extends Piece {
                         tempCoordinate = originalCoordinate;
                     }
                 }
-                directions.forEach((direction) => {
-                    tempCoordinate = this[direction](this.up(originalCoordinate))
-
-                    if (positions.includes(tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate)
-                        if (Array.from(element.children).find((value) => value.tagName === 'IMG')?!Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
-                            possibleCoordinates.push(tempCoordinate)
-                            tempCoordinate = originalCoordinate;
-                        }
-                    }
-                })
-                tempCoordinate = originalCoordinate;
             }
+            directions.forEach((direction) => {
+                tempCoordinate = this[direction](this.up(originalCoordinate))
+
+                if (positions.includes(tempCoordinate)) {
+                    let element = document.getElementById(tempCoordinate)
+                    if (Array.from(element.children).find((value) => value.tagName === 'IMG')?!Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
+                        possibleCoordinates.push(tempCoordinate)
+                        tempCoordinate = originalCoordinate;
+                    }
+                }
+            })
+            tempCoordinate = originalCoordinate;
         } else if (this.colour === 'black') {
             if (originalCoordinate.charAt(1) === '7') {
                 for (let x = 0; x < 2; x++) {
@@ -563,64 +563,64 @@ class Pawn extends Piece {
                         possibleCoordinates.push(tempCoordinate)
                     }
                 }
-                directions.forEach((direction) => {
-                    tempCoordinate = this[direction](this.down(originalCoordinate))
-
-                    if (positions.includes(tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate)
-                        if (Array.from(element.children).find((value) => value.tagName === 'IMG')?!Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
-                            possibleCoordinates.push(tempCoordinate)
-                            tempCoordinate = originalCoordinate;
-                        }
-                    }
-                })
-                tempCoordinate = originalCoordinate;
             }
+            directions.forEach((direction) => {
+                tempCoordinate = this[direction](this.down(originalCoordinate))
+
+                if (positions.includes(tempCoordinate)) {
+                    let element = document.getElementById(tempCoordinate)
+                    if (Array.from(element.children).find((value) => value.tagName === 'IMG')?!Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG')?.classList).includes(this.colour) : false) {
+                        possibleCoordinates.push(tempCoordinate)
+                        tempCoordinate = originalCoordinate;
+                    }
+                }
+            })
+            tempCoordinate = originalCoordinate;
         }
         return possibleCoordinates
     }
 }
 
-// function testGame() {
-//     let whiteBishop = new Bishop('white', 'd5');
-//     let getPieceFromId = (id) => [whiteBishop].find((element) => String(element.id) === id)
-//     let pieces = document.getElementsByClassName('piece')
+function testGame() {
+    let whitePawn = new Pawn('white', 'a7');
+    let getPieceFromId = (id) => [whitePawn].find((element) => String(element.id) === id)
+    let pieces = document.getElementsByClassName('piece')
 
-//     Array.from(pieces).forEach((piece) => {
-//         piece.addEventListener('dragstart', (event) => {
-//             // console.log(event.target.id)
-//             event.dataTransfer.setData('text/plain', event.target.id);
-//         })
-//     })
+    Array.from(pieces).forEach((piece) => {
+        piece.addEventListener('dragstart', (event) => {
+            // console.log(event.target.id)
+            event.dataTransfer.setData('text/plain', event.target.id);
+        })
+    })
 
-//     Array.from(squares).forEach((square) => {
-//         square.addEventListener('dragover', (event) => {
-//             event.preventDefault();
-//         });
+    Array.from(squares).forEach((square) => {
+        square.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
 
-//         square.addEventListener('drop', (event) => {
-//             event.preventDefault();
+        square.addEventListener('drop', (event) => {
+            event.preventDefault();
 
-//             let data = event.dataTransfer.getData('text/plain');
-//             let element = document.getElementById(data)
-//             if (element.id === event.target.id) return
+            let data = event.dataTransfer.getData('text/plain');
+            let element = document.getElementById(data)
+            if (element.id === event.target.id) return
 
-//             if (event.target.tagName.toLowerCase() === 'img') {
-//                 if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
+            if (event.target.tagName.toLowerCase() === 'img') {
+                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
 
-//                 if (Array.from(event.target.classList).includes('king')) return
+                if (Array.from(event.target.classList).includes('king')) return
 
-//                 getPieceFromId(element.id).updateCoordinate(square.id)
-//                 square.appendChild(element)
-//                 event.target.remove()
-//             } else {
-//                 if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
-//                 getPieceFromId(element.id).updateCoordinate(square.id)
-//                 event.target.appendChild(element);
-//             }
-//         })
-//     })
-// }
+                getPieceFromId(element.id).updateCoordinate(square.id)
+                square.appendChild(element)
+                event.target.remove()
+            } else {
+                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
+                getPieceFromId(element.id).updateCoordinate(square.id)
+                event.target.appendChild(element);
+            }
+        })
+    })
+}
 
 const squares = document.getElementsByClassName('square')
 const positions = Array.from(squares, (square) => square.id)

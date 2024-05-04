@@ -98,3 +98,37 @@ p {
 .player-name {
     margin-top: 10%;
 }
+
+.hidden-container {
+    visibility: hidden;
+    position: fixed;
+    z-index: 2;
+    width: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+.hidden-icon {
+    width: 100%;
+    pointer-events: none;
+}
+
+.hidden-option {
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+}
+
+.hidden-close-button {
+    cursor: pointer;
+    font-size: 20px;
+    background-color: #f1f1f1;
+    color: #8b8987;
+    border: none;
+    width: 100%;
+    padding-top: 15%;
+    padding-bottom: 15%;
+}

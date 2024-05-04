@@ -1,6 +1,6 @@
 Notes:
 Pieces:
-Add pawn en passent and promotion
+Add pawn promotion and en passent 
 Add king castling, checked and checkmated
 
 Add chess notations when moving pieces
@@ -20,5 +20,4 @@ Example of chess notation: [1. b4 d5  2. c4 dxc4 ]
 There is also notations for castling like O-O
 
 Issues:
-Pawns at original positions can kill ppl
 Problem where highlights are everywhere (only on the black squares)
