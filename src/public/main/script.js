@@ -82,13 +82,6 @@ class Game {
                         previousSquare.style.backgroundColor = '#DBC34A'
                     }
                 }
-
-                // let square = piece.parentElement;
-                // if (square.classList.contains('white-square')) {
-                //     square.style.backgroundColor = getComputedStyle(document.querySelector('.white-square')).backgroundColor
-                // } else if (square.classList.contains('black-square')) {
-                //     square.style.backgroundColor = getComputedStyle(document.querySelector('.black-square')).backgroundColor
-                // }
             })
         })
 
