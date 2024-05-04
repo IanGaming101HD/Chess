@@ -3,6 +3,12 @@ html {
     user-select: none;
 }
 
+body {
+    /* overflow: hidden; */
+    /* overflow-y: hidden; */
+    overflow-x: hidden;
+}
+
 .centre {
     display: flex;
     flex-direction: row;
@@ -17,11 +23,9 @@ html {
 }
 
 .game-container {
-    border-radius: 10px;
     transform-origin: top;
     transform: scale(1.2);
 }
-
 
 h1 {
     color: #ffffff;
@@ -38,6 +42,10 @@ p {
 .square {
     width: 75px;
     height: 75px;
+    box-sizing: border-box;
+    border-style: solid;
+    border-width: 3px;
+    border-color: transparent;
 }
 
 .black-square {
@@ -49,26 +57,26 @@ p {
 }
 
 .piece {
-    margin-top: 1%;
-    margin-left: -1%;
+    position: relative;
+    margin-top: 5%;
     height: 100%;
-    transform: scale(.9);
+    z-index: 1;
+    transform-origin: bottom;
+    transform: scale(1.1);
 }
 
 .label {
-    position: absolute;
+    position: fixed;
+    font-size: 15px;
+    z-index: 0;
 }
 
-.number {
-    font-size: 20px;
-    margin-left: 0.25%;
-    margin-top: 0.25%;
-}
+/* .number {
+} */
 
 .letter {
-    font-size: 20px;
-    margin-left: 3%;
-    margin-top: 2.75%;
+    margin-top: 4%;
+    margin-left: 4.5%;
 }
 
 .black-number {
@@ -85,4 +93,8 @@ p {
 
 .white-letter {
     color: #f0d9b5;
+}
+
+.player-name {
+    margin-top: 10%;
 }

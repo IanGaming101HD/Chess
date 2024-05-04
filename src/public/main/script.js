@@ -3,6 +3,7 @@ class Game {
         this.players_turn = 'white'
         this.GameOver = false
         this.normalGame()
+        this.method = new Method()
     }
 
     createBoard() {
@@ -48,37 +49,91 @@ class Game {
 
         Array.from(pieces).forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
+                let square = piece.parentElement;
+                if (square.classList.contains('white-square')) {
+                    square.style.backgroundColor = '#F6EB71'
+                } else if (square.classList.contains('black-square')) {
+                    square.style.backgroundColor = '#DBC34A'
+                }
                 event.dataTransfer.setData('text/plain', event.target.id);
+            })
+
+            piece.addEventListener('dragend', (event) => {
+                let squares = Array.from(document.getElementsByClassName('square'))
+                squares.forEach((square) => {
+                    if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
+                        square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.white-square')).backgroundColor)
+                    } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
+                        square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.black-square')).backgroundColor)
+                    }
+                })
+                let square = piece.parentElement;
+                if (square.classList.contains('white-square')) {
+                    square.style.backgroundColor = '#F6EB71'
+                } else if (square.classList.contains('black-square')) {
+                    square.style.backgroundColor = '#DBC34A'
+                }
+
+
+                // let square = piece.parentElement;
+                // if (square.classList.contains('white-square')) {
+                //     square.style.backgroundColor = getComputedStyle(document.querySelector('.white-square')).backgroundColor
+                // } else if (square.classList.contains('black-square')) {
+                //     square.style.backgroundColor = getComputedStyle(document.querySelector('.black-square')).backgroundColor
+                // }
             })
         })
 
         Array.from(squares).forEach((square) => {
             square.addEventListener('dragover', (event) => {
+                square.style.borderColor = '#ffffff'
                 event.preventDefault();
             });
 
+            square.addEventListener('dragleave', (event) => {
+                square.style.borderColor = 'transparent'
+                event.preventDefault();
+            })
+
             square.addEventListener('drop', (event) => {
                 event.preventDefault();
+                square.style.borderColor = 'transparent'
 
-                let data = event.dataTransfer.getData('text/plain');
-                let element = document.getElementById(data)
+                let pieceId = event.dataTransfer.getData('text/plain');
+                if (pieceId === event.target.id) return;
+                let piece = document.getElementById(pieceId)
 
-                if (element.id === event.target.id) return
-
-                console.log(Array.from(square.children).find((child) => Array.from(child.classList).includes('king')))
-                if (!getPieceFromId(element.id).getMoves().includes(square.id) || Array.from(event.target.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
+                if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
                 // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
+                let previousSquare = piece.parentElement
+                console.log(piece.parentElement.id)
+                if (previousSquare.classList.contains('white-square')) {
+                    console.log('hi')
+                    previousSquare.style.backgroundColor = '#F6EB71'
+                } else if (previousSquare.classList.contains('black-square')) {
+                    console.log(getComputedStyle(square).backgroundColor)
+                    previousSquare.style.backgroundColor = '#DBC34A'
+                    console.log(getComputedStyle(square).backgroundColor)
+                }
+
+                if (square.classList.contains('white-square')) {
+                    console.log(1)
+                    square.style.backgroundColor = '#F6EB71'
+                } else if (square.classList.contains('black-square')) {
+                    console.log(2)
+                    square.style.backgroundColor = '#DBC34A'
+                }
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
                 if (enemyPiece) {
                     enemyPiece.remove()
                 }
 
-                getPieceFromId(element.id).updateCoordinate(square.id)
-                square.appendChild(element)
+                getPieceFromId(pieceId).updateCoordinate(square.id)
+                square.appendChild(piece)
             })
         })
-        
+
         // I was confused whilst making this, make this right
         // let observer = new MutationObserver((mutations, observer) => {
         //     mutations.forEach((mutation) => {
@@ -86,7 +141,7 @@ class Game {
         //         // if ([mutation.type, observer.type].includes('childList') && observer.target) {
         //             function getPieceCharacter(piece) {
         //                 let chararacter = ''
-                        
+
         //                 if (!piece.classList.contains('pawn')) {
         //                     chararacter = Array.from(piece.classList).find((x) => !['piece', 'black', 'white'].includes(x)).charAt(0).toUpperCase()
         //                 }
@@ -131,7 +186,7 @@ class Method {
             return value
         }
     }
-    
+
     decrement(value) {
         if (value.toLowerCase().match(/[a-z]/i)) {
             value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) - 1]
@@ -143,6 +198,20 @@ class Method {
             value--
             return value
         }
+    }
+
+    convertRgbToHex(rgba) {
+        let hex = `#${rgba
+      .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
+      .slice(1)
+      .map((n, i) =>
+        (i === 3?Math.round(parseFloat(n) * 255) : parseFloat(n))
+          .toString(16)
+          .padStart(2, '0')
+          .replace('NaN', '')
+      )
+      .join('')}`.toUpperCase();
+        return hex;
     }
 }
 
@@ -208,7 +277,6 @@ class Rook extends Piece {
 
     getMoves() {
         let directions = ['left', 'right', 'up', 'down'];
-
         let coordinates = [];
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
