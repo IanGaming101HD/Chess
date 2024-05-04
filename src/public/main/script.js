@@ -45,7 +45,8 @@ class Game {
         let blackPawn8 = new Pawn('black', 'h7');
 
         let getPieceFromId = (id) => [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8].find((element) => String(element.id) === id)
-        let pieces = document.getElementsByClassName('piece')
+        let pieces = document.getElementsByClassName('piece');
+        let previousSquare;
 
         Array.from(pieces).forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
@@ -74,6 +75,13 @@ class Game {
                     square.style.backgroundColor = '#DBC34A'
                 }
 
+                if (previousSquare) {
+                    if (previousSquare.classList.contains('white-square')) {
+                        previousSquare.style.backgroundColor = '#F6EB71'
+                    } else if (previousSquare.classList.contains('black-square')) {
+                        previousSquare.style.backgroundColor = '#DBC34A'
+                    }
+                }
 
                 // let square = piece.parentElement;
                 // if (square.classList.contains('white-square')) {
@@ -106,22 +114,11 @@ class Game {
                 if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
                 // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
-                let previousSquare = piece.parentElement
-                console.log(piece.parentElement.id)
-                if (previousSquare.classList.contains('white-square')) {
-                    console.log('hi')
-                    previousSquare.style.backgroundColor = '#F6EB71'
-                } else if (previousSquare.classList.contains('black-square')) {
-                    console.log(getComputedStyle(square).backgroundColor)
-                    previousSquare.style.backgroundColor = '#DBC34A'
-                    console.log(getComputedStyle(square).backgroundColor)
-                }
+                previousSquare = piece.parentElement
 
                 if (square.classList.contains('white-square')) {
-                    console.log(1)
                     square.style.backgroundColor = '#F6EB71'
                 } else if (square.classList.contains('black-square')) {
-                    console.log(2)
                     square.style.backgroundColor = '#DBC34A'
                 }
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
