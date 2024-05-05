@@ -101,10 +101,10 @@ p {
 }
 
 .hidden-container {
-    /* visibility: hidden; */
+    visibility: hidden;
     position: fixed;
     z-index: 2;
-    width: 3%;
+    width: 3.5%;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;

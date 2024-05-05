@@ -62,7 +62,6 @@ class Game {
             piece.addEventListener('dragend', (event) => {
                 let squares = Array.from(document.getElementsByClassName('square'))
                 squares.forEach((square) => {
-                    console.log(this.method.convertRgbToHex(getComputedStyle(square).backgroundColor))
                     if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
                         square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.white-square')).backgroundColor)
                     } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
@@ -117,6 +116,20 @@ class Game {
                 } else if (square.classList.contains('black-square')) {
                     square.style.backgroundColor = '#DBC34A'
                 }
+
+                if (piece.classList.contains('pawn')) {
+                    if (piece.classList.contains('white') && square.id.charAt(1) == '8') {
+                        let hiddenContainer = document.getElementById('hidden-container').cloneNode()
+                        hiddenContainer.style.visibility = 'visible'
+                        square.appendChild(hiddenContainer)
+                    } else if (piece.classList.contains('black') && square.id.charAt(1) == '1') {
+                        let hiddenContainer = document.getElementById('hidden-container').cloneNode()
+                        hiddenContainer.style.visibility = 'visible'
+                        hiddenContainer.style.marginTop = '-250px'
+                        square.appendChild(hiddenContainer)
+                    }
+                }
+
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
                 if (enemyPiece) {
                     enemyPiece.remove()
@@ -150,7 +163,7 @@ class Game {
         //             } else if (game.players_turn ===  'black') {
         //                 notations[notations.length - 1].push(notation)
         //             }
-        //             console.log('hiiiiiiii', notations)
+        //             console.log('hi', notations)
         //         }
         //     })
         // });
@@ -582,13 +595,12 @@ class Pawn extends Piece {
 }
 
 function testGame() {
-    let whitePawn = new Pawn('white', 'a7');
-    let getPieceFromId = (id) => [whitePawn].find((element) => String(element.id) === id)
+    let blackPawn = new Pawn('white', 'a7');
+    let getPieceFromId = (id) => [blackPawn].find((element) => String(element.id) === id)
     let pieces = document.getElementsByClassName('piece')
 
     Array.from(pieces).forEach((piece) => {
         piece.addEventListener('dragstart', (event) => {
-            // console.log(event.target.id)
             event.dataTransfer.setData('text/plain', event.target.id);
         })
     })
@@ -602,19 +614,33 @@ function testGame() {
             event.preventDefault();
 
             let data = event.dataTransfer.getData('text/plain');
-            let element = document.getElementById(data)
-            if (element.id === event.target.id) return
+            let element = document.getElementById(data);
+            if (element.id === event.target.id) return;
 
             if (event.target.tagName.toLowerCase() === 'img') {
-                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return
+                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return;
 
-                if (Array.from(event.target.classList).includes('king')) return
+                if (Array.from(event.target.classList).includes('king')) return;
 
                 getPieceFromId(element.id).updateCoordinate(square.id)
                 square.appendChild(element)
                 event.target.remove()
             } else {
-                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return
+                if (element.classList.contains('pawn')) {
+                    if (element.classList.contains('white') && square.id.charAt(1) == '8') {
+                        let hiddenContainer = document.getElementById('hidden-container')
+                        hiddenContainer.style.visibility = 'visible'
+                        hiddenContainer.style.marginTop = '0px'
+                        square.appendChild(hiddenContainer)
+                    } else if (element.classList.contains('black') && square.id.charAt(1) == '1') {
+                        let hiddenContainer = document.getElementById('hidden-container')
+                        hiddenContainer.style.visibility = 'visible'
+                        hiddenContainer.style.marginTop = '-225px'
+                        square.appendChild(hiddenContainer)
+                    }
+                }
+
+                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return;
                 getPieceFromId(element.id).updateCoordinate(square.id)
                 event.target.appendChild(element);
             }
@@ -625,9 +651,9 @@ function testGame() {
 const squares = document.getElementsByClassName('square')
 const positions = Array.from(squares, (square) => square.id)
 const gameContainer = document.getElementById('game-container')
-const game = new Game()
+// const game = new Game()
 const notations = []
-// testGame()
+testGame()
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault()

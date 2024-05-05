@@ -21,3 +21,4 @@ There is also notations for castling like O-O
 
 Issues:
 Problem where highlights are everywhere (only on the black squares)
+Yellow highlight squares not operating exactly the same as chess.com highlights
