@@ -101,7 +101,7 @@ p {
 }
 
 .hidden-container {
-    visibility: hidden;
+    /* visibility: hidden; */
     position: fixed;
     z-index: 2;
     width: 3%;
@@ -110,6 +110,7 @@ p {
     justify-content: flex-end;
     align-items: center;
     background-color: #ffffff;
+    /* margin-top: -250px; */
 }
 
 .hidden-icon {
