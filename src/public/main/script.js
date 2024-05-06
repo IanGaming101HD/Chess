@@ -105,17 +105,19 @@ class Game {
                 if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId)
+                let pieceObject = getPieceFromId(pieceId)
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white'))) return;
 
-                if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
+                if (!pieceObject.getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
                 // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
+                let colour = piece.classList.contains('white') ? 'white' : 'black';
                 previousSquare = piece.parentElement
-
+                if (piece.classList.contains('king')) {
+                    pieceObject.isCheck(pieces, colour);
+                }
                 if (piece.classList.contains('pawn')) {
-                    let pawn = getPieceFromId(piece.id)
-                    let colour = piece.classList.contains('white') ? 'white' : 'black'
-                    pawn.checkPromotion(piece, colour, square, piecesClasses)
+                    pieceObject.checkPromotion(piece, colour, square, piecesClasses)
                 }
 
                 if (square.classList.contains('white-square')) {
@@ -129,7 +131,7 @@ class Game {
                     enemyPiece.remove()
                 }
 
-                getPieceFromId(pieceId).updateCoordinate(square.id)
+                pieceObject.updateCoordinate(square.id)
                 square.appendChild(piece)
                 game.endTurn()
             })
@@ -231,7 +233,6 @@ class Piece {
         this.name = name;
         this.colour = colour;
         this.coordinate = coordinate;
-        this.canBeKilled = false;
         this.id = id
         this.method = new Method()
         this.create()
@@ -240,8 +241,6 @@ class Piece {
     toString() {
         return `${this.name} ${this.colour} ${this.coordinate} ${this.id}`;
     }
-
-    getMoves() {}
 
     updateCoordinate(newCoordinate) {
         this.coordinate = newCoordinate
@@ -504,16 +503,17 @@ class King extends Piece {
     }
 
     isCheck(pieces, colour) {
-        if (colour === 'white') {
-            let oppositeColour = colour === 'white' ? 'black' : 'white'
-            
-            pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
-                let pieceObject = getPieceFromId(piece)
-                if (pieceObject.getMoves().includes(this.coordinate)) return;
-            })
-        } else {
-            let oppositeColour = colour === 'black' ? 'black' : 'white'
-        }
+        let oppositeColour = colour === 'white' ? 'black' : 'white'
+        
+        pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
+            let pieceObject = getPieceFromId(piece)
+            if (pieceObject.getMoves().includes(this.coordinate)) return;
+        })
+        // pieces.filter((piece) => piece.classList.contains(colour)).some((piece) => {
+        //     let pieceObject = getPieceFromId(piece)
+        //     console.log(pieceObject)
+        //     if (pieceObject.getMoves().includes(this.coordinate)) return;
+        // })
     }
 }
 
@@ -668,21 +668,18 @@ function testGame() {
             if (pieceId === event.target.id) return;
 
             let piece = document.getElementById(pieceId)
-            if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
+            let pieceObject = getPieceFromId(pieceId)
+            if (!pieceObject.getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
             // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
-            let colour = piece.classList.contains('white') ? 'white' : 'black'
-            previousSquare = piece.parentElement
+            let colour = piece.classList.contains('white') ? 'white' : 'black';
+            previousSquare = piece.parentElement;
             if (piece.classList.contains('king')) {
-                getPieceFromId(pieceId).isCheck(pieces, colour)
+                pieceObject.isCheck(pieces, colour);
             }
 
-            if (piece.classList.contains('king') || piece.classList.contains('pawn') ) {
-                let pawnObject = getPieceFromId(piece.id)
-
-                if (piece.classList.contains('pawn')) {
-                    pawnObject.checkPromotion(piece, colour, square, piecesClasses)
-                }
+            if (piece.classList.contains('pawn') ) {
+                pieceObject.checkPromotion(piece, colour, square, piecesClasses)
             }
 
             if (square.classList.contains('white-square')) {
@@ -696,7 +693,7 @@ function testGame() {
                 enemyPiece.remove()
             }
 
-            getPieceFromId(pieceId).updateCoordinate(square.id)
+            pieceObject.updateCoordinate(square.id)
             square.appendChild(piece)
         })
     })
@@ -705,9 +702,9 @@ function testGame() {
 const squares = Array.from(document.getElementsByClassName('square'))
 const positions = squares.map((square) => square.id)
 const gameContainer = document.getElementById('game-container')
-// const game = new Game()
+const game = new Game()
 const notations = []
-testGame()
+// testGame()
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault()
