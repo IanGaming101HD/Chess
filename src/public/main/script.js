@@ -86,7 +86,7 @@ class Game {
             })
         })
 
-        Array.from(squares).forEach((square) => {
+        squares.forEach((square) => {
             square.addEventListener('dragover', (event) => {
                 square.style.borderColor = '#ffffff'
                 event.preventDefault();
