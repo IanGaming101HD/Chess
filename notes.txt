@@ -1,7 +1,7 @@
 Notes:
 Pieces:
-Add pawn promotion and en passent 
 Add king castling, checked and checkmated
+Add pawn en passent 
 
 Add chess notations when moving pieces
 Add undo/redo feature

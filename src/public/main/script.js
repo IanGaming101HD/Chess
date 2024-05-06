@@ -502,6 +502,19 @@ class King extends Piece {
         }
         return possibleCoordinates
     }
+
+    isCheck(pieces, colour) {
+        if (colour === 'white') {
+            let oppositeColour = colour === 'white' ? 'black' : 'white'
+            
+            pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
+                let pieceObject = getPieceFromId(piece)
+                if (pieceObject.getMoves().includes(this.coordinate)) return;
+            })
+        } else {
+            let oppositeColour = colour === 'black' ? 'black' : 'white'
+        }
+    }
 }
 
 class Pawn extends Piece {
@@ -630,65 +643,71 @@ class Pawn extends Piece {
     }
 }
 
-// function testGame() {
-//     let blackPawn = new Pawn('white', 'a7');
-//     let piecesClasses = [blackPawn]
-//     let getPieceFromId = (id) => piecesClasses.find((element) => String(element.id) === id)
-//     let pieces = document.getElementsByClassName('piece')
+function testGame() {
+    let blackPawn = new Pawn('black', 'a2');
+    let piecesClasses = [blackPawn]
+    let getPieceFromId = (id) => piecesClasses.find((element) => String(element.id) === id)
+    let pieces = Array.from(document.getElementsByClassName('piece'))
 
-//     Array.from(pieces).forEach((piece) => {
-//         piece.addEventListener('dragstart', (event) => {
-//             event.dataTransfer.setData('text/plain', event.target.id);
-//         })
-//     })
+    pieces.forEach((piece) => {
+        piece.addEventListener('dragstart', (event) => {
+            event.dataTransfer.setData('text/plain', event.target.id);
+        })
+    })
 
-//     Array.from(squares).forEach((square) => {
-//         square.addEventListener('dragover', (event) => {
-//             event.preventDefault();
-//         });
+    squares.forEach((square) => {
+        square.addEventListener('dragover', (event) => {
+            event.preventDefault();
+        });
 
-//         square.addEventListener('drop', (event) => {
-//             event.preventDefault();
-//             square.style.borderColor = 'transparent'
+        square.addEventListener('drop', (event) => {
+            event.preventDefault();
+            square.style.borderColor = 'transparent'
 
-//             let pieceId = event.dataTransfer.getData('text/plain');
-//             if (pieceId === event.target.id) return;
+            let pieceId = event.dataTransfer.getData('text/plain');
+            if (pieceId === event.target.id) return;
 
-//             let piece = document.getElementById(pieceId)
-//             if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
-//             // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
+            let piece = document.getElementById(pieceId)
+            if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
+            // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
-//             previousSquare = piece.parentElement
+            let colour = piece.classList.contains('white') ? 'white' : 'black'
+            previousSquare = piece.parentElement
+            if (piece.classList.contains('king')) {
+                getPieceFromId(pieceId).isCheck(pieces, colour)
+            }
 
-//             if (piece.classList.contains('pawn')) {
-//                 let pawn = getPieceFromId(piece.id)
-//                 let colour = piece.classList.contains('white') ? 'white' : 'black'
-//                 pawn.checkPromotion(piece, colour, square, piecesClasses)
-//             }
+            if (piece.classList.contains('king') || piece.classList.contains('pawn') ) {
+                let pawnObject = getPieceFromId(piece.id)
 
-//             if (square.classList.contains('white-square')) {
-//                 square.style.backgroundColor = '#F6EB71'
-//             } else if (square.classList.contains('black-square')) {
-//                 square.style.backgroundColor = '#DBC34A'
-//             }
+                if (piece.classList.contains('pawn')) {
+                    pawnObject.checkPromotion(piece, colour, square, piecesClasses)
+                }
+            }
 
-//             let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
-//             if (enemyPiece) {
-//                 enemyPiece.remove()
-//             }
+            if (square.classList.contains('white-square')) {
+                square.style.backgroundColor = '#F6EB71'
+            } else if (square.classList.contains('black-square')) {
+                square.style.backgroundColor = '#DBC34A'
+            }
 
-//             getPieceFromId(pieceId).updateCoordinate(square.id)
-//             square.appendChild(piece)
-//         })
-//     })
-// }
+            let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
+            if (enemyPiece) {
+                enemyPiece.remove()
+            }
 
-const squares = document.getElementsByClassName('square')
-const positions = Array.from(squares, (square) => square.id)
+            getPieceFromId(pieceId).updateCoordinate(square.id)
+            square.appendChild(piece)
+        })
+    })
+}
+
+const squares = Array.from(document.getElementsByClassName('square'))
+const positions = squares.map((square) => square.id)
 const gameContainer = document.getElementById('game-container')
-const game = new Game()
+// const game = new Game()
 const notations = []
-// testGame()
+testGame()
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault()
