@@ -288,8 +288,8 @@ class Piece {
 }
 
 class Rook extends Piece {
-    constructor(colour, coordinate) {
-        super('rook', colour, coordinate);
+    constructor(colour, coordinate, id) {
+        super('rook', colour, coordinate, id);
         this.canCastle = true
     }
 
@@ -332,8 +332,8 @@ class Rook extends Piece {
 }
 
 class Knight extends Piece {
-    constructor(colour, coordinate) {
-        super('knight', colour, coordinate)
+    constructor(colour, coordinate, id) {
+        super('knight', colour, coordinate, id)
     }
 
     getMoves() {
@@ -371,8 +371,8 @@ class Knight extends Piece {
 }
 
 class Bishop extends Piece {
-    constructor(colour, coordinate) {
-        super('bishop', colour, coordinate);
+    constructor(colour, coordinate, id) {
+        super('bishop', colour, coordinate, id);
     }
 
     getMoves() {
@@ -417,8 +417,8 @@ class Bishop extends Piece {
 }
 
 class Queen extends Piece {
-    constructor(colour, coordinate) {
-        super('queen', colour, coordinate)
+    constructor(colour, coordinate, id) {
+        super('queen', colour, coordinate, id)
     }
 
     getMoves() {
@@ -471,8 +471,8 @@ class Queen extends Piece {
 }
 
 class King extends Piece {
-    constructor(colour, coordinate) {
-        super('king', colour, coordinate)
+    constructor(colour, coordinate, id) {
+        super('king', colour, coordinate, id)
         this.canCastle = true
     }
 
@@ -511,8 +511,8 @@ class King extends Piece {
 }
 
 class Pawn extends Piece {
-    constructor(colour, coordinate) {
-        super('pawn', colour, coordinate)
+    constructor(colour, coordinate, id) {
+        super('pawn', colour, coordinate, id)
     }
 
     getMoves() {
@@ -599,7 +599,8 @@ class Pawn extends Piece {
 
 function testGame() {
     let blackPawn = new Pawn('white', 'a7');
-    let getPieceFromId = (id) => [blackPawn].find((element) => String(element.id) === id)
+    let piecesClasses = [blackPawn]
+    let getPieceFromId = (id) => piecesClasses.find((element) => String(element.id) === id)
     let pieces = document.getElementsByClassName('piece')
 
     Array.from(pieces).forEach((piece) => {
@@ -618,11 +619,9 @@ function testGame() {
             square.style.borderColor = 'transparent'
 
             let pieceId = event.dataTransfer.getData('text/plain');
-            console.log('hi3', pieceId)
             if (pieceId === event.target.id) return;
 
             let piece = document.getElementById(pieceId)
-
             if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
             // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
@@ -642,31 +641,120 @@ function testGame() {
                     let hiddenCloseButton = document.getElementById('hidden-close-button')
 
                     hiddenOptionQueen.addEventListener('click', () => {
-                        let id = piece.id
-                        console.log(id)
+                        let pieceId = Number(piece.id)
                         piece.remove()
-                        let whiteQueen = new Queen('white', square.id, id)
-                        console.log('id', id)
-                        document.getElementById(id).addEventListener('dragstart', (event) => {
+                        let whiteQueen = new Queen('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
                             event.dataTransfer.setData('text/plain', event.target.id);
                         })
+                        piecesClasses[pieceId - 1] = whiteQueen
                         hiddenContainer.style.visibility = 'hidden'
+                        return;
+                    })
+                    hiddenOptionKnight.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteKnight = new Knight('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteKnight
+                        hiddenContainer.style.visibility = 'hidden'
+                        return;
+                    })
+                    hiddenOptionRook.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteRook = new Rook('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteRook
+                        hiddenContainer.style.visibility = 'hidden'
+                        return;
+                    })
+                    hiddenOptionBishop.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteBishop = new Bishop('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteBishop
+                        hiddenContainer.style.visibility = 'hidden'
+                        return;
                     })
                     hiddenCloseButton.addEventListener('click', () => {
                         hiddenContainer.style.visibility = 'hidden'
+                        return;
                     })
-                    
                 } else if (piece.classList.contains('black') && square.id.charAt(1) == '1') {
                     let hiddenContainer = document.getElementById('hidden-container')
                     hiddenContainer.style.visibility = 'visible'
                     hiddenContainer.style.marginTop = '-225px'
                     square.appendChild(hiddenContainer)
 
+                    let hiddenOptionQueen = document.getElementById('hidden-option-queen')
+                    let hiddenOptionKnight = document.getElementById('hidden-option-knight')
+                    let hiddenOptionRook = document.getElementById('hidden-option-rook')
+                    let hiddenOptionBishop = document.getElementById('hidden-option-bishop')
+                    let hiddenCloseButton = document.getElementById('hidden-close-button')
+
                     hiddenOptionQueen.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteQueen = new Queen('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteQueen
                         hiddenContainer.style.visibility = 'hidden'
+                        return;
+                    })
+                    hiddenOptionKnight.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteKnight = new Knight('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteKnight
+                        hiddenContainer.style.visibility = 'hidden'
+                        return;
+                    })
+                    hiddenOptionRook.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteRook = new Rook('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteRook
+                        hiddenContainer.style.visibility = 'hidden'
+                        return;
+                    })
+                    hiddenOptionBishop.addEventListener('click', () => {
+                        let pieceId = Number(piece.id)
+                        piece.remove()
+                        let whiteBishop = new Bishop('white', square.id, pieceId)
+                        let element = document.getElementById(piece.id)
+                        element.addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        piecesClasses[pieceId - 1] = whiteBishop
+                        hiddenContainer.style.visibility = 'hidden'
+                        return;
                     })
                     hiddenCloseButton.addEventListener('click', () => {
                         hiddenContainer.style.visibility = 'hidden'
+                        return;
                     })
                 }
             }
