@@ -1,3 +1,49 @@
+class Method {
+    constructor() {
+        this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'y', 'z'];
+    }
+
+    increment(value) {
+        if (value.toLowerCase().match(/[a-z]/i)) {
+            value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) + 1];
+            if (!value) {
+                value = this.alphabet[0];
+            }
+            return value;
+        } else {
+            value++;
+            return value;
+        }
+    }
+
+    decrement(value) {
+        if (value.toLowerCase().match(/[a-z]/i)) {
+            value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) - 1];
+            if (!value) {
+                value = this.alphabet[this.alphabet.length - 1];
+            }
+            return value;
+        } else {
+            value--;
+            return value;
+        }
+    }
+
+    convertRgbToHex(rgba) {
+        let hex = `#${rgba
+      .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
+      .slice(1)
+      .map((n, i) =>
+        (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n))
+          .toString(16)
+          .padStart(2, '0')
+          .replace('NaN', '')
+      )
+      .join('')}`.toUpperCase();
+        return hex;
+    }
+}
+
 class Game {
     constructor() {
         this.players_turn = 'white';
@@ -144,52 +190,6 @@ class Game {
         } else if (this.players_turn === 'black') {
             this.players_turn = 'white';
         }
-    }
-}
-
-class Method {
-    constructor() {
-        this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'y', 'z'];
-    }
-
-    increment(value) {
-        if (value.toLowerCase().match(/[a-z]/i)) {
-            value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) + 1];
-            if (!value) {
-                value = this.alphabet[0];
-            }
-            return value;
-        } else {
-            value++;
-            return value;
-        }
-    }
-
-    decrement(value) {
-        if (value.toLowerCase().match(/[a-z]/i)) {
-            value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) - 1];
-            if (!value) {
-                value = this.alphabet[this.alphabet.length - 1];
-            }
-            return value;
-        } else {
-            value--;
-            return value;
-        }
-    }
-
-    convertRgbToHex(rgba) {
-        let hex = `#${rgba
-      .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
-      .slice(1)
-      .map((n, i) =>
-        (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n))
-          .toString(16)
-          .padStart(2, '0')
-          .replace('NaN', '')
-      )
-      .join('')}`.toUpperCase();
-        return hex;
     }
 }
 
@@ -610,68 +610,11 @@ class Pawn extends Piece {
     }
 }
 
-function testGame() {
-    let blackPawn = new Pawn('black', 'a2');
-    let piecesClasses = [blackPawn];
-    let getPieceFromId = (id) => piecesClasses.find((element) => String(element.id) === id);
-    let pieces = Array.from(document.getElementsByClassName('piece'));
-
-    pieces.forEach((piece) => {
-        piece.addEventListener('dragstart', (event) => {
-            event.dataTransfer.setData('text/plain', event.target.id);
-        });
-    });
-
-    squares.forEach((square) => {
-        square.addEventListener('dragover', (event) => {
-            event.preventDefault();
-        });
-
-        square.addEventListener('drop', (event) => {
-            event.preventDefault();
-            square.style.borderColor = 'transparent';
-
-            let pieceId = event.dataTransfer.getData('text/plain');
-            if (pieceId === event.target.id) return;
-
-            let piece = document.getElementById(pieceId);
-            let pieceObject = getPieceFromId(pieceId);
-            if (!pieceObject.getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
-            // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
-
-            let colour = piece.classList.contains('white') ? 'white' : 'black';
-            previousSquare = piece.parentElement;
-            if (piece.classList.contains('king')) {
-                pieceObject.isCheck(pieces, colour);
-            }
-
-            if (piece.classList.contains('pawn') ) {
-                pieceObject.checkPromotion(piece, colour, square, piecesClasses);
-            }
-
-            if (square.classList.contains('white-square')) {
-                square.style.backgroundColor = '#F6EB71';
-            } else if (square.classList.contains('black-square')) {
-                square.style.backgroundColor = '#DBC34A';
-            }
-
-            let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'));
-            if (enemyPiece) {
-                enemyPiece.remove();
-            }
-
-            pieceObject.updateCoordinate(square.id);
-            square.appendChild(piece);
-        });
-    });
-}
-
 const squares = Array.from(document.getElementsByClassName('square'));
 const positions = squares.map((square) => square.id);
 const gameContainer = document.getElementById('game-container');
 const game = new Game();
 const notations = [];
-// testGame();
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();
