@@ -231,14 +231,14 @@ class Method {
 }
 
 class Piece {
-    static id = 1;
+    static id = 0;
 
-    constructor(name, colour, coordinate) {
+    constructor(name, colour, coordinate, id) {
         this.name = name;
         this.colour = colour;
         this.coordinate = coordinate;
         this.canBeKilled = false;
-        this.id = Piece.id
+        this.id = id
         this.method = new Method()
         this.create()
     }
@@ -272,13 +272,16 @@ class Piece {
         let position = document.getElementById(this.coordinate)
         let piece = document.createElement('img');
 
-        piece.id = String(Piece.id)
+        if (!this.id) {
+            Piece.id += 1
+            this.id = Piece.id 
+        }
+
+        piece.id = this.id
         piece.classList.add('piece')
         piece.classList.add(this.name)
         piece.classList.add(this.colour)
         piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
-
-        Piece.id++
 
         position.appendChild(piece);
     }
@@ -612,38 +615,75 @@ function testGame() {
 
         square.addEventListener('drop', (event) => {
             event.preventDefault();
+            square.style.borderColor = 'transparent'
 
-            let data = event.dataTransfer.getData('text/plain');
-            let element = document.getElementById(data);
-            if (element.id === event.target.id) return;
+            let pieceId = event.dataTransfer.getData('text/plain');
+            console.log('hi3', pieceId)
+            if (pieceId === event.target.id) return;
 
-            if (event.target.tagName.toLowerCase() === 'img') {
-                if (!getPieceFromId(element.id).getMoves().includes(square.id)) return;
+            let piece = document.getElementById(pieceId)
 
-                if (Array.from(event.target.classList).includes('king')) return;
+            if (!getPieceFromId(pieceId).getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return
+            // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
 
-                getPieceFromId(element.id).updateCoordinate(square.id)
-                square.appendChild(element)
-                event.target.remove()
-            } else {
-                if (element.classList.contains('pawn')) {
-                    if (element.classList.contains('white') && square.id.charAt(1) == '8') {
-                        let hiddenContainer = document.getElementById('hidden-container')
-                        hiddenContainer.style.visibility = 'visible'
-                        hiddenContainer.style.marginTop = '0px'
-                        square.appendChild(hiddenContainer)
-                    } else if (element.classList.contains('black') && square.id.charAt(1) == '1') {
-                        let hiddenContainer = document.getElementById('hidden-container')
-                        hiddenContainer.style.visibility = 'visible'
-                        hiddenContainer.style.marginTop = '-225px'
-                        square.appendChild(hiddenContainer)
-                    }
+            previousSquare = piece.parentElement
+
+            if (piece.classList.contains('pawn')) {
+                if (piece.classList.contains('white') && square.id.charAt(1) == '8') {
+                    let hiddenContainer = document.getElementById('hidden-container')
+                    hiddenContainer.style.visibility = 'visible'
+                    hiddenContainer.style.marginTop = '0px'
+                    square.appendChild(hiddenContainer)
+                    
+                    let hiddenOptionQueen = document.getElementById('hidden-option-queen')
+                    let hiddenOptionKnight = document.getElementById('hidden-option-knight')
+                    let hiddenOptionRook = document.getElementById('hidden-option-rook')
+                    let hiddenOptionBishop = document.getElementById('hidden-option-bishop')
+                    let hiddenCloseButton = document.getElementById('hidden-close-button')
+
+                    hiddenOptionQueen.addEventListener('click', () => {
+                        let id = piece.id
+                        console.log(id)
+                        piece.remove()
+                        let whiteQueen = new Queen('white', square.id, id)
+                        console.log('id', id)
+                        document.getElementById(id).addEventListener('dragstart', (event) => {
+                            event.dataTransfer.setData('text/plain', event.target.id);
+                        })
+                        hiddenContainer.style.visibility = 'hidden'
+                    })
+                    hiddenCloseButton.addEventListener('click', () => {
+                        hiddenContainer.style.visibility = 'hidden'
+                    })
+                    
+                } else if (piece.classList.contains('black') && square.id.charAt(1) == '1') {
+                    let hiddenContainer = document.getElementById('hidden-container')
+                    hiddenContainer.style.visibility = 'visible'
+                    hiddenContainer.style.marginTop = '-225px'
+                    square.appendChild(hiddenContainer)
+
+                    hiddenOptionQueen.addEventListener('click', () => {
+                        hiddenContainer.style.visibility = 'hidden'
+                    })
+                    hiddenCloseButton.addEventListener('click', () => {
+                        hiddenContainer.style.visibility = 'hidden'
+                    })
                 }
-
-                if (!getPieceFromId(element.id).getMoves().includes(event.target.id)) return;
-                getPieceFromId(element.id).updateCoordinate(square.id)
-                event.target.appendChild(element);
             }
+
+            if (square.classList.contains('white-square')) {
+                square.style.backgroundColor = '#F6EB71'
+            } else if (square.classList.contains('black-square')) {
+                square.style.backgroundColor = '#DBC34A'
+            }
+
+            let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'))
+            if (enemyPiece) {
+                enemyPiece.remove()
+            }
+
+            getPieceFromId(pieceId).updateCoordinate(square.id)
+            square.appendChild(piece)
         })
     })
 }
