@@ -182,6 +182,7 @@ class Game {
                 if (enemyPiece) {
                     enemyPiece.remove();
                 }
+                pieceObject.updateCoordinate(square.id);
                 square.appendChild(piece);
                 game.endTurn();
             });
@@ -266,31 +267,22 @@ class Rook extends Piece {
         for (let direction of directions) {
             let tempCoordinate = originalCoordinate;
 
-            while (true) {
+            while (positions.includes(tempCoordinate) || !Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                 tempCoordinate = this[direction](tempCoordinate);
-
-                if (!positions.includes(tempCoordinate)) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-
                 coordinates.push(tempCoordinate);
 
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                if (!positions.includes(tempCoordinate) || Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     tempCoordinate = originalCoordinate;
-                    break;
                 }
             }
         }
-
         coordinates.forEach((element) => {
             const children = Array.from(document.getElementById(element).children);
             if (!children.length || !children[0].classList.contains(this.colour)) {
                 possibleCoordinates.push(element);
             }
         });
-
         return possibleCoordinates;
     }
 }
@@ -354,28 +346,21 @@ class Bishop extends Piece {
         for (let sequence of sequences) {
             let tempCoordinate = originalCoordinate;
 
-            while (true) {
+            while (positions.includes(tempCoordinate) || !Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                 tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-                if (!positions.includes(tempCoordinate)) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
                 coordinates.push(tempCoordinate);
 
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                if (!positions.includes(tempCoordinate) || Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     tempCoordinate = originalCoordinate;
-                    break;
                 }
             }
         }
-
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
             }
         });
-
         return possibleCoordinates;
     }
 }
@@ -404,32 +389,21 @@ class Queen extends Piece {
         for (let sequence of sequences) {
             let tempCoordinate = originalCoordinate;
 
-            while (true) {
-                if (sequence.length === 1) {
-                    tempCoordinate = this[sequence](tempCoordinate);
-                } else if (sequence.length === 2) {
-                    tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-                }
-                if (!positions.includes(tempCoordinate)) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
+            while (positions.includes(tempCoordinate) || !Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
                 coordinates.push(tempCoordinate);
 
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                if (!positions.includes(tempCoordinate) || Array.from(element.children).some((value) => value.tagName === 'IMG')) {
                     tempCoordinate = originalCoordinate;
-                    break;
                 }
             }
         }
-
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
             }
         });
-
         return possibleCoordinates;
     }
 }
@@ -439,7 +413,6 @@ class King extends Piece {
         super('king', colour, coordinate, id);
         this.canCastle = true;
     }
-
     getMoves() {
         let possibleCoordinates = [];
 
