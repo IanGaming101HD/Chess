@@ -161,10 +161,10 @@ class Game {
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
                 let kingObject = getPieceFromId(king.id)
+                square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
-                pieceObject.updateCoordinate(square.id);
                 if (check) {
-                    pieceObject.updateCoordinate(previousSquare.id);
+                    previousSquare.appendChild(piece);
                     return;
                 };
 
@@ -183,7 +183,6 @@ class Game {
                     enemyPiece.remove();
                 }
 
-                pieceObject.updateCoordinate(square.id);
                 square.appendChild(piece);
                 game.endTurn();
             });
@@ -473,6 +472,11 @@ class King extends Piece {
 
     isCheck(piecesObjects, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
+        piecesObjects.filter((pieceObject) => pieceObject.colour === colour).some((pieceObject) => {
+            let possibleMoves = pieceObject.getMoves()
+            console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
+            if (possibleMoves.includes(this.coordinate)) return true;
+        });
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
             let possibleMoves = pieceObject.getMoves()
             console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
