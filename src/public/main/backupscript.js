@@ -11,7 +11,7 @@ class Method {
             }
             return value;
         } else {
-            value++;
+            value += 1;
             return value;
         }
     }
@@ -24,7 +24,7 @@ class Method {
             }
             return value;
         } else {
-            value--;
+            value -= 1;
             return value;
         }
     }
@@ -34,7 +34,7 @@ class Method {
       .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
       .slice(1)
       .map((n, i) =>
-        (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n))
+        (i === 3?Math.round(parseFloat(n) * 255) : parseFloat(n))
           .toString(16)
           .padStart(2, '0')
           .replace('NaN', '')
@@ -57,6 +57,10 @@ class Game {
     }
 
     normalGame() {
+        // let whiteRook = new Rook('white', 'a1');
+        // let whiteKing = new King('white', 'e1');
+        // let whiteRook2 = new Rook('white', 'h1');
+
         let whiteRook = new Rook('white', 'a1');
         let whiteKnight = new Knight('white', 'b1');
         let whiteBishop = new Bishop('white', 'c1');
@@ -90,8 +94,9 @@ class Game {
         let blackPawn7 = new Pawn('black', 'g7');
         let blackPawn8 = new Pawn('black', 'h7');
 
+        // let piecesObjects = [whiteRook, whiteKing, whiteRook];
         let piecesObjects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-        let getPieceFromId = (id) => piecesObjects.find((element) => String(element.id) === id);
+        let getPieceById = (id) => piecesObjects.find((element) => String(element.id) === id);
         let pieces = Array.from(document.getElementsByClassName('piece'));
         let previousSquare;
 
@@ -103,6 +108,16 @@ class Game {
                 } else if (square.classList.contains('black-square')) {
                     square.style.backgroundColor = '#DBC34A';
                 }
+
+                // let pieceObject = getPieceById(piece.id)
+                // let possibleCoordinates = pieceObject.getMoves()
+                // possibleCoordinates.forEach((coordinate) => {
+                //     let square = document.getElementById(coordinate)
+                //     let overlay = document.createElement('div')
+                //     overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece'))) ? 'possible-capture' : 'possible-move' 
+                //     square.append(overlay)
+                // })
+
                 event.dataTransfer.setData('text/plain', event.target.id);
             });
 
@@ -151,16 +166,16 @@ class Game {
                 if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId);
-                let colour = piece.classList.contains('white') ? 'white' : 'black';
-                let pieceObject = getPieceFromId(pieceId);
+                let colour = piece.classList.contains('white')?'white' : 'black';
+                let pieceObject = getPieceById(pieceId);
                 let possibleMoves = pieceObject.getMoves()
-                
+
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
 
                 previousSquare = piece.parentElement;
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
-                let kingObject = getPieceFromId(king.id)
+                let kingObject = getPieceById(king.id)
                 square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
                 if (check) {
@@ -182,6 +197,7 @@ class Game {
                 if (enemyPiece) {
                     enemyPiece.remove();
                 }
+
                 square.appendChild(piece);
                 game.endTurn();
             });
@@ -405,7 +421,7 @@ class Queen extends Piece {
             let tempCoordinate = originalCoordinate;
 
             while (true) {
-                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                tempCoordinate = sequence.length === 1?this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
                 if (!positions.includes(tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
@@ -438,10 +454,8 @@ class King extends Piece {
 
     getMoves() {
         let possibleCoordinates = [];
-
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
-
         let sequences = [
             ['left'],
             ['right'],
@@ -466,16 +480,47 @@ class King extends Piece {
             }
             tempCoordinate = originalCoordinate;
         }
+        // castling
+
+        // if (this.canCastle) {
+        //     let rooks = Array.from(document.getElementsByClassName('rook'));
+        //     rooks.forEach((rook) => {
+        //         let rookObject = getPieceById(rook)
+        //         let possibleMoves = rookObject.getMoves()
+        //         if (rookObject.canCastle && possibleMoves.includes(this.coordinate)) {
+        //             if (rookObject.coordinate < this.coordinate) {
+        //                 tempCoordinate = this.coordinate
+        //                 for (let x = 0; x < 2;) {
+        //                     tempCoordinate = this.left(tempCoordinate)
+        //                 }
+        //                 this.updateCoordinate(tempCoordinate)
+        //                 tempCoordinate = rookObject.coordinate
+        //                 for (let x = 0; x < 3;) {
+        //                     tempCoordinate = this.right(tempCoordinate)
+        //                 }
+        //                 rookObject.updateCoordinate(tempCoordinate)
+        //             } else if (rookObject.coordinate > this.coordinate) {
+        //                 if (rookObject.coordinate < this.coordinate) {
+        //                     tempCoordinate = this.coordinate
+        //                     for (let x = 0; x < 2;) {
+        //                         tempCoordinate = this.right(tempCoordinate)
+        //                     }
+        //                     this.updateCoordinate(tempCoordinate)
+        //                     tempCoordinate = rookObject.coordinate
+        //                     for (let x = 0; x < 2;) {
+        //                         tempCoordinate = this.left(tempCoordinate)
+        //                     }
+        //                     rookObject.updateCoordinate(tempCoordinate)
+        //                 }
+        //             }
+        //         }
+        //     })
+        // }
         return possibleCoordinates;
     }
 
     isCheck(piecesObjects, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
-        piecesObjects.filter((pieceObject) => pieceObject.colour === colour).some((pieceObject) => {
-            let possibleMoves = pieceObject.getMoves()
-            console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
-            if (possibleMoves.includes(this.coordinate)) return true;
-        });
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
             let possibleMoves = pieceObject.getMoves()
             console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
@@ -572,38 +617,38 @@ class Pawn extends Piece {
     }
 
     checkPromotion(piece, colour, square, piecesObjects) {
-        let row = colour === 'white' ? '8' : '1';
+        let row = colour === 'white'?'8' : '1';
         if (square.id.charAt(1) !== row) return;
-    
+
         let hiddenContainer = document.getElementById('hidden-container');
         hiddenContainer.style.visibility = 'visible';
-        hiddenContainer.style.marginTop = colour === 'white'  ? '0px' : '-225px';
+        hiddenContainer.style.marginTop = colour === 'white'?'0px' : '-225px';
         square.appendChild(hiddenContainer);
-    
+
         let promotionOptions = {
             'hidden-option-queen': Queen,
             'hidden-option-knight': Knight,
             'hidden-option-rook': Rook,
             'hidden-option-bishop': Bishop
         };
-    
+
         Object.entries(promotionOptions).forEach(([optionId, classType]) => {
             let optionElement = document.getElementById(optionId);
             optionElement.addEventListener('click', () => {
                 let pieceId = Number(piece.id);
                 piece.remove();
-            
-                let newPiece = new classType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
+
+                let newPiece = new classType(piece.classList.contains('white')?'white' : 'black', square.id, pieceId);
                 let element = document.getElementById(piece.id);
                 element && element.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', event.target.id);
                 });
-            
+
                 piecesObjects[pieceId - 1] = newPiece;
                 document.getElementById('hidden-container').style.visibility = 'hidden';
             });
         });
-    
+
         let hiddenCloseButton = document.getElementById('hidden-close-button');
         hiddenCloseButton.addEventListener('click', () => {
             hiddenContainer.style.visibility = 'hidden';
@@ -616,6 +661,7 @@ const positions = squares.map((square) => square.id);
 const gameContainer = document.getElementById('game-container');
 const game = new Game();
 const notations = [];
+let getPieceById;
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();
