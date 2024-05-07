@@ -167,7 +167,7 @@ class Game {
                 }
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
-                game.endTurn();
+                // game.endTurn();
             });
         });
     }
@@ -248,10 +248,40 @@ class King extends Piece {
             ['right', 'down']
         ];
 
-        for (let sequence of sequences) {
-            for (let direction of sequence) {
+// Queen reference code
+// ----------------------
+// let possibleCoordinates = [];
+// let coordinates = [];
+// let originalCoordinate = this.coordinate;
+
+// sequences((sequence) => {
+//     let tempCoordinate = originalCoordinate;
+//     while (true) {
+//         tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+//         if (!squares.some((value) => value.id === tempCoordinate)) {
+//             tempCoordinate = originalCoordinate;
+//             break;
+//         }
+//         coordinates.push(tempCoordinate);
+
+//         let element = document.getElementById(tempCoordinate);
+//         if (Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+//             tempCoordinate = originalCoordinate;
+//             break;
+//         }
+//     }
+// })
+// coordinates.forEach((element) => {
+//     if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
+//         possibleCoordinates.push(element);
+//     }
+// });
+// return possibleCoordinates;
+
+        sequences((sequence) => {
+            sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
-            }
+            })
 
             if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
@@ -260,7 +290,7 @@ class King extends Piece {
                 }
             }
             tempCoordinate = originalCoordinate;
-        }
+        })
         // castling
 
         // if (this.canCastle) {
@@ -328,7 +358,7 @@ class Queen extends Piece {
         let coordinates = [];
         let originalCoordinate = this.coordinate;
 
-        for (let sequence of sequences) {
+        sequences.forEach((sequence) => {
             let tempCoordinate = originalCoordinate;
             while (true) {
                 tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
@@ -344,7 +374,7 @@ class Queen extends Piece {
                     break;
                 }
             }
-        }
+        })
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
@@ -406,7 +436,7 @@ class Bishop extends Piece {
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
 
-        for (let sequence of sequences) {
+        sequences((sequence) => {
             let tempCoordinate = originalCoordinate;
 
             while (true) {
@@ -423,7 +453,7 @@ class Bishop extends Piece {
                     break;
                 }
             }
-        }
+        })
 
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
@@ -454,10 +484,10 @@ class Knight extends Piece {
             ['right', 'right', 'down']
         ];
 
-        for (let sequence of sequences) {
-            for (let direction of sequence) {
+        sequences((sequence) => {
+            sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
-            }
+            })
 
             if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
@@ -466,7 +496,7 @@ class Knight extends Piece {
                 }
             }
             tempCoordinate = originalCoordinate;
-        }
+        })
         return possibleCoordinates;
     }
 }
