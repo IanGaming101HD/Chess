@@ -2,6 +2,7 @@ class Method {
     constructor() {
         this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'y', 'z'];
     }
+
     increment(value) {
         if (value.toLowerCase().match(/[a-z]/i)) {
             value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) + 1];
@@ -10,10 +11,11 @@ class Method {
             }
             return value;
         } else {
-            value++;
+            value += 1;
             return value;
         }
     }
+
     decrement(value) {
         if (value.toLowerCase().match(/[a-z]/i)) {
             value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) - 1];
@@ -22,16 +24,17 @@ class Method {
             }
             return value;
         } else {
-            value--;
+            value -= 1;
             return value;
         }
     }
+
     convertRgbToHex(rgba) {
         let hex = `#${rgba
       .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
       .slice(1)
       .map((n, i) =>
-        (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n))
+        (i === 3?Math.round(parseFloat(n) * 255) : parseFloat(n))
           .toString(16)
           .padStart(2, '0')
           .replace('NaN', '')
@@ -45,13 +48,19 @@ class Game {
     constructor() {
         this.players_turn = 'white';
         this.GameOver = false;
-        this.defaultGame();
+        this.normalGame();
         this.method = new Method();
     }
+
     createBoard() {
         console.log('hi');
     }
-    defaultGame() {
+
+    normalGame() {
+        // let whiteRook = new Rook('white', 'a1');
+        // let whiteKing = new King('white', 'e1');
+        // let whiteRook2 = new Rook('white', 'h1');
+
         let whiteRook = new Rook('white', 'a1');
         let whiteKnight = new Knight('white', 'b1');
         let whiteBishop = new Bishop('white', 'c1');
@@ -85,31 +94,12 @@ class Game {
         let blackPawn7 = new Pawn('black', 'g7');
         let blackPawn8 = new Pawn('black', 'h7');
 
+        // let piecesObjects = [whiteRook, whiteKing, whiteRook];
         let piecesObjects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
         let getPieceById = (id) => piecesObjects.find((element) => String(element.id) === id);
         let pieces = Array.from(document.getElementsByClassName('piece'));
         let previousSquare;
 
-        let getOverlays = () => {
-            let possibleMovesOverlays = Array.from(document.getElementsByClassName('possible-move'))
-            let possibleCapturesOverlays = Array.from(document.getElementsByClassName('possible-capture'))
-            let overlays = possibleMovesOverlays.concat(possibleCapturesOverlays)
-            return overlays
-        }
-        let createOverlays = (id) => {
-            let pieceObject = getPieceById(id)
-            let possibleCoordinates = pieceObject.getCoordinates()
-            possibleCoordinates.forEach((coordinate) => {
-                let square = document.getElementById(coordinate)
-                let overlay = document.createElement('div')
-                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
-                square.append(overlay)
-            })
-        }
-        let removeOverlays = () => {
-            let overlays = getOverlays()
-            overlays.forEach((overlay) => overlay.remove())
-        }
         pieces.forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
                 let square = piece.parentElement;
@@ -118,15 +108,21 @@ class Game {
                 } else if (square.classList.contains('black-square')) {
                     square.style.backgroundColor = '#DBC34A';
                 }
-                let overlays = getOverlays()
-                if (overlays.length > 0) {
-                    removeOverlays()
-                }
-                createOverlays(piece.id)
+
+                // let pieceObject = getPieceById(piece.id)
+                // let possibleCoordinates = pieceObject.getMoves()
+                // possibleCoordinates.forEach((coordinate) => {
+                //     let square = document.getElementById(coordinate)
+                //     let overlay = document.createElement('div')
+                //     overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece'))) ? 'possible-capture' : 'possible-move' 
+                //     square.append(overlay)
+                // })
+
                 event.dataTransfer.setData('text/plain', event.target.id);
             });
 
             piece.addEventListener('dragend', (event) => {
+                let squares = Array.from(document.getElementsByClassName('square'));
                 squares.forEach((square) => {
                     if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
                         square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.white-square')).backgroundColor);
@@ -170,16 +166,16 @@ class Game {
                 if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId);
-                let colour = piece.classList.contains('white') ? 'white' : 'black';
+                let colour = piece.classList.contains('white')?'white' : 'black';
                 let pieceObject = getPieceById(pieceId);
-                let possibleMoves = pieceObject.getCoordinates()
-                
+                let possibleMoves = pieceObject.getMoves()
+
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
-                removeOverlays()
+
+                previousSquare = piece.parentElement;
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
                 let kingObject = getPieceById(king.id)
-                previousSquare = piece.parentElement;
                 square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
                 if (check) {
@@ -201,12 +197,13 @@ class Game {
                 if (enemyPiece) {
                     enemyPiece.remove();
                 }
+
                 square.appendChild(piece);
-                pieceObject.updateCoordinate(square.id);
                 game.endTurn();
             });
         });
     }
+
     endTurn() {
         if (this.players_turn === 'white') {
             this.players_turn = 'black';
@@ -218,6 +215,7 @@ class Game {
 
 class Piece {
     static id = 0;
+
     constructor(name, colour, coordinate, id) {
         this.name = name;
         this.colour = colour;
@@ -226,12 +224,15 @@ class Piece {
         this.method = new Method();
         this.create();
     }
+
     toString() {
         return `${this.name} ${this.colour} ${this.coordinate} ${this.id}`;
     }
+
     updateCoordinate(newCoordinate) {
         this.coordinate = newCoordinate;
     }
+
     left(coordinate) {
         return this.method.decrement(coordinate[0]) + coordinate[1];
     }
@@ -244,14 +245,18 @@ class Piece {
     down(coordinate) {
         return coordinate[0] + this.method.decrement(coordinate[1]);
     }
+
     create() {
         if (!positions.includes(this.coordinate)) return;
+
         let position = document.getElementById(this.coordinate);
         let piece = document.createElement('img');
+
         if (!this.id) {
             Piece.id += 1;
             this.id = Piece.id;
         }
+
         piece.id = this.id;
         piece.classList.add('piece');
         piece.classList.add(this.name);
@@ -262,17 +267,195 @@ class Piece {
     }
 }
 
-class King extends Piece {
+class Rook extends Piece {
     constructor(colour, coordinate, id) {
-        super('king', colour, coordinate, id);
+        super('rook', colour, coordinate, id);
         this.canCastle = true;
     }
-    getCoordinates() {
+
+    getMoves() {
+        let directions = ['left', 'right', 'up', 'down'];
+        let coordinates = [];
+        let possibleCoordinates = [];
+        let originalCoordinate = this.coordinate;
+
+        for (let direction of directions) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                tempCoordinate = this[direction](tempCoordinate);
+
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+
+                coordinates.push(tempCoordinate);
+
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+            }
+        }
+
+        coordinates.forEach((element) => {
+            const children = Array.from(document.getElementById(element).children);
+            if (!children.length || !children[0].classList.contains(this.colour)) {
+                possibleCoordinates.push(element);
+            }
+        });
+
+        return possibleCoordinates;
+    }
+}
+
+class Knight extends Piece {
+    constructor(colour, coordinate, id) {
+        super('knight', colour, coordinate, id);
+    }
+
+    getMoves() {
         let possibleCoordinates = [];
 
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
 
+        let sequences = [
+            ['up', 'up', 'left'],
+            ['up', 'up', 'right'],
+            ['down', 'down', 'left'],
+            ['down', 'down', 'right'],
+            ['left', 'left', 'up'],
+            ['left', 'left', 'down'],
+            ['right', 'right', 'up'],
+            ['right', 'right', 'down']
+        ];
+
+        for (let sequence of sequences) {
+            for (let direction of sequence) {
+                tempCoordinate = this[direction](tempCoordinate);
+            }
+
+            if (positions.includes(tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
+                    possibleCoordinates.push(tempCoordinate);
+                }
+            }
+            tempCoordinate = originalCoordinate;
+        }
+        return possibleCoordinates;
+    }
+}
+
+class Bishop extends Piece {
+    constructor(colour, coordinate, id) {
+        super('bishop', colour, coordinate, id);
+    }
+
+    getMoves() {
+        let sequences = [
+            ['left', 'up'],
+            ['right', 'up'],
+            ['left', 'down'],
+            ['right', 'down']
+        ];
+
+        let coordinates = [];
+        let possibleCoordinates = [];
+        let originalCoordinate = this.coordinate;
+
+        for (let sequence of sequences) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+                coordinates.push(tempCoordinate);
+
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+            }
+        }
+
+        coordinates.forEach((element) => {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
+                possibleCoordinates.push(element);
+            }
+        });
+
+        return possibleCoordinates;
+    }
+}
+
+class Queen extends Piece {
+    constructor(colour, coordinate, id) {
+        super('queen', colour, coordinate, id);
+    }
+
+    getMoves() {
+        let sequences = [
+            ['left'],
+            ['right'],
+            ['up'],
+            ['down'],
+            ['left', 'up'],
+            ['right', 'up'],
+            ['left', 'down'],
+            ['right', 'down']
+        ];
+
+        let coordinates = [];
+        let possibleCoordinates = [];
+        let originalCoordinate = this.coordinate;
+
+        for (let sequence of sequences) {
+            let tempCoordinate = originalCoordinate;
+
+            while (true) {
+                tempCoordinate = sequence.length === 1?this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                if (!positions.includes(tempCoordinate)) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+                coordinates.push(tempCoordinate);
+
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
+                    tempCoordinate = originalCoordinate;
+                    break;
+                }
+            }
+        }
+
+        coordinates.forEach((element) => {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
+                possibleCoordinates.push(element);
+            }
+        });
+
+        return possibleCoordinates;
+    }
+}
+
+class King extends Piece {
+    constructor(colour, coordinate, id) {
+        super('king', colour, coordinate, id);
+        this.canCastle = true;
+    }
+
+    getMoves() {
+        let possibleCoordinates = [];
+        let originalCoordinate = this.coordinate;
+        let tempCoordinate = originalCoordinate;
         let sequences = [
             ['left'],
             ['right'],
@@ -335,175 +518,15 @@ class King extends Piece {
         // }
         return possibleCoordinates;
     }
+
     isCheck(piecesObjects, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
-            let possibleMoves = pieceObject.getCoordinates()
+            let possibleMoves = pieceObject.getMoves()
+            console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
             if (possibleMoves.includes(this.coordinate)) return true;
         });
         return check
-    }
-}
-
-class Queen extends Piece {
-    constructor(colour, coordinate, id) {
-        super('queen', colour, coordinate, id);
-    }
-    getCoordinates() {
-        let sequences = [
-            ['left'],
-            ['right'],
-            ['up'],
-            ['down'],
-            ['left', 'up'],
-            ['right', 'up'],
-            ['left', 'down'],
-            ['right', 'down']
-        ];
-        let coordinates = [];
-        let possibleCoordinates = [];
-        let originalCoordinate = this.coordinate;
-
-        for (let sequence of sequences) {
-            let tempCoordinate = originalCoordinate;
-            while (true) {
-                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-                if (!positions.includes(tempCoordinate)) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-                coordinates.push(tempCoordinate);
-
-                let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-            }
-        }
-        coordinates.forEach((element) => {
-            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
-                possibleCoordinates.push(element);
-            }
-        });
-        return possibleCoordinates;
-    }
-}
-
-class Rook extends Piece {
-    constructor(colour, coordinate, id) {
-        super('rook', colour, coordinate, id);
-        this.canCastle = true;
-    }
-    getCoordinates() {
-        let directions = ['left', 'right', 'up', 'down'];
-        let coordinates = [];
-        let possibleCoordinates = [];
-        let originalCoordinate = this.coordinate;
-        for (let direction of directions) {
-            let tempCoordinate = originalCoordinate;
-
-            while (true) {
-                tempCoordinate = this[direction](tempCoordinate);
-                if (!positions.includes(tempCoordinate)) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-                coordinates.push(tempCoordinate);
-                let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-            }
-        }
-        coordinates.forEach((element) => {
-            const children = Array.from(document.getElementById(element).children);
-            if (!children.length || !children[0].classList.contains(this.colour)) {
-                possibleCoordinates.push(element);
-            }
-        });
-        return possibleCoordinates;
-    }
-}
-
-class Bishop extends Piece {
-    constructor(colour, coordinate, id) {
-        super('bishop', colour, coordinate, id);
-    }
-    getCoordinates() {
-        let sequences = [
-            ['left', 'up'],
-            ['right', 'up'],
-            ['left', 'down'],
-            ['right', 'down']
-        ];
-        let coordinates = [];
-        let possibleCoordinates = [];
-        let originalCoordinate = this.coordinate;
-
-        for (let sequence of sequences) {
-            let tempCoordinate = originalCoordinate;
-
-            while (true) {
-                tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-                if (!positions.includes(tempCoordinate)) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-                coordinates.push(tempCoordinate);
-
-                let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.tagName === 'IMG')) {
-                    tempCoordinate = originalCoordinate;
-                    break;
-                }
-            }
-        }
-
-        coordinates.forEach((element) => {
-            if (!Array.from(document.getElementById(element).children).some((value) => value.tagName === 'IMG' && value.classList.contains(this.colour))) {
-                possibleCoordinates.push(element);
-            }
-        });
-
-        return possibleCoordinates;
-    }
-}
-
-class Knight extends Piece {
-    constructor(colour, coordinate, id) {
-        super('knight', colour, coordinate, id);
-    }
-    getCoordinates() {
-        let possibleCoordinates = [];
-        let originalCoordinate = this.coordinate;
-        let tempCoordinate = originalCoordinate;
-        let sequences = [
-            ['up', 'up', 'left'],
-            ['up', 'up', 'right'],
-            ['down', 'down', 'left'],
-            ['down', 'down', 'right'],
-            ['left', 'left', 'up'],
-            ['left', 'left', 'down'],
-            ['right', 'right', 'up'],
-            ['right', 'right', 'down']
-        ];
-
-        for (let sequence of sequences) {
-            for (let direction of sequence) {
-                tempCoordinate = this[direction](tempCoordinate);
-            }
-
-            if (positions.includes(tempCoordinate)) {
-                let element = document.getElementById(tempCoordinate);
-                if (!Array.from(element.children).some((value) => value.tagName === 'IMG') || !Array.from(Array.from(element.children).find((value) => value.tagName === 'IMG').classList).includes(this.colour)) {
-                    possibleCoordinates.push(tempCoordinate);
-                }
-            }
-            tempCoordinate = originalCoordinate;
-        }
-        return possibleCoordinates;
     }
 }
 
@@ -511,7 +534,8 @@ class Pawn extends Piece {
     constructor(colour, coordinate, id) {
         super('pawn', colour, coordinate, id);
     }
-    getCoordinates() {
+
+    getMoves() {
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
@@ -591,38 +615,40 @@ class Pawn extends Piece {
         }
         return possibleCoordinates;
     }
+
     checkPromotion(piece, colour, square, piecesObjects) {
-        let row = colour === 'white' ? '8' : '1';
+        let row = colour === 'white'?'8' : '1';
         if (square.id.charAt(1) !== row) return;
-    
+
         let hiddenContainer = document.getElementById('hidden-container');
         hiddenContainer.style.visibility = 'visible';
-        hiddenContainer.style.marginTop = colour === 'white'  ? '0px' : '-225px';
+        hiddenContainer.style.marginTop = colour === 'white'?'0px' : '-225px';
         square.appendChild(hiddenContainer);
-    
+
         let promotionOptions = {
             'hidden-option-queen': Queen,
             'hidden-option-knight': Knight,
             'hidden-option-rook': Rook,
             'hidden-option-bishop': Bishop
         };
-    
+
         Object.entries(promotionOptions).forEach(([optionId, classType]) => {
             let optionElement = document.getElementById(optionId);
             optionElement.addEventListener('click', () => {
                 let pieceId = Number(piece.id);
                 piece.remove();
-            
-                let newPiece = new classType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
+
+                let newPiece = new classType(piece.classList.contains('white')?'white' : 'black', square.id, pieceId);
                 let element = document.getElementById(piece.id);
                 element && element.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', event.target.id);
                 });
+
                 piecesObjects[pieceId - 1] = newPiece;
                 document.getElementById('hidden-container').style.visibility = 'hidden';
             });
         });
-    
+
         let hiddenCloseButton = document.getElementById('hidden-close-button');
         hiddenCloseButton.addEventListener('click', () => {
             hiddenContainer.style.visibility = 'hidden';
@@ -630,11 +656,12 @@ class Pawn extends Piece {
     }
 }
 
-let squares = Array.from(document.getElementsByClassName('square'));
-let positions = squares.map((square) => square.id);
-let gameContainer = document.getElementById('game-container');
-let game = new Game();
-let notations = [];
+const squares = Array.from(document.getElementsByClassName('square'));
+const positions = squares.map((square) => square.id);
+const gameContainer = document.getElementById('game-container');
+const game = new Game();
+const notations = [];
+let getPieceById;
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();
