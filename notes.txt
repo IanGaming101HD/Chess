@@ -1,13 +1,17 @@
 Notes:
 Pieces:
-Add king castling, checked and checkmated
-Add pawn en passent 
+Add king - castling and checkmate
+Add pawn - en passent 
 
+Castling notes:
+A1 - Rook, B1, C1, D1, E1 - King, F1, G1, H1 - Rook
+Castling can be interrupted by enemies when king and rook and vulnerable
+
+Add click to move alongside drag on possible positions
 Add chess notations when moving pieces
 Add undo/redo feature
-Add possible positions markers + add click to move instead of drag on possible positions
-Add markings feature
 Add flip board feature
+Add markings feature (maybe not needed for local 2 player)
 
 Chess Notations:
 x represents piece being taken
@@ -20,5 +24,5 @@ Example of chess notation: [1. b4 d5  2. c4 dxc4 ]
 There is also notations for castling like O-O
 
 Issues:
-Problem where highlights are everywhere (only on the black squares)
-Yellow highlight squares not operating exactly the same as chess.com highlights
+This might        --->          Problem where highlights are everywhere (only on the black squares)
+be resolved       --->          Yellow highlight squares not operating exactly the same as chess.com highlights
