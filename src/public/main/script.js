@@ -159,9 +159,10 @@ class Game {
 
                 previousSquare = piece.parentElement;
 
-                let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
-                let kingObject = getPieceFromId(king.id)
-                let check = kingObject.isCheck(getPieceFromId, pieces, colour);
+                let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
+                let kingObject = getPieceFromId(king.id);
+                let check = kingObject.isCheck(piecesObjects, colour);
+                console.log(check)
                 if (check) return;
 
                 if (piece.classList.contains('pawn')) {
@@ -473,18 +474,13 @@ class King extends Piece {
 
     isCheck(getPieceFromId, pieces, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
-        
-        pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
+        let check = pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
             let pieceObject = getPieceFromId(piece.id);
             let possibleMoves = pieceObject.getMoves()
+            console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
             if (possibleMoves.includes(this.coordinate)) return true;
         });
-        return false
-        // pieces.filter((piece) => piece.classList.contains(colour)).some((piece) => {
-        //     let pieceObject = getPieceFromId(piece.id);
-            // let possibleMoves = pieceObject.getMoves()
-            // if (possibleMoves.includes(this.coordinate)) return;
-        // });
+        return check
     }
 }
 
