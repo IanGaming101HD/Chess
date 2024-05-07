@@ -143,7 +143,6 @@ class Game {
                 let newSquare = piece.parentElement;
                 removeHighlights(squares)
                 addHighlights(newSquare)
-
                 if (previousSquare) {
                     addHighlights(previousSquare)
                 }
@@ -154,7 +153,6 @@ class Game {
                 dragover: '#FFFFFF',
                 dragleave: 'transparent'
             }).forEach(([key, value]) => {
-                console.log(key, value)
                 square.addEventListener(key, (event) => {
                     square.style.borderColor = value;
                     event.preventDefault();
@@ -168,7 +166,7 @@ class Game {
                 if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId);
-                // if (!piece) return;
+                if (!piece) return;
 
                 let colour = piece.classList.contains('white')?'white' : 'black';
                 let pieceObject = getPieceById(pieceId);

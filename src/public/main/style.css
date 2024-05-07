@@ -69,6 +69,14 @@ body {
     transform: scale(1.1);
 }
 
+.piece:hover {
+    cursor: grab;
+}
+
+.piece:active {
+    cursor: grabbing;
+}
+
 .label {
     position: fixed;
     font-size: 15px;
