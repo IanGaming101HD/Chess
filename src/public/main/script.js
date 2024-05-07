@@ -102,7 +102,7 @@ class Game {
             possibleCoordinates.forEach((coordinate) => {
                 let square = document.getElementById(coordinate)
                 let overlay = document.createElement('div')
-                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece'))?'possible-capture' : 'possible-move')
+                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
                 square.append(overlay)
             })
         }
@@ -168,7 +168,7 @@ class Game {
                 let piece = document.getElementById(pieceId);
                 if (!piece) return;
 
-                let colour = piece.classList.contains('white')?'white' : 'black';
+                let colour = piece.classList.contains('white') ? 'white' : 'black';
                 let pieceObject = getPieceById(pieceId);
                 let possibleMoves = pieceObject.getCoordinates()
 
@@ -328,7 +328,7 @@ class King extends Piece {
         return possibleCoordinates;
     }
     isCheck(piecesObjects, colour) {
-        let oppositeColour = colour === 'white'?'black' : 'white';
+        let oppositeColour = colour === 'white' ? 'black' : 'white';
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
             let possibleMoves = pieceObject.getCoordinates()
             if (possibleMoves.includes(this.coordinate)) return true;
@@ -352,14 +352,14 @@ class Queen extends Piece {
             ['left', 'down'],
             ['right', 'down']
         ];
-        let coordinates = [];
         let possibleCoordinates = [];
+        let coordinates = [];
         let originalCoordinate = this.coordinate;
 
         for (let sequence of sequences) {
             let tempCoordinate = originalCoordinate;
             while (true) {
-                tempCoordinate = sequence.length === 1?this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
                 if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
@@ -389,31 +389,30 @@ class Rook extends Piece {
     }
     getCoordinates() {
         let directions = ['left', 'right', 'up', 'down'];
-        let coordinates = [];
         let possibleCoordinates = [];
+        let coordinates = [];
         let originalCoordinate = this.coordinate;
-        for (let direction of directions) {
-            let tempCoordinate = originalCoordinate;
 
+        directions.forEach((direction) => {
+            let tempCoordinate = originalCoordinate;
             while (true) {
-                tempCoordinate = this[direction](tempCoordinate);
+                tempCoordinate = this[direction](tempCoordinate)
                 if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
                 coordinates.push(tempCoordinate);
+
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.classList.contains(this.colour))) {
+                if (Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
             }
-        }
-        coordinates.forEach((coordinate) => {
-            let element = document.getElementById(coordinate);
-            let children = Array.from(element.children);
-            if (!children.length || !children[0].classList.contains(this.colour)) {
-                possibleCoordinates.push(coordinate);
+        })
+        coordinates.forEach((element) => {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
+                possibleCoordinates.push(element);
             }
         });
         return possibleCoordinates;
@@ -585,12 +584,12 @@ class Pawn extends Piece {
         return possibleCoordinates;
     }
     checkPromotion(piece, colour, square, piecesObjects) {
-        let row = colour === 'white'?'8' : '1';
+        let row = colour === 'white' ? '8' : '1';
         if (square.id.charAt(1) !== row) return;
 
         let hiddenContainer = document.getElementById('hidden-container');
         hiddenContainer.style.visibility = 'visible';
-        hiddenContainer.style.marginTop = colour === 'white'?'0px' : '-225px';
+        hiddenContainer.style.marginTop = colour === 'white' ? '0px' : '-225px';
         square.appendChild(hiddenContainer);
 
         let promotionOptions = {
@@ -606,7 +605,7 @@ class Pawn extends Piece {
                 let pieceId = Number(piece.id);
                 piece.remove();
 
-                let newPiece = new classType(piece.classList.contains('white')?'white' : 'black', square.id, pieceId);
+                let newPiece = new classType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
                 let element = document.getElementById(piece.id);
                 element && element.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', event.target.id);
