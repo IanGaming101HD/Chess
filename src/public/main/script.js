@@ -403,16 +403,16 @@ class Rook extends Piece {
                 }
                 coordinates.push(tempCoordinate);
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
+                if (Array.from(element.children).some((value) => value.classList.contains(this.colour))) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
             }
         }
         coordinates.forEach((coordinate) => {
-            let square = document.getElementById(coordinate);
-            if (Array.from(square.children).length === 0 || !Array.from(square.children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
-            // if (Array.from(square.children).length === 0 || !Array.from(square.children)[0].classList.contains(this.colour)) {
+            let element = document.getElementById(coordinate);
+            let children = Array.from(element.children);
+            if (!children.length || !children[0].classList.contains(this.colour)) {
                 possibleCoordinates.push(coordinate);
             }
         });
