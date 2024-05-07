@@ -22,4 +22,4 @@ There is also notations for castling like O-O
 Issues:
 This might        --->          Problem where highlights are everywhere (only on the black squares)
 be resolved       --->          Yellow highlight squares not operating exactly the same as chess.com highlights
-No other issues so currently...
+Rook can for some reason kill same team pieces
