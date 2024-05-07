@@ -91,7 +91,7 @@ class Game {
         let blackPawn8 = new Pawn('black', 'h7');
 
         let piecesObjects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-        let getPieceFromId = (id) => piecesObjects.find((element) => String(element.id) === id);
+        let getPieceById = (id) => piecesObjects.find((element) => String(element.id) === id);
         let pieces = Array.from(document.getElementsByClassName('piece'));
         let previousSquare;
 
@@ -103,6 +103,17 @@ class Game {
                 } else if (square.classList.contains('black-square')) {
                     square.style.backgroundColor = '#DBC34A';
                 }
+
+                console.log(piece)
+                console.log(piece.id)
+                let pieceObject = getPieceById(piece.id)
+                let possibleCoordinates = pieceObject.getMoves()
+                possibleCoordinates.forEach((coordinate) => {
+                    let square = document.getElementById(coordinate)
+                    let overlay = document.createElement('div')
+                    overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
+                    square.append(overlay)
+                })
                 event.dataTransfer.setData('text/plain', event.target.id);
             });
 
@@ -152,7 +163,7 @@ class Game {
 
                 let piece = document.getElementById(pieceId);
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
-                let pieceObject = getPieceFromId(pieceId);
+                let pieceObject = getPieceById(pieceId);
                 let possibleMoves = pieceObject.getMoves()
                 
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
@@ -160,7 +171,7 @@ class Game {
                 previousSquare = piece.parentElement;
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
-                let kingObject = getPieceFromId(king.id)
+                let kingObject = getPieceById(king.id)
                 square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
                 if (check) {
