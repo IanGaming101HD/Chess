@@ -237,7 +237,7 @@ class Piece {
         return coordinate[0] + this.method.decrement(coordinate[1]);
     }
     create() {
-        if (!positions.includes(this.coordinate)) return;
+        if (!squares.some((value) => value.id === this.coordinate)) return;
         let position = document.getElementById(this.coordinate);
         let piece = document.createElement('img');
         if (!this.id) {
@@ -281,7 +281,7 @@ class King extends Piece {
                 tempCoordinate = this[direction](tempCoordinate);
             }
 
-            if (positions.includes(tempCoordinate)) {
+            if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
                 if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
                     possibleCoordinates.push(tempCoordinate);
@@ -360,7 +360,7 @@ class Queen extends Piece {
             let tempCoordinate = originalCoordinate;
             while (true) {
                 tempCoordinate = sequence.length === 1?this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-                if (!positions.includes(tempCoordinate)) {
+                if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
@@ -397,7 +397,7 @@ class Rook extends Piece {
 
             while (true) {
                 tempCoordinate = this[direction](tempCoordinate);
-                if (!positions.includes(tempCoordinate)) {
+                if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
@@ -440,7 +440,7 @@ class Bishop extends Piece {
 
             while (true) {
                 tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-                if (!positions.includes(tempCoordinate)) {
+                if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
@@ -488,7 +488,7 @@ class Knight extends Piece {
                 tempCoordinate = this[direction](tempCoordinate);
             }
 
-            if (positions.includes(tempCoordinate)) {
+            if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
                 if (!Array.from(element.children).find(child => child.classList.contains('piece') && child.classList.contains(this.colour))) {
                     possibleCoordinates.push(tempCoordinate);
@@ -514,7 +514,7 @@ class Pawn extends Piece {
             if (originalCoordinate.charAt(1) === '2') {
                 for (let x = 0; x < 2; x++) {
                     tempCoordinate = this.up(tempCoordinate);
-                    if (positions.includes(tempCoordinate)) {
+                    if (squares.some((value) => value.id === tempCoordinate)) {
                         let element = document.getElementById(tempCoordinate);
                         if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                             possibleCoordinates.push(tempCoordinate);
@@ -526,7 +526,7 @@ class Pawn extends Piece {
                 tempCoordinate = originalCoordinate;
             } else {
                 tempCoordinate = this.up(tempCoordinate);
-                if (positions.includes(tempCoordinate)) {
+                if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                         possibleCoordinates.push(tempCoordinate);
@@ -537,7 +537,7 @@ class Pawn extends Piece {
             directions.forEach((direction) => {
                 tempCoordinate = this[direction](this.up(originalCoordinate));
 
-                if (positions.includes(tempCoordinate)) {
+                if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
                         possibleCoordinates.push(tempCoordinate);
@@ -550,7 +550,7 @@ class Pawn extends Piece {
             if (originalCoordinate.charAt(1) === '7') {
                 for (let x = 0; x < 2; x++) {
                     tempCoordinate = this.down(tempCoordinate);
-                    if (positions.includes(tempCoordinate)) {
+                    if (squares.some((value) => value.id === tempCoordinate)) {
                         let element = document.getElementById(tempCoordinate);
                         if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                             possibleCoordinates.push(tempCoordinate);
@@ -562,7 +562,7 @@ class Pawn extends Piece {
                 tempCoordinate = originalCoordinate;
             } else {
                 tempCoordinate = this.down(tempCoordinate);
-                if (positions.includes(tempCoordinate)) {
+                if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                         possibleCoordinates.push(tempCoordinate);
@@ -572,7 +572,7 @@ class Pawn extends Piece {
             directions.forEach((direction) => {
                 tempCoordinate = this[direction](this.down(originalCoordinate));
 
-                if (positions.includes(tempCoordinate)) {
+                if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
                         possibleCoordinates.push(tempCoordinate);
@@ -622,9 +622,7 @@ class Pawn extends Piece {
         });
     }
 }
-
 let squares = Array.from(document.getElementsByClassName('square'));
-let positions = squares.map((square) => square.id);
 let gameContainer = document.getElementById('game-container');
 let game = new Game();
 let notations = [];
