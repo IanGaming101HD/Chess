@@ -95,6 +95,27 @@ class Game {
         let pieces = Array.from(document.getElementsByClassName('piece'));
         let previousSquare;
 
+        let getOverlays = () => {
+            let possibleMovesOverlays = Array.from(document.getElementsByClassName('possible-move'))
+            let possibleCapturesOverlays = Array.from(document.getElementsByClassName('possible-capture'))
+            let overlays = possibleMovesOverlays.concat(possibleCapturesOverlays)
+            return overlays
+        }
+        let createOverlays = (id) => {
+            let pieceObject = getPieceById(id)
+            let possibleCoordinates = pieceObject.getCoordinates()
+            possibleCoordinates.forEach((coordinate) => {
+                let square = document.getElementById(coordinate)
+                let overlay = document.createElement('div')
+                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
+                square.append(overlay)
+            })
+        }
+        let removeOverlays = () => {
+            let overlays = getOverlays()
+            overlays.forEach((overlay) => overlay.remove())
+        }
+
         pieces.forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
                 let square = piece.parentElement;
@@ -103,20 +124,15 @@ class Game {
                 } else if (square.classList.contains('black-square')) {
                     square.style.backgroundColor = '#DBC34A';
                 }
-
-                // let pieceObject = getPieceById(piece.id)
-                // let possibleCoordinates = pieceObject.getMoves()
-                // possibleCoordinates.forEach((coordinate) => {
-                //     let square = document.getElementById(coordinate)
-                //     let overlay = document.createElement('div')
-                //     overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
-                //     square.append(overlay)
-                // })
+                let overlays = getOverlays()
+                if (overlays.length > 0) {
+                    removeOverlays()
+                }
+                createOverlays(piece.id)
                 event.dataTransfer.setData('text/plain', event.target.id);
             });
 
             piece.addEventListener('dragend', (event) => {
-                let squares = Array.from(document.getElementsByClassName('square'));
                 squares.forEach((square) => {
                     if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
                         square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.white-square')).backgroundColor);
@@ -162,14 +178,14 @@ class Game {
                 let piece = document.getElementById(pieceId);
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
                 let pieceObject = getPieceById(pieceId);
-                let possibleMoves = pieceObject.getMoves()
+                let possibleMoves = pieceObject.getCoordinates()
                 
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
-
-                previousSquare = piece.parentElement;
+                removeOverlays()
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
                 let kingObject = getPieceById(king.id)
+                previousSquare = piece.parentElement;
                 square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
                 if (check) {
@@ -267,7 +283,7 @@ class Rook extends Piece {
         this.canCastle = true;
     }
 
-    getMoves() {
+    getCoordinates() {
         let directions = ['left', 'right', 'up', 'down'];
         let coordinates = [];
         let possibleCoordinates = [];
@@ -310,7 +326,7 @@ class Knight extends Piece {
         super('knight', colour, coordinate, id);
     }
 
-    getMoves() {
+    getCoordinates() {
         let possibleCoordinates = [];
 
         let originalCoordinate = this.coordinate;
@@ -349,7 +365,7 @@ class Bishop extends Piece {
         super('bishop', colour, coordinate, id);
     }
 
-    getMoves() {
+    getCoordinates() {
         let sequences = [
             ['left', 'up'],
             ['right', 'up'],
@@ -395,7 +411,7 @@ class Queen extends Piece {
         super('queen', colour, coordinate, id);
     }
 
-    getMoves() {
+    getCoordinates() {
         let sequences = [
             ['left'],
             ['right'],
@@ -446,7 +462,7 @@ class King extends Piece {
         this.canCastle = true;
     }
 
-    getMoves() {
+    getCoordinates() {
         let possibleCoordinates = [];
 
         let originalCoordinate = this.coordinate;
@@ -481,14 +497,8 @@ class King extends Piece {
 
     isCheck(piecesObjects, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
-        piecesObjects.filter((pieceObject) => pieceObject.colour === colour).some((pieceObject) => {
-            let possibleMoves = pieceObject.getMoves()
-            console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
-            if (possibleMoves.includes(this.coordinate)) return true;
-        });
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
-            let possibleMoves = pieceObject.getMoves()
-            console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
+            let possibleMoves = pieceObject.getCoordinates()
             if (possibleMoves.includes(this.coordinate)) return true;
         });
         return check
@@ -500,7 +510,7 @@ class Pawn extends Piece {
         super('pawn', colour, coordinate, id);
     }
 
-    getMoves() {
+    getCoordinates() {
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
