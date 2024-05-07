@@ -104,16 +104,14 @@ class Game {
                     square.style.backgroundColor = '#DBC34A';
                 }
 
-                console.log(piece)
-                console.log(piece.id)
-                let pieceObject = getPieceById(piece.id)
-                let possibleCoordinates = pieceObject.getMoves()
-                possibleCoordinates.forEach((coordinate) => {
-                    let square = document.getElementById(coordinate)
-                    let overlay = document.createElement('div')
-                    overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
-                    square.append(overlay)
-                })
+                // let pieceObject = getPieceById(piece.id)
+                // let possibleCoordinates = pieceObject.getMoves()
+                // possibleCoordinates.forEach((coordinate) => {
+                //     let square = document.getElementById(coordinate)
+                //     let overlay = document.createElement('div')
+                //     overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
+                //     square.append(overlay)
+                // })
                 event.dataTransfer.setData('text/plain', event.target.id);
             });
 
@@ -194,6 +192,7 @@ class Game {
                     enemyPiece.remove();
                 }
                 square.appendChild(piece);
+                pieceObject.updateCoordinate(square.id);
                 game.endTurn();
             });
         });
