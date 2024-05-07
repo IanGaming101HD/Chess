@@ -31,7 +31,7 @@ class Method {
       .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
       .slice(1)
       .map((n, i) =>
-        (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n))
+        (i === 3?Math.round(parseFloat(n) * 255) : parseFloat(n))
           .toString(16)
           .padStart(2, '0')
           .replace('NaN', '')
@@ -102,7 +102,7 @@ class Game {
             possibleCoordinates.forEach((coordinate) => {
                 let square = document.getElementById(coordinate)
                 let overlay = document.createElement('div')
-                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
+                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece'))?'possible-capture' : 'possible-move')
                 square.append(overlay)
             })
         }
@@ -110,58 +110,56 @@ class Game {
             let overlays = getOverlays()
             overlays.forEach((overlay) => overlay.remove())
         }
+        let addHighlights = (square) => {
+            if (square.classList.contains('white-square')) {
+                square.style.backgroundColor = '#F6EB71';
+            } else if (square.classList.contains('black-square')) {
+                square.style.backgroundColor = '#DBC34A';
+            }
+        }
+        let removeHighlights = (squares) => {
+            squares.forEach((square) => {
+                if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
+                    let whiteSquares = document.querySelector('.white-square')
+                    square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
+                } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
+                    let blackSquares = document.querySelector('.black-square')
+                    square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(blackSquares).backgroundColor);
+                }
+            });
+        }
         pieces.forEach((piece) => {
             piece.addEventListener('dragstart', (event) => {
                 let square = piece.parentElement;
-                if (square.classList.contains('white-square')) {
-                    square.style.backgroundColor = '#F6EB71';
-                } else if (square.classList.contains('black-square')) {
-                    square.style.backgroundColor = '#DBC34A';
-                }
                 let overlays = getOverlays()
+                addHighlights(square)
                 if (overlays.length > 0) {
                     removeOverlays()
                 }
                 createOverlays(piece.id)
                 event.dataTransfer.setData('text/plain', event.target.id);
             });
-
             piece.addEventListener('dragend', (event) => {
-                squares.forEach((square) => {
-                    if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
-                        square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.white-square')).backgroundColor);
-                    } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
-                        square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(document.querySelector('.black-square')).backgroundColor);
-                    }
-                });
-                let square = piece.parentElement;
-                if (square.classList.contains('white-square')) {
-                    square.style.backgroundColor = '#F6EB71';
-                } else if (square.classList.contains('black-square')) {
-                    square.style.backgroundColor = '#DBC34A';
-                }
+                let newSquare = piece.parentElement;
+                removeHighlights(squares)
+                addHighlights(newSquare)
 
                 if (previousSquare) {
-                    if (previousSquare.classList.contains('white-square')) {
-                        previousSquare.style.backgroundColor = '#F6EB71';
-                    } else if (previousSquare.classList.contains('black-square')) {
-                        previousSquare.style.backgroundColor = '#DBC34A';
-                    }
+                    addHighlights(previousSquare)
                 }
             });
         });
-
         squares.forEach((square) => {
-            square.addEventListener('dragover', (event) => {
-                square.style.borderColor = '#ffffff';
-                event.preventDefault();
-            });
-
-            square.addEventListener('dragleave', (event) => {
-                square.style.borderColor = 'transparent';
-                event.preventDefault();
-            });
-
+            Object.entries({
+                dragover: '#FFFFFF',
+                dragleave: 'transparent'
+            }).forEach(([key, value]) => {
+                console.log(key, value)
+                square.addEventListener(key, (event) => {
+                    square.style.borderColor = value;
+                    event.preventDefault();
+                });
+            })
             square.addEventListener('drop', (event) => {
                 event.preventDefault();
                 square.style.borderColor = 'transparent';
@@ -170,10 +168,12 @@ class Game {
                 if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId);
-                let colour = piece.classList.contains('white') ? 'white' : 'black';
+                // if (!piece) return;
+
+                let colour = piece.classList.contains('white')?'white' : 'black';
                 let pieceObject = getPieceById(pieceId);
                 let possibleMoves = pieceObject.getCoordinates()
-                
+
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
                 removeOverlays()
 
@@ -186,16 +186,10 @@ class Game {
                     previousSquare.appendChild(piece);
                     return;
                 };
-
                 if (piece.classList.contains('pawn')) {
                     pieceObject.checkPromotion(piece, colour, square, piecesObjects);
                 }
-
-                if (square.classList.contains('white-square')) {
-                    square.style.backgroundColor = '#F6EB71';
-                } else if (square.classList.contains('black-square')) {
-                    square.style.backgroundColor = '#DBC34A';
-                }
+                addHighlights(square)
 
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'));
                 if (enemyPiece) {
@@ -336,7 +330,7 @@ class King extends Piece {
         return possibleCoordinates;
     }
     isCheck(piecesObjects, colour) {
-        let oppositeColour = colour === 'white' ? 'black' : 'white';
+        let oppositeColour = colour === 'white'?'black' : 'white';
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
             let possibleMoves = pieceObject.getCoordinates()
             if (possibleMoves.includes(this.coordinate)) return true;
@@ -367,7 +361,7 @@ class Queen extends Piece {
         for (let sequence of sequences) {
             let tempCoordinate = originalCoordinate;
             while (true) {
-                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                tempCoordinate = sequence.length === 1?this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
                 if (!positions.includes(tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
@@ -592,28 +586,28 @@ class Pawn extends Piece {
         return possibleCoordinates;
     }
     checkPromotion(piece, colour, square, piecesObjects) {
-        let row = colour === 'white' ? '8' : '1';
+        let row = colour === 'white'?'8' : '1';
         if (square.id.charAt(1) !== row) return;
-    
+
         let hiddenContainer = document.getElementById('hidden-container');
         hiddenContainer.style.visibility = 'visible';
-        hiddenContainer.style.marginTop = colour === 'white'  ? '0px' : '-225px';
+        hiddenContainer.style.marginTop = colour === 'white'?'0px' : '-225px';
         square.appendChild(hiddenContainer);
-    
+
         let promotionOptions = {
             'hidden-option-queen': Queen,
             'hidden-option-knight': Knight,
             'hidden-option-rook': Rook,
             'hidden-option-bishop': Bishop
         };
-    
+
         Object.entries(promotionOptions).forEach(([optionId, classType]) => {
             let optionElement = document.getElementById(optionId);
             optionElement.addEventListener('click', () => {
                 let pieceId = Number(piece.id);
                 piece.remove();
-            
-                let newPiece = new classType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
+
+                let newPiece = new classType(piece.classList.contains('white')?'white' : 'black', square.id, pieceId);
                 let element = document.getElementById(piece.id);
                 element && element.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', event.target.id);
@@ -622,7 +616,7 @@ class Pawn extends Piece {
                 document.getElementById('hidden-container').style.visibility = 'hidden';
             });
         });
-    
+
         let hiddenCloseButton = document.getElementById('hidden-close-button');
         hiddenCloseButton.addEventListener('click', () => {
             hiddenContainer.style.visibility = 'hidden';
