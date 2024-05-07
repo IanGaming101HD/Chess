@@ -151,17 +151,19 @@ class Game {
                 if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId);
-                let pieceObject = getPieceFromId(pieceId);
-                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white'))) return;
-
-                if (!pieceObject.getMoves().includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
-                // maybe change this condition (the king condition part) when you added "cant kill king" to all pieces
-
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
+                let pieceObject = getPieceFromId(pieceId);
+                let possibleMoves = pieceObject.getMoves()
+                
+                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
+
                 previousSquare = piece.parentElement;
-                if (piece.classList.contains('king')) {
-                    pieceObject.isCheck(pieces, colour);
-                }
+
+                let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
+                let kingObject = getPieceFromId(king.id)
+                let check = kingObject.isCheck(getPieceFromId, pieces, colour);
+                if (check) return;
+
                 if (piece.classList.contains('pawn')) {
                     pieceObject.checkPromotion(piece, colour, square, piecesClasses);
                 }
@@ -469,17 +471,19 @@ class King extends Piece {
         return possibleCoordinates;
     }
 
-    isCheck(pieces, colour) {
+    isCheck(getPieceFromId, pieces, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
         
         pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
-            let pieceObject = getPieceFromId(piece);
-            if (pieceObject.getMoves().includes(this.coordinate)) return;
+            let pieceObject = getPieceFromId(piece.id);
+            let possibleMoves = pieceObject.getMoves()
+            if (possibleMoves.includes(this.coordinate)) return true;
         });
+        return false
         // pieces.filter((piece) => piece.classList.contains(colour)).some((piece) => {
-        //     let pieceObject = getPieceFromId(piece);
-        //     console.log(pieceObject);
-        //     if (pieceObject.getMoves().includes(this.coordinate)) return;
+        //     let pieceObject = getPieceFromId(piece.id);
+            // let possibleMoves = pieceObject.getMoves()
+            // if (possibleMoves.includes(this.coordinate)) return;
         // });
     }
 }
