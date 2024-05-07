@@ -90,8 +90,8 @@ class Game {
         let blackPawn7 = new Pawn('black', 'g7');
         let blackPawn8 = new Pawn('black', 'h7');
 
-        let piecesClasses = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-        let getPieceFromId = (id) => piecesClasses.find((element) => String(element.id) === id);
+        let piecesObjects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
+        let getPieceFromId = (id) => piecesObjects.find((element) => String(element.id) === id);
         let pieces = Array.from(document.getElementsByClassName('piece'));
         let previousSquare;
 
@@ -161,12 +161,15 @@ class Game {
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
                 let kingObject = getPieceFromId(king.id);
+                pieceObject.updateCoordinate(square.id);
                 let check = kingObject.isCheck(piecesObjects, colour);
-                console.log(check)
-                if (check) return;
+                if (check) {
+                    pieceObject.updateCoordinate(previousSquare.id);
+                    return;
+                };
 
                 if (piece.classList.contains('pawn')) {
-                    pieceObject.checkPromotion(piece, colour, square, piecesClasses);
+                    pieceObject.checkPromotion(piece, colour, square, piecesObjects);
                 }
 
                 if (square.classList.contains('white-square')) {
@@ -179,8 +182,6 @@ class Game {
                 if (enemyPiece) {
                     enemyPiece.remove();
                 }
-
-                pieceObject.updateCoordinate(square.id);
                 square.appendChild(piece);
                 game.endTurn();
             });
@@ -472,14 +473,14 @@ class King extends Piece {
         return possibleCoordinates;
     }
 
-    isCheck(getPieceFromId, pieces, colour) {
+    isCheck(piecesObjects, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
-        let check = pieces.filter((piece) => piece.classList.contains(oppositeColour)).some((piece) => {
-            let pieceObject = getPieceFromId(piece.id);
+        let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
             let possibleMoves = pieceObject.getMoves()
             console.log(pieceObject.name, pieceObject.colour, possibleMoves, this.coordinate)
             if (possibleMoves.includes(this.coordinate)) return true;
         });
+        console.log('Check', check)
         return check
     }
 }
@@ -570,7 +571,7 @@ class Pawn extends Piece {
         return possibleCoordinates;
     }
 
-    checkPromotion(piece, colour, square, piecesClasses) {
+    checkPromotion(piece, colour, square, piecesObjects) {
         let row = colour === 'white' ? '8' : '1';
         if (square.id.charAt(1) !== row) return;
     
@@ -598,7 +599,7 @@ class Pawn extends Piece {
                     event.dataTransfer.setData('text/plain', event.target.id);
                 });
             
-                piecesClasses[pieceId - 1] = newPiece;
+                piecesObjects[pieceId - 1] = newPiece;
                 document.getElementById('hidden-container').style.visibility = 'hidden';
             });
         });
