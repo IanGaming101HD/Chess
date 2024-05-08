@@ -22,8 +22,32 @@ Follow these steps to get your Chess Game up and running:
    ```bash
    git clone https://github.com/iangaming101hd/chess.git
    cd chess
+   ```
 2. **Install dependencies:**
     Use npm to install all required packages:
     ```bash
     npm install
     ```
+
+## Usage
+
+To launch the Chess Game and start the Express server, execute one of the following commands from the root directory of your project:
+
+    ```bash
+    node .
+    ```
+    After starting the server, open your web browser and visit `http://localhost:80` (or the respective port configured in your application) to start playing.
+
+## Contributing
+
+We welcome contributions to the Chess Game project. Please feel free to fork the repository, make improvements, and submit pull requests.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Support
+
+For support, email reaperianbusiness@gmail.com or open an issue on the GitHub issues page.
+
+Enjoy playing your Chess Game!
