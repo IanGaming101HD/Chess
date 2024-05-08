@@ -273,17 +273,6 @@ class King extends Piece {
         ];
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
-        let oppositeColour = this.colour === 'white' ? 'black' : 'white';
-
-        // Referenced from queen sample very bad code
-        // sequences.forEach((sequence) => {
-        //     tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-        //     console.log(tempCoordinate)
-        //     let element = document.getElementById(tempCoordinate);
-        //     if (!Array.from(element.children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
-        //         possibleCoordinates.push(element);
-        //     }
-        // })
 
         sequences.forEach((sequence) => {
             let tempCoordinate = originalCoordinate;
@@ -292,15 +281,9 @@ class King extends Piece {
             })
 
             squares.forEach((square) => {
-                if (square.id === tempCoordinate && (!Array.from(square.children).some((child) => child.classList.contains('piece')) || Array.from(square.children).some((child) => child.classList.contains('piece') && child.classList.contains(oppositeColour)))) {
+                if (square.id === tempCoordinate && (!Array.from(square.children).some((child) => child.classList.contains('piece')) || Array.from(square.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour)))) {
                     possibleCoordinates.push(tempCoordinate);
-                } else if (tempCoordinate == 'e2') {
-                    console.log(
-                        square.id, 
-                        !Array.from(square.children).some((child) => child.classList.contains('piece')),
-                        Array.from(square.children).some((child) => child.classList.contains('piece') && child.classList.contains(oppositeColour))
-                   )
-               }
+                }
             })
         })
         
@@ -340,7 +323,6 @@ class King extends Piece {
         //         }
         //     })
         // }
-        console.log(this.coordinate, originalCoordinate, possibleCoordinates);
         return possibleCoordinates;
     }
     isCheck(piecesObjects, colour) {
