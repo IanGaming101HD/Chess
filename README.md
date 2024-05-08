@@ -20,5 +20,10 @@ Follow these steps to get your Chess Game up and running:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/iangaming101hd/chess-game.git
-   cd chess-game
+   git clone https://github.com/iangaming101hd/chess.git
+   cd chess
+2. **Install dependencies:**
+    Use npm to install all required packages:
+    ```bash
+    npm install
+    ```
