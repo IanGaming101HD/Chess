@@ -6,7 +6,6 @@ Welcome to the Chess Game project, a Node.js application that allows users to pl
 
 - Play chess against a friend in local two-player mode.
 - Interactive, web-based user interface for engaging gameplay.
-- Configurable game settings including different difficulty levels.
 
 ## Prerequisites
 
@@ -35,11 +34,11 @@ To launch the Chess Game and start the Express server, execute one of the follow
    ```bash
    node .
    ```
-After starting the server, open your web browser and visit `http://localhost:80` (or the respective port configured in your application) to start playing.
+After starting the server, open your web browser and visit `**http://localhost:80**` (or the respective port configured in your application) to start playing.
 
 ## Contributing
 
-We welcome contributions to the Chess Game project. Please feel free to fork the repository, make improvements, and submit pull requests.
+We welcome contributions to the Chess project. Please feel free to fork the repository, make improvements, and submit pull requests.
 
 ## License
 
