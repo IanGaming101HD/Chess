@@ -278,7 +278,7 @@ class King extends Piece {
 // });
 // return possibleCoordinates;
 
-        sequences((sequence) => {
+        sequences.forEach((sequence) => {
             sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
             })

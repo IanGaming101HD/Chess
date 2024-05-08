@@ -170,9 +170,10 @@ class Game {
 
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
                 let pieceObject = getPieceById(pieceId);
-                let possibleMoves = pieceObject.getCoordinates()
+                let possibleCoordinates = pieceObject.getCoordinates()
 
-                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
+                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
+                // piece.classList.contains('king') || Array.from(square.children).find((child) => child.classList.contains('king') i dont understand wut this is for
                 removeOverlays()
 
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
@@ -272,7 +273,7 @@ class King extends Piece {
         ];
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
-        let tempCoordinate = originalCoordinate;
+        let oppositeColour = this.colour === 'white' ? 'black' : 'white';
 
         // Referenced from queen sample very bad code
         // sequences.forEach((sequence) => {
@@ -283,6 +284,21 @@ class King extends Piece {
         //         possibleCoordinates.push(element);
         //     }
         // })
+
+        sequences.forEach((sequence) => {
+            let tempCoordinate = originalCoordinate;
+            sequence.forEach((direction) => {
+                tempCoordinate = this[direction](tempCoordinate);
+            })
+            // console.log('coord', tempCoordinate)
+
+            squares.forEach((square) => {
+                // console.log('id', square.id)
+                if (square.id === tempCoordinate && (Array.from(square.children).length === 0 || Array.from(square.children).some((child) => child.classList.contains('piece') && child.classList.contains(oppositeColour)))) {
+                    possibleCoordinates.push(tempCoordinate);
+                }
+            })
+        })
         
         //                     Castling
         // ------------------------------------------------
@@ -290,8 +306,8 @@ class King extends Piece {
         //     let rooks = Array.from(document.getElementsByClassName('rook'));
         //     rooks.forEach((rook) => {
         //         let rookObject = getPieceById(rook)
-        //         let possibleMoves = rookObject.getMoves()
-        //         if (rookObject.canCastle && possibleMoves.includes(this.coordinate)) {
+        //         let possibleCoordinates = rookObject.getMoves()
+        //         if (rookObject.canCastle && possibleCoordinates.includes(this.coordinate)) {
         //             if (rookObject.coordinate < this.coordinate) {
         //                 tempCoordinate = this.coordinate
         //                 for (let x = 0; x < 2;) {
@@ -320,13 +336,14 @@ class King extends Piece {
         //         }
         //     })
         // }
+        console.log(this.coordinate, originalCoordinate, possibleCoordinates);
         return possibleCoordinates;
     }
     isCheck(piecesObjects, colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
         let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
-            let possibleMoves = pieceObject.getCoordinates()
-            if (possibleMoves.includes(this.coordinate)) return true;
+            let possibleCoordinates = pieceObject.getCoordinates()
+            if (possibleCoordinates.includes(this.coordinate)) return true;
         });
         return check
     }
