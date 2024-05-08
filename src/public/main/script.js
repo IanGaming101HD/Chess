@@ -290,13 +290,17 @@ class King extends Piece {
             sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
             })
-            // console.log('coord', tempCoordinate)
 
             squares.forEach((square) => {
-                // console.log('id', square.id)
-                if (square.id === tempCoordinate && (Array.from(square.children).length === 0 || Array.from(square.children).some((child) => child.classList.contains('piece') && child.classList.contains(oppositeColour)))) {
+                if (square.id === tempCoordinate && (!Array.from(square.children).some((child) => child.classList.contains('piece')) || Array.from(square.children).some((child) => child.classList.contains('piece') && child.classList.contains(oppositeColour)))) {
                     possibleCoordinates.push(tempCoordinate);
-                }
+                } else if (tempCoordinate == 'e2') {
+                    console.log(
+                        square.id, 
+                        !Array.from(square.children).some((child) => child.classList.contains('piece')),
+                        Array.from(square.children).some((child) => child.classList.contains('piece') && child.classList.contains(oppositeColour))
+                   )
+               }
             })
         })
         
