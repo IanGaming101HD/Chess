@@ -32,9 +32,9 @@ Follow these steps to get your Chess Game up and running:
 ## Usage
 
 To launch the Chess Game and start the Express server, execute one of the following commands from the root directory of your project:
-    ```bash
-    node .
-    ```
+   ```bash
+   node .
+   ```
 After starting the server, open your web browser and visit `http://localhost:80` (or the respective port configured in your application) to start playing.
 
 ## Contributing
