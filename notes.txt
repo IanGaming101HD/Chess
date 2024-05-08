@@ -26,4 +26,4 @@ There is also notations for castling like O-O
 Issues:
 This might        --->          Problem where highlights are everywhere (only on the black squares)
 be resolved       --->          Yellow highlight squares not operating exactly the same as chess.com highlights
-Havent tested, but it seems that the king is not functioning properly
+Havent tested, but it seems that the king is not functioning properly movement wise, also make sure check on king is working correctly
