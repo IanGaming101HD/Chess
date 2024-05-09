@@ -173,15 +173,16 @@ class Game {
                 let possibleCoordinates = pieceObject.getCoordinates()
 
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
-                // piece.classList.contains('king') || Array.from(square.children).find((child) => child.classList.contains('king') i dont understand wut this is for
-                removeOverlays()
-
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
                 let kingObject = getPieceById(king.id)
                 previousSquare = piece.parentElement;
+                removeOverlays()
+                pieceObject.updateCoordinate(square.id);
                 square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
+                console.log(`${colour}'s Check Status: ${check}`)
                 if (check) {
+                    pieceObject.updateCoordinate(previousSquare.id);
                     previousSquare.appendChild(piece);
                     return;
                 };
@@ -197,6 +198,7 @@ class Game {
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
                 game.endTurn();
+                console.log(`Players Turn: ${game.players_turn}`)
             });
         });
     }
