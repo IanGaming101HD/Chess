@@ -120,10 +120,10 @@ class Game {
         let removeHighlights = (squares) => {
             squares.forEach((square) => {
                 if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
-                    let whiteSquares = document.querySelector('.white-square')
+                    let whiteSquares = document.getElementsByClassName('white-square')
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
                 } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
-                    let blackSquares = document.querySelector('.black-square')
+                    let blackSquares = document.getElementsByClassName('black-square')
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(blackSquares).backgroundColor);
                 }
             });
