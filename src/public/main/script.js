@@ -177,12 +177,10 @@ class Game {
                 let kingObject = getPieceById(king.id)
                 previousSquare = piece.parentElement;
                 removeOverlays()
-                pieceObject.updateCoordinate(square.id);
                 square.appendChild(piece);
                 let check = kingObject.isCheck(piecesObjects, colour);
                 console.log(`${colour}'s Check Status: ${check}`)
                 if (check) {
-                    pieceObject.updateCoordinate(previousSquare.id);
                     previousSquare.appendChild(piece);
                     return;
                 };
@@ -274,6 +272,7 @@ class King extends Piece {
             ['right', 'down']
         ];
         let possibleCoordinates = [];
+        let tempCoordinates = []
         let originalCoordinate = this.coordinate;
 
         sequences.forEach((sequence) => {
@@ -281,12 +280,22 @@ class King extends Piece {
             sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
             })
-
             squares.forEach((square) => {
                 if (square.id === tempCoordinate && (!Array.from(square.children).some((child) => child.classList.contains('piece')) || Array.from(square.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour)))) {
-                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinates.push(tempCoordinate);
                 }
             })
+        })
+
+        tempCoordinates.forEach((coordinate) => {
+            let square = document.getElementById(coordinate)
+            let piece = document.getElementById(this.id)
+            let previousSquare = document.getElementById(this.coordinate)
+            square.appendChild(piece);
+            if (!this.isCheck()) {
+                possibleCoordinates.push(coordinate)
+            }
+            previousSquare.appendChild(piece);
         })
         
         //                     Castling
