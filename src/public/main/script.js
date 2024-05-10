@@ -119,11 +119,9 @@ class Game {
             }
         }
         let removeHighlights = (squares) => {
+            let whiteSquares = document.querySelector('.white-square')
+            let blackSquares = document.querySelector('.black-square')
             squares.forEach((square) => {
-                // let whiteSquares = document.querySelector('.white-square')
-                // let blackSquares = document.querySelector('.black-square')
-                let whiteSquares = document.getElementsByClassName('white-square')[0]
-                let blackSquares = document.getElementsByClassName('black-square')[0]
                 if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
                 } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
