@@ -160,7 +160,7 @@ class Game {
                 });
             })
             square.addEventListener('drop', (event) => {
-                event.preventDefault();
+                event.preventDefault()
                 square.style.borderColor = 'transparent';
 
                 let pieceId = event.dataTransfer.getData('text/plain');
