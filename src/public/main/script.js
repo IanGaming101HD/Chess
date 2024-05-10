@@ -300,7 +300,7 @@ class King extends Piece {
             console.log(game.pieces_objects)
             previousSquare.appendChild(piece);
         })
-        
+
         //                     Castling
         // ------------------------------------------------
         // if (this.canCastle) {
@@ -376,11 +376,11 @@ class Queen extends Piece {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
+                let square = document.getElementById(tempCoordinate);
                 if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === square.id && pieceObject.colour === colour)) {
                     possibleCoordinates.push(tempCoordinate);
                 }
 
-                let square = document.getElementById(tempCoordinate);
                 if (game.pieces_objects.some((pieceObject) => pieceObject.coordinate === square.id)) {
                     tempCoordinate = originalCoordinate;
                     break;
@@ -514,82 +514,49 @@ class Pawn extends Piece {
     }
     getCoordinates() {
         let possibleCoordinates = [];
+        let colour = this.colour;
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
-        let directions = ['left', 'right'];
+        let verticalDirections = {
+            white: 'up',
+            black: 'down'
+        };
+        let horizontalDirections = ['left', 'right'];
 
-        if (this.colour === 'white') {
-            if (this.first_move) {
-                for (let x = 0; x < 2; x++) {
-                    tempCoordinate = this.up(tempCoordinate);
-                    if (squares.some((value) => value.id === tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate);
-                        if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
-                            possibleCoordinates.push(tempCoordinate);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                tempCoordinate = originalCoordinate;
-            } else {
-                tempCoordinate = this.up(tempCoordinate);
+        if (this.first_move) {
+            for (let x = 0; x < 2; x++) {
+                tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                         possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
+                    } else {
+                        break;
                     }
                 }
             }
-            directions.forEach((direction) => {
-                tempCoordinate = this[direction](this.up(originalCoordinate));
-
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
-                        possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
-                    }
-                }
-            });
             tempCoordinate = originalCoordinate;
-        } else if (this.colour === 'black') {
-            if (this.first_move) {
-                for (let x = 0; x < 2; x++) {
-                    tempCoordinate = this.down(tempCoordinate);
-                    if (squares.some((value) => value.id === tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate);
-                        if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
-                            possibleCoordinates.push(tempCoordinate);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                tempCoordinate = originalCoordinate;
-            } else {
-                tempCoordinate = this.down(tempCoordinate);
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
-                        possibleCoordinates.push(tempCoordinate);
-                    }
+        } else {
+            tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
                 }
             }
-            directions.forEach((direction) => {
-                tempCoordinate = this[direction](this.down(originalCoordinate));
-
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
-                        possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
-                    }
-                }
-            });
-            tempCoordinate = originalCoordinate;
         }
+        horizontalDirections.forEach((horizontalDirection) => {
+            tempCoordinate = this[horizontalDirection](this[verticalDirections[colour]](originalCoordinate));
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === colour)) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
+                }
+            }
+        });
+        tempCoordinate = originalCoordinate;
         return possibleCoordinates;
     }
     checkPromotion(piece, colour, square) {
@@ -623,7 +590,6 @@ class Pawn extends Piece {
                 document.getElementById('hidden-container').style.visibility = 'hidden';
             });
         });
-
         let hiddenCloseButton = document.getElementById('hidden-close-button');
         hiddenCloseButton.addEventListener('click', () => {
             hiddenContainer.style.visibility = 'hidden';
