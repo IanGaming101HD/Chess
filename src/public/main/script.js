@@ -123,8 +123,15 @@ class Game {
             let blackSquares = document.querySelector('.black-square')
             squares.forEach((square) => {
                 if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
+<<<<<<< HEAD
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
                 } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
+=======
+                    let whiteSquares = document.querySelector('.white-square')
+                    square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
+                } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
+                    let blackSquares = document.querySelector('.black-square')
+>>>>>>> parent of 727d7d7 (a)
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(blackSquares).backgroundColor);
                 }
             });
