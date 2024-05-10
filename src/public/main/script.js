@@ -178,11 +178,11 @@ class Game {
                 let kingObject = getPieceById(king.id)
                 previousSquare = piece.parentElement;
                 removeOverlays()
-                square.appendChild(piece);
+                pieceObject.updateCoordinate(square.id);
                 let check = kingObject.isCheck(game.pieces_objects, colour);
                 console.log(`${colour}'s Check Status: ${check}`)
                 if (check) {
-                    previousSquare.appendChild(piece);
+                    pieceObject.updateCoordinate(previousSquare.id);
                     return;
                 };
                 if (piece.classList.contains('pawn')) {
@@ -282,7 +282,7 @@ class King extends Piece {
                 tempCoordinate = this[direction](tempCoordinate);
             })
             squares.forEach((square) => {
-                if (square.id === tempCoordinate && (!Array.from(square.children).some((child) => child.classList.contains('piece')) || Array.from(square.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour)))) {
+                if (square.id === tempCoordinate && (!game.pieces_objects.some((pieceObject) => pieceObject.parentElement.id === square.id) || game.pieces_objects.find((pieceObject) => pieceObject.parentElement.id === square.id && pieceObject.colour !== this.colour))) {
                     tempCoordinates.push(tempCoordinate);
                 }
             })
@@ -296,6 +296,8 @@ class King extends Piece {
             if (!this.isCheck()) {
                 possibleCoordinates.push(coordinate)
             }
+            console.log(this.isCheck(), coordinate)
+            console.log(game.pieces_objects)
             previousSquare.appendChild(piece);
         })
         
@@ -362,9 +364,9 @@ class Queen extends Piece {
             ['left', 'down'],
             ['right', 'down']
         ];
-        let possibleCoordinates = [];
-        let coordinates = [];
+        let colour = this.colour;
         let originalCoordinate = this.coordinate;
+        let possibleCoordinates = [];
         let tempCoordinate = originalCoordinate;
 
         sequences.forEach((sequence) => {
@@ -374,20 +376,17 @@ class Queen extends Piece {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
-                coordinates.push(tempCoordinate);
+                if (!game.pieces_objects.some((pieceObject) => pieceObject.parentElement.id === square.id && pieceObject.colour === colour)) {
+                    possibleCoordinates.push(tempCoordinate);
+                }
 
-                let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                let square = document.getElementById(tempCoordinate);
+                if (game.pieces_objects.some((pieceObject) => pieceObject.parentElement.id === square.id)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
             }
         })
-        coordinates.forEach((element) => {
-            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
-                possibleCoordinates.push(element);
-            }
-        });
         return possibleCoordinates;
     }
 }
