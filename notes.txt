@@ -1,5 +1,6 @@
 Notes:
 Pieces:
+Instead of the position of the pawns like if white still 2 row they can make up twice, make it so if its their first move they can move twice
 Add king - castling, checkmate and statemate
 Add pawn - en passent 
 

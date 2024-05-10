@@ -282,7 +282,7 @@ class King extends Piece {
                 tempCoordinate = this[direction](tempCoordinate);
             })
             squares.forEach((square) => {
-                if (square.id === tempCoordinate && (!game.pieces_objects.some((pieceObject) => pieceObject.parentElement.id === square.id) || game.pieces_objects.find((pieceObject) => pieceObject.parentElement.id === square.id && pieceObject.colour !== this.colour))) {
+                if (square.id === tempCoordinate && (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === square.id) || game.pieces_objects.find((pieceObject) => pieceObject.coordinate === square.id && pieceObject.colour !== this.colour))) {
                     tempCoordinates.push(tempCoordinate);
                 }
             })
@@ -376,12 +376,12 @@ class Queen extends Piece {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
-                if (!game.pieces_objects.some((pieceObject) => pieceObject.parentElement.id === square.id && pieceObject.colour === colour)) {
+                if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === square.id && pieceObject.colour === colour)) {
                     possibleCoordinates.push(tempCoordinate);
                 }
 
                 let square = document.getElementById(tempCoordinate);
-                if (game.pieces_objects.some((pieceObject) => pieceObject.parentElement.id === square.id)) {
+                if (game.pieces_objects.some((pieceObject) => pieceObject.coordinate === square.id)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
@@ -413,14 +413,14 @@ class Rook extends Piece {
                 coordinates.push(tempCoordinate);
 
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                if (game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
             }
         })
         coordinates.forEach((element) => {
-            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
+            if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
                 possibleCoordinates.push(element);
             }
         });
@@ -455,7 +455,7 @@ class Bishop extends Piece {
                 coordinates.push(tempCoordinate);
 
                 let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                if (game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                     tempCoordinate = originalCoordinate;
                     break;
                 }
@@ -463,11 +463,10 @@ class Bishop extends Piece {
         })
 
         coordinates.forEach((element) => {
-            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
+            if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
                 possibleCoordinates.push(element);
             }
         });
-
         return possibleCoordinates;
     }
 }
@@ -498,7 +497,7 @@ class Knight extends Piece {
 
             if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
-                if (!Array.from(element.children).find(child => child.classList.contains('piece') && child.classList.contains(this.colour))) {
+                if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
                     possibleCoordinates.push(tempCoordinate);
                 }
             }
@@ -511,6 +510,7 @@ class Knight extends Piece {
 class Pawn extends Piece {
     constructor(colour, coordinate, id) {
         super('pawn', colour, coordinate, id);
+        this.first_move = true
     }
     getCoordinates() {
         let possibleCoordinates = [];
@@ -519,12 +519,12 @@ class Pawn extends Piece {
         let directions = ['left', 'right'];
 
         if (this.colour === 'white') {
-            if (originalCoordinate.charAt(1) === '2') {
+            if (this.first_move) {
                 for (let x = 0; x < 2; x++) {
                     tempCoordinate = this.up(tempCoordinate);
                     if (squares.some((value) => value.id === tempCoordinate)) {
                         let element = document.getElementById(tempCoordinate);
-                        if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                        if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                             possibleCoordinates.push(tempCoordinate);
                         } else {
                             break;
@@ -536,7 +536,7 @@ class Pawn extends Piece {
                 tempCoordinate = this.up(tempCoordinate);
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
-                    if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                         possibleCoordinates.push(tempCoordinate);
                         tempCoordinate = originalCoordinate;
                     }
@@ -547,7 +547,7 @@ class Pawn extends Piece {
 
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
-                    if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
                         possibleCoordinates.push(tempCoordinate);
                         tempCoordinate = originalCoordinate;
                     }
@@ -555,12 +555,12 @@ class Pawn extends Piece {
             });
             tempCoordinate = originalCoordinate;
         } else if (this.colour === 'black') {
-            if (originalCoordinate.charAt(1) === '7') {
+            if (this.first_move) {
                 for (let x = 0; x < 2; x++) {
                     tempCoordinate = this.down(tempCoordinate);
                     if (squares.some((value) => value.id === tempCoordinate)) {
                         let element = document.getElementById(tempCoordinate);
-                        if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                        if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                             possibleCoordinates.push(tempCoordinate);
                         } else {
                             break;
@@ -572,7 +572,7 @@ class Pawn extends Piece {
                 tempCoordinate = this.down(tempCoordinate);
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
-                    if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id)) {
                         possibleCoordinates.push(tempCoordinate);
                     }
                 }
@@ -582,7 +582,7 @@ class Pawn extends Piece {
 
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
-                    if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+                    if (!game.pieces_objects.some((pieceObject) => pieceObject.coordinate === element.id && pieceObject.colour === this.colour)) {
                         possibleCoordinates.push(tempCoordinate);
                         tempCoordinate = originalCoordinate;
                     }
