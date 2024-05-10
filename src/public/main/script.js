@@ -43,8 +43,9 @@ class Method {
 
 class Game {
     constructor() {
+        this.pieces_objects = []
         this.players_turn = 'white';
-        this.GameOver = false;
+        this.game_over = false;
         this.defaultGame();
         this.method = new Method();
     }
@@ -85,8 +86,8 @@ class Game {
         let blackPawn7 = new Pawn('black', 'g7');
         let blackPawn8 = new Pawn('black', 'h7');
 
-        let piecesObjects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-        let getPieceById = (id) => piecesObjects.find((element) => String(element.id) === id);
+        this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
+        let getPieceById = (id) => game.pieces_objects.find((element) => String(element.id) === id);
         let pieces = Array.from(document.getElementsByClassName('piece'));
         let previousSquare;
 
@@ -119,11 +120,13 @@ class Game {
         }
         let removeHighlights = (squares) => {
             squares.forEach((square) => {
+                // let whiteSquares = document.querySelector('.white-square')
+                // let blackSquares = document.querySelector('.black-square')
+                let whiteSquares = document.getElementsByClassName('white-square')[0]
+                let blackSquares = document.getElementsByClassName('black-square')[0]
                 if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
-                    let whiteSquares = document.getElementsByClassName('white-square')
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
                 } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
-                    let blackSquares = document.getElementsByClassName('black-square')
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(blackSquares).backgroundColor);
                 }
             });
@@ -178,14 +181,14 @@ class Game {
                 previousSquare = piece.parentElement;
                 removeOverlays()
                 square.appendChild(piece);
-                let check = kingObject.isCheck(piecesObjects, colour);
+                let check = kingObject.isCheck(game.pieces_objects, colour);
                 console.log(`${colour}'s Check Status: ${check}`)
                 if (check) {
                     previousSquare.appendChild(piece);
                     return;
                 };
                 if (piece.classList.contains('pawn')) {
-                    pieceObject.checkPromotion(piece, colour, square, piecesObjects);
+                    pieceObject.checkPromotion(piece, colour, square, game.pieces_objects);
                 }
                 addHighlights(square)
 
@@ -336,9 +339,9 @@ class King extends Piece {
         // }
         return possibleCoordinates;
     }
-    isCheck(piecesObjects, colour) {
+    isCheck(colour) {
         let oppositeColour = colour === 'white' ? 'black' : 'white';
-        let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
+        let check = game.pieces_objects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
             let possibleCoordinates = pieceObject.getCoordinates()
             if (possibleCoordinates.includes(this.coordinate)) return true;
         });
@@ -592,7 +595,7 @@ class Pawn extends Piece {
         }
         return possibleCoordinates;
     }
-    checkPromotion(piece, colour, square, piecesObjects) {
+    checkPromotion(piece, colour, square) {
         let row = colour === 'white' ? '8' : '1';
         if (square.id.charAt(1) !== row) return;
 
@@ -619,7 +622,7 @@ class Pawn extends Piece {
                 element && element.addEventListener('dragstart', (event) => {
                     event.dataTransfer.setData('text/plain', event.target.id);
                 });
-                piecesObjects[pieceId - 1] = newPiece;
+                game.pieces_objects[pieceId - 1] = newPiece;
                 document.getElementById('hidden-container').style.visibility = 'hidden';
             });
         });
