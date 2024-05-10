@@ -118,12 +118,12 @@ class Game {
             }
         }
         let removeHighlights = (squares) => {
+            let whiteSquares = document.querySelector('.white-square')
+            let blackSquares = document.querySelector('.black-square')
             squares.forEach((square) => {
                 if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
-                    let whiteSquares = document.getElementsByClassName('white-square')
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
                 } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
-                    let blackSquares = document.getElementsByClassName('black-square')
                     square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(blackSquares).backgroundColor);
                 }
             });
@@ -187,6 +187,9 @@ class Game {
                     return;
                 };
                 if (piece.classList.contains('pawn')) {
+                    if (pieceObject.firstMove) {
+                        pieceObject.firstMove = false
+                    }
                     pieceObject.checkPromotion(piece, colour, square, piecesObjects);
                 }
                 addHighlights(square)
@@ -502,85 +505,52 @@ class Knight extends Piece {
 class Pawn extends Piece {
     constructor(colour, coordinate, id) {
         super('pawn', colour, coordinate, id);
+        this.firstMove = true;
     }
     getCoordinates() {
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
-        let directions = ['left', 'right'];
+        let verticalDirections = { white: 'up', black: 'down'};
+        let horizontalDirections = ['left', 'right'];
+        let colour = this.colour;
 
-        if (this.colour === 'white') {
-            if (originalCoordinate.charAt(1) === '2') {
-                for (let x = 0; x < 2; x++) {
-                    tempCoordinate = this.up(tempCoordinate);
-                    if (squares.some((value) => value.id === tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate);
-                        if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-                            possibleCoordinates.push(tempCoordinate);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                tempCoordinate = originalCoordinate;
-            } else {
-                tempCoordinate = this.up(tempCoordinate);
+        // if (originalCoordinate.charAt(1) === '2') {
+        if (this.firstMove) {
+            for (let x = 0; x < 2; x++) {
+                tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                         possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
+                    } else {
+                        break;
                     }
                 }
             }
-            directions.forEach((direction) => {
-                tempCoordinate = this[direction](this.up(originalCoordinate));
-
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
-                        possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
-                    }
-                }
-            });
             tempCoordinate = originalCoordinate;
-        } else if (this.colour === 'black') {
-            if (originalCoordinate.charAt(1) === '7') {
-                for (let x = 0; x < 2; x++) {
-                    tempCoordinate = this.down(tempCoordinate);
-                    if (squares.some((value) => value.id === tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate);
-                        if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-                            possibleCoordinates.push(tempCoordinate);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                tempCoordinate = originalCoordinate;
-            } else {
-                tempCoordinate = this.down(tempCoordinate);
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-                        possibleCoordinates.push(tempCoordinate);
-                    }
+        } else {
+            tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
                 }
             }
-            directions.forEach((direction) => {
-                tempCoordinate = this[direction](this.down(originalCoordinate));
-
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
-                        possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
-                    }
-                }
-            });
-            tempCoordinate = originalCoordinate;
         }
+        horizontalDirections.forEach((horizontalDirection) => {
+            tempCoordinate = this[horizontalDirection](this[verticalDirections[colour]](originalCoordinate));
+
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
+                }
+            }
+        });
+        tempCoordinate = originalCoordinate;
         return possibleCoordinates;
     }
     checkPromotion(piece, colour, square, piecesObjects) {
