@@ -377,7 +377,7 @@ class Queen extends Piece {
             }
         })
         coordinates.forEach((element) => {
-            if (Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && !value.classList.contains(this.colour))) {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
             }
         });
@@ -414,7 +414,7 @@ class Rook extends Piece {
             }
         })
         coordinates.forEach((element) => {
-            if (Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && !value.classList.contains(this.colour))) {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
             }
         });
@@ -457,7 +457,7 @@ class Bishop extends Piece {
         })
 
         coordinates.forEach((element) => {
-            if (Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && !value.classList.contains(this.colour))) {
+            if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
             }
         });
