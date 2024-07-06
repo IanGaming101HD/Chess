@@ -179,6 +179,7 @@ class Game {
                 if (!piece) return;
 
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
+                console.log(this.getPieceById(pieceId), 'dn bnfgdjinrgfuojjgrfojujn');
                 let pieceObject = this.getPieceById(pieceId);
                 let possibleCoordinates = pieceObject.getCoordinates()
 
@@ -206,15 +207,20 @@ class Game {
                 }
                 addHighlights(square)
 
+                console.log(pieceObject, 'hel1')
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'));
                 if (enemyPiece) {
                     let enemyPieceObject = this.getPieceById(enemyPiece.id)
+                    console.log(enemyPieceObject)
                     enemyPieceObject.remove()
+                    console.log(enemyPieceObject, 'hi2')
                 }
+                console.log(pieceObject, 'hel2')
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
                 game.endTurn();
                 console.log(`Players Turn: ${game.players_turn}`)
+                console.log(pieceObject, 'hel3')
             });
         });
     }
@@ -273,7 +279,7 @@ class Piece {
     }
     remove() {
         let piece = document.getElementById(this.id);
-        game.pieces_objects = game.pieces_objects.filter((pieceObject) => pieceObject.id === this.id)
+        // game.pieces_objects = game.pieces_objects.filter((pieceObject) => pieceObject.id === this.id)
         piece.remove()
     }
 }
