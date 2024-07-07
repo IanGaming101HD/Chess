@@ -107,8 +107,7 @@ body {
     color: #f0d9b5;
 }
 
-.hidden-container {
-    visibility: hidden;
+.promotion-container {
     position: fixed;
     z-index: 2;
     width: 3.5%;
@@ -117,21 +116,20 @@ body {
     justify-content: flex-end;
     align-items: center;
     background-color: #ffffff;
-    /* margin-top: -250px; */
 }
 
-.hidden-icon {
+.promotion-icon {
     width: 100%;
     pointer-events: none;
 }
 
-.hidden-option {
+.promotion-option {
     cursor: pointer;
     border: none;
     background-color: transparent;
 }
 
-.hidden-close-button {
+.promotion-close-button {
     cursor: pointer;
     font-size: 20px;
     background-color: #f1f1f1;
