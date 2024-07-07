@@ -1,3 +1,4 @@
+Date: Unknown
 Notes:
 Pieces:
 Add king - castling, checkmate and statemate
@@ -27,3 +28,7 @@ Issues:
 This might        --->          Problem where highlights are everywhere (only on the black squares)
 be resolved       --->          Yellow highlight squares not operating exactly the same as chess.com highlights
 King might be not functioning correctly to its full potential, there are some issues, might be because of the check
+
+Date: 07/06/2024
+Update:
+Pawns can get promoted but I dont think they get the abilities on new piece.
