@@ -102,6 +102,25 @@ class Game {
     })
   }
 
+  showPromotionPopup() {
+    let colour = 'white';
+    let hiddenContainer = document.createElement('div');
+    hiddenContainer.id = 'hidden-container';
+    hiddenContainer.classList.add('hidden-container');
+    hiddenContainer.style.visibility = 'visible';
+    ['queen', 'knight', 'rook', 'bishop'].forEach((piece) => {
+        let option = document.createElement('button');
+        option.id = `hidden-option-${piece}`;
+        option.classList.add('hidden-option');
+        hiddenContainer.appendChild(option);
+
+        let pieceImage = document.createElement('img');
+        pieceImage.classList = 'hidden-icon';
+        pieceImage.src = `./public/main/images/pieces/${colour}/${piece}.png`;
+        option.appendChild(pieceImage)
+    })
+  }
+
   getPieceById(id) {
     return this.pieces_objects.find((element) => element.id === id);
   }
@@ -110,7 +129,6 @@ class Game {
     this.createBoard();
 
     let whiteRook = new Rook('white', 'a1');
-    console.log('hi')
     let whiteKnight = new Knight('white', 'b1');
     let whiteBishop = new Bishop('white', 'c1');
     let whiteQueen = new Queen('white', 'd1');
@@ -288,7 +306,6 @@ class Piece {
     this.id = `${colour}-${name}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(name)).length + 1}`;
     this.method = new Method();
     this.create();
-    console.log(this.id)
   }
   toString() {
     return `${this.name} ${this.colour} ${this.coordinate} ${this.id}`;
@@ -312,7 +329,6 @@ class Piece {
     let squares = Array.from(document.getElementsByClassName('square'));
     if (!squares.some((value) => value.id === this.coordinate)) return;
     let position = document.getElementById(this.coordinate);
-    console.log(position);
     let piece = document.createElement('img');
 
     Piece.piecesIds.push(this.id);
@@ -629,13 +645,13 @@ class Pawn extends Piece {
       'hidden-option-bishop': Bishop,
     };
 
-    Object.entries(promotionOptions).forEach(([optionId, classType]) => {
+    Object.entries(promotionOptions).forEach(([optionId, pieceType]) => {
       let optionElement = document.getElementById(optionId);
       optionElement.addEventListener('click', () => {
         let pieceId = Number(piece.id);
         piece.remove();
 
-        let newPiece = new classType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
+        let newPiece = new pieceType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
         let element = document.getElementById(piece.id);
         element &&
           element.addEventListener('dragstart', (event) => {

@@ -32,3 +32,6 @@ King might be not functioning correctly to its full potential, there are some is
 Date: 07/06/2024
 Update:
 Pawns can get promoted but I dont think they get the abilities on new piece.
+IMPORTANT NOTE:
+Hidden container for promotion should be same colour as other pieces of correct side
+Also make it use the js version of the container instead of the html
