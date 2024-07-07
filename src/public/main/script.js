@@ -41,6 +41,7 @@ class Game {
         this.players_turn = 'white';
         this.pieces_objects = [];
         // this.game_over = false;
+        this.notations = []
         this.method = new Method();
         this.defaultGame();
     }
@@ -321,6 +322,7 @@ class Game {
                 console.log(`Players Turn: ${game.players_turn}`);
             });
         });
+        console.log(this.notations)
     }
     endTurn() {
         if (this.players_turn === 'white') {
@@ -337,7 +339,7 @@ class Piece {
         this.name = name;
         this.colour = colour;
         this.coordinate = coordinate;
-        this.id = `${colour}-${name}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(name)).length + 1}`;
+        this.id = `${colour}-${name}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${name}`)).length + 1}`;
         this.method = new Method();
         this.create();
     }
@@ -672,7 +674,6 @@ class Pawn extends Piece {
 }
 let gameContainer = document.getElementById('game-container');
 let game = new Game();
-let notations = [];
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();
