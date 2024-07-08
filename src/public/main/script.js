@@ -41,7 +41,7 @@ class Game {
         this.players_turn = 'white';
         this.pieces_objects = [];
         // this.game_over = false;
-        this.notations = [];
+        this.notations = []
         this.method = new Method();
         this.defaultGame();
     }
@@ -130,13 +130,16 @@ class Game {
             'promotion-option-queen': Queen,
             'promotion-option-knight': Knight,
             'promotion-option-rook': Rook,
-            'promotion-option-bishop': Bishop,
+            'promotion-option-bishop': Bishop
         };
 
         Object.entries(promotionOptions).forEach(([optionId, pieceTypeObject]) => {
             let optionElement = document.getElementById(optionId);
             optionElement.addEventListener('click', () => {
-                let newPieceObject = new pieceTypeObject(colour, oldPiece.parentElement.id, `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`);
+                let newPieceObject = new pieceTypeObject(colour,
+                    oldPiece.parentElement.id,
+                    `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`
+                );
                 oldPiece.remove();
 
                 let element = document.getElementById(newPieceObject.id);
@@ -145,7 +148,7 @@ class Game {
                         event.dataTransfer.setData('text/plain', event.target.id);
                     });
                 }
-                game.pieces_objects = game.pieces_objects.filter((value) => value != oldPiece.id);
+                game.pieces_objects = game.pieces_objects.filter((value) => value != oldPiece.id)
                 game.pieces_objects.push(newPieceObject);
                 promotionContainer.remove();
             });
@@ -165,7 +168,7 @@ class Game {
         let possibleCapturesOverlays = Array.from(document.getElementsByClassName('possible-capture'));
         let overlays = possibleMovesOverlays.concat(possibleCapturesOverlays);
         return overlays;
-    }
+    };
 
     createOverlays(id) {
         let pieceObject = this.getPieceObjectById(id);
@@ -178,12 +181,12 @@ class Game {
             overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
             square.append(overlay);
         });
-    }
+    };
 
     removeAllOverlays() {
         let overlays = this.getOverlays();
         overlays.forEach((overlay) => overlay.remove());
-    }
+    };
 
     addHighlight(square) {
         if (square.classList.contains('white-square')) {
@@ -191,35 +194,13 @@ class Game {
         } else if (square.classList.contains('black-square')) {
             square.style.backgroundColor = '#DBC34A';
         }
-    }
+    };
 
     removeAllHighlights(squares) {
         squares.forEach((square) => {
             square.style.backgroundColor = '';
         });
-    }
-
-    getDistance(square1, square2) {
-        let charMap = {
-            a: 0,
-            b: 1,
-            c: 2,
-            d: 3,
-            e: 4,
-            f: 5,
-            g: 6,
-            h: 7,
-        };
-        let char1 = charMap[square1[0]];
-        let char2 = charMap[square2[0]];
-        let num1 = parseInt(square1[1]) - 1;
-        let num2 = parseInt(square2[1]) - 1;
-
-        let charDistance = Math.abs(char1 - char2);
-        let numDistance = Math.abs(num1 - num2);
-
-        return Math.max(charDistance, numDistance);
-    }
+    };
 
     defaultGame() {
         this.createBoard();
@@ -277,7 +258,7 @@ class Game {
                 square.style.borderColor = 'transparent';
 
                 let pieceId = event.dataTransfer.getData('text/plain');
-                if (pieceId === square.id) return;
+                if (pieceId === event.target.id) return;
 
                 let piece = document.getElementById(pieceId);
                 if (!piece) return;
@@ -293,7 +274,6 @@ class Game {
                 let kingObject = this.getPieceObjectById(king.id);
                 previousSquare = piece.parentElement;
                 this.removeAllOverlays();
-                square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
 
                 // let check = kingObject.isCheck(this.pieces_objects);
@@ -405,7 +385,7 @@ class Piece {
         piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
 
         position.appendChild(piece);
-
+        
         piece.addEventListener('dragstart', (event) => {
             let square = piece.parentElement;
             let overlays = game.getOverlays();
@@ -427,7 +407,7 @@ class Piece {
 class King extends Piece {
     constructor(colour, coordinate, id) {
         super('king', colour, coordinate, id);
-        this.moved = 0;
+        this.moved = 0
         this.canCastle = true;
     }
     getCoordinates() {
@@ -488,13 +468,11 @@ class King extends Piece {
         return possibleCoordinates;
     }
     isCheck() {
-        let check = game.pieces_objects
-            .filter((pieceObject) => pieceObject.colour !== this.colour)
-            .some((pieceObject) => {
-                let possibleCoordinates = pieceObject.getCoordinates();
-                if (possibleCoordinates.includes(this.coordinate)) return true;
-            });
-        return check;
+        let check = game.pieces_objects.filter((pieceObject) => pieceObject.colour !== this.colour).some((pieceObject) => {
+            let possibleCoordinates = pieceObject.getCoordinates()
+            if (possibleCoordinates.includes(this.coordinate)) return true;
+        });
+        return check
     }
 }
 
