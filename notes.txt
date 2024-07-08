@@ -1,12 +1,15 @@
-Date: Unknown
-Notes:
+Notes:                                                                                                            Date: 08/06/2024
+
 Pieces:
-Add king - castling, checkmate and statemate
+Add king - checkmate and statemate
 Add pawn - en passent 
 
-Castling notes:
-A1 - Rook, B1, C1, D1, E1 - King, F1, G1, H1 - Rook
-Castling can be interrupted by enemies when king and rook and vulnerable
+Types Of Draw:
+Stalemate
+Dead Position
+Mutual Agreement
+Threefold Repetition
+50-Move Rule
 
 Add click to move alongside drag on possible positions
 Add chess notations when moving pieces
@@ -23,12 +26,3 @@ Queen moves on a1 and checks -> Qa1+
 Pawn is only exception to being named, its the only unnamed piece in chess notation, if pawn moves from C4 and goes forward
 Example of chess notation: [ [ 1. b4 d5,  2. c4 dxc4 ], [ 1. b4 d5,  2. c4 dxc4 ] ]
 There is also notations for castling like O-O
-
-Date: 07/06/2024
-Update:
-Types Of Draw
-Stalemate
-Dead Position
-Mutual Agreement
-Threefold Repetition
-50-Move Rule
