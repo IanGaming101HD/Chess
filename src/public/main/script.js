@@ -46,6 +46,28 @@ class Game {
         this.defaultGame();
     }
 
+    getDistance(square1, square2) {
+        let charMap = {
+            a: 0,
+            b: 1,
+            c: 2,
+            d: 3,
+            e: 4,
+            f: 5,
+            g: 6,
+            h: 7,
+        };
+        let char1 = charMap[square1[0]];
+        let char2 = charMap[square2[0]];
+        let num1 = parseInt(square1[1]) - 1;
+        let num2 = parseInt(square2[1]) - 1;
+
+        let charDistance = Math.abs(char1 - char2);
+        let numDistance = Math.abs(num1 - num2);
+
+        return Math.max(charDistance, numDistance);
+    }
+    
     createBoard() {
         let gameContainer = document.getElementById('game-container');
         let board = document.createElement('div');
