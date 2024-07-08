@@ -28,15 +28,10 @@ class Method {
     }
     convertRgbToHex(rgba) {
         let hex = `#${rgba
-      .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
-      .slice(1)
-      .map((n, i) =>
-        (i === 3?Math.round(parseFloat(n) * 255) : parseFloat(n))
-          .toString(16)
-          .padStart(2, '0')
-          .replace('NaN', '')
-      )
-      .join('')}`.toUpperCase();
+            .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
+            .slice(1)
+            .map((n, i) => (i === 3 ? Math.round(parseFloat(n) * 255) : parseFloat(n)).toString(16).padStart(2, '0').replace('NaN', ''))
+            .join('')}`.toUpperCase();
         return hex;
     }
 }
@@ -44,92 +39,221 @@ class Method {
 class Game {
     constructor() {
         this.players_turn = 'white';
-        this.GameOver = false;
-        this.defaultGame();
+        this.pieces_objects = [];
+        // this.game_over = false;
+        this.notations = []
         this.method = new Method();
+        this.defaultGame();
     }
+
     createBoard() {
-        console.log('hi');
+        let gameContainer = document.getElementById('game-container');
+        let board = document.createElement('div');
+        board.id = 'board';
+        board.classList.add('board');
+        gameContainer.appendChild(board);
+
+        let currentColour = 'white';
+        let oppositeColour = {
+            white: 'black',
+            black: 'white',
+        };
+
+        for (let x = 8; x > 0; x--) {
+            let row = document.createElement('div');
+            row.id = `row-${x}`;
+            row.classList.add('row');
+            row.classList.add(`row-${x}`);
+            board.appendChild(row);
+
+            ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].forEach((letter) => {
+                let square = document.createElement('div');
+                square.id = `${letter}${x}`;
+                square.classList.add('square');
+                square.classList.add(`${currentColour}-square`);
+                row.appendChild(square);
+                currentColour = oppositeColour[currentColour];
+            });
+            currentColour = oppositeColour[currentColour];
+        }
+
+        let rows = Array.from(document.getElementsByClassName('row'));
+        rows.forEach((row) => {
+            let firstSquare = Array.from(row.children).find((element) => element.classList.contains('square'));
+            let colour = firstSquare.classList.contains('white-square') ? 'black' : 'white';
+            let number = row.id.split('-')[1];
+            let label = document.createElement('label');
+            label.classList.add('label');
+            label.classList.add('number');
+            label.classList.add(`${colour}-number`);
+            label.innerHTML = number;
+            firstSquare.appendChild(label);
+        });
+
+        let lastRow = rows[rows.length - 1];
+        Array.from(lastRow.children).forEach((square) => {
+            let letter = square.id[0];
+            let colour = square.classList.contains('white-square') ? 'black' : 'white';
+            let label = document.createElement('label');
+            label.classList.add('label');
+            label.classList.add('letter');
+            label.classList.add(`${colour}-letter`);
+            label.innerHTML = letter;
+            square.appendChild(label);
+        });
     }
-    defaultGame() {
-        let whiteRook = new Rook('white', 'a1');
-        let whiteKing = new King('white', 'e1');
-        let whiteRook2 = new Rook('white', 'h1');
-        let whitePawn = new Pawn('white', 'a2');
 
-        let piecesObjects = [whiteRook, whiteKing, whiteRook2, whitePawn];
-        let getPieceById = (id) => piecesObjects.find((element) => String(element.id) === id);
-        let pieces = Array.from(document.getElementsByClassName('piece'));
-        let previousSquare;
+    createPromotionPopup(oldPiece, square, colour) {
+        let promotionContainer = document.createElement('div');
+        promotionContainer.id = 'promotion-container';
+        promotionContainer.classList.add('promotion-container');
+        promotionContainer.style.marginTop = colour === 'white' ? '0px' : '-285px';
+        square.appendChild(promotionContainer);
+        ['queen', 'knight', 'rook', 'bishop'].forEach((pieceType) => {
+            let option = document.createElement('button');
+            option.id = `promotion-option-${pieceType}`;
+            option.classList.add('promotion-option');
+            promotionContainer.appendChild(option);
 
-        let getOverlays = () => {
-            let possibleMovesOverlays = Array.from(document.getElementsByClassName('possible-move'))
-            let possibleCapturesOverlays = Array.from(document.getElementsByClassName('possible-capture'))
-            let overlays = possibleMovesOverlays.concat(possibleCapturesOverlays)
-            return overlays
-        }
-        let createOverlays = (id) => {
-            let pieceObject = getPieceById(id)
-            let possibleCoordinates = pieceObject.getCoordinates()
-            possibleCoordinates.forEach((coordinate) => {
-                let square = document.getElementById(coordinate)
-                let overlay = document.createElement('div')
-                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move')
-                square.append(overlay)
-            })
-        }
-        let removeOverlays = () => {
-            let overlays = getOverlays()
-            overlays.forEach((overlay) => overlay.remove())
-        }
-        let addHighlights = (square) => {
-            if (square.classList.contains('white-square')) {
-                square.style.backgroundColor = '#F6EB71';
-            } else if (square.classList.contains('black-square')) {
-                square.style.backgroundColor = '#DBC34A';
-            }
-        }
-        let removeHighlights = (squares) => {
-            squares.forEach((square) => {
-                if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#F6EB71') {
-                    let whiteSquares = document.querySelector('.white-square')
-                    square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(whiteSquares).backgroundColor);
-                } else if (this.method.convertRgbToHex(getComputedStyle(square).backgroundColor) === '#DBC34A') {
-                    let blackSquares = document.querySelector('.black-square')
-                    square.style.backgroundColor = this.method.convertRgbToHex(getComputedStyle(blackSquares).backgroundColor);
+            let pieceImage = document.createElement('img');
+            pieceImage.classList = 'promotion-icon';
+            pieceImage.src = `./public/main/images/pieces/${colour}/${pieceType}.png`;
+            option.appendChild(pieceImage);
+        });
+        let promotionCloseButton = document.createElement('button');
+        promotionCloseButton.id = 'promotion-close-button';
+        promotionCloseButton.classList.add('promotion-close-button');
+        promotionCloseButton.innerHTML = '⨉';
+        promotionContainer.appendChild(promotionCloseButton);
+
+        let promotionOptions = {
+            'promotion-option-queen': Queen,
+            'promotion-option-knight': Knight,
+            'promotion-option-rook': Rook,
+            'promotion-option-bishop': Bishop
+        };
+
+        Object.entries(promotionOptions).forEach(([optionId, pieceTypeObject]) => {
+            let optionElement = document.getElementById(optionId);
+            optionElement.addEventListener('click', () => {
+                let newPieceObject = new pieceTypeObject(colour,
+                    oldPiece.parentElement.id,
+                    `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`
+                );
+                oldPiece.remove();
+
+                let element = document.getElementById(newPieceObject.id);
+                if (element) {
+                    element.addEventListener('dragstart', (event) => {
+                        event.dataTransfer.setData('text/plain', event.target.id);
+                    });
                 }
-            });
-        }
-        pieces.forEach((piece) => {
-            piece.addEventListener('dragstart', (event) => {
-                let square = piece.parentElement;
-                let overlays = getOverlays()
-                addHighlights(square)
-                if (overlays.length > 0) {
-                    removeOverlays()
-                }
-                createOverlays(piece.id)
-                event.dataTransfer.setData('text/plain', event.target.id);
-            });
-            piece.addEventListener('dragend', (event) => {
-                let newSquare = piece.parentElement;
-                removeHighlights(squares)
-                addHighlights(newSquare)
-                if (previousSquare) {
-                    addHighlights(previousSquare)
-                }
+                game.pieces_objects = game.pieces_objects.filter((value) => value != oldPiece.id)
+                game.pieces_objects.push(newPieceObject);
+                promotionContainer.remove();
             });
         });
+        promotionCloseButton.addEventListener('click', () => {
+            promotionContainer.remove();
+            //   undo move or stop them from making move or something over here idk
+        });
+    }
+
+    getPieceById(id) {
+        return this.pieces_objects.find((element) => element.id === id);
+    }
+
+    getOverlays() {
+        let possibleMovesOverlays = Array.from(document.getElementsByClassName('possible-move'));
+        let possibleCapturesOverlays = Array.from(document.getElementsByClassName('possible-capture'));
+        let overlays = possibleMovesOverlays.concat(possibleCapturesOverlays);
+        return overlays;
+    };
+
+    createOverlays(id) {
+        let pieceObject = this.getPieceById(id);
+        if (!pieceObject) return;
+
+        let possibleCoordinates = pieceObject.getCoordinates();
+        possibleCoordinates.forEach((coordinate) => {
+            let square = document.getElementById(coordinate);
+            let overlay = document.createElement('div');
+            overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
+            square.append(overlay);
+        });
+    };
+
+    removeAllOverlays() {
+        let overlays = this.getOverlays();
+        overlays.forEach((overlay) => overlay.remove());
+    };
+
+    addHighlight(square) {
+        if (square.classList.contains('white-square')) {
+            square.style.backgroundColor = '#F6EB71';
+        } else if (square.classList.contains('black-square')) {
+            square.style.backgroundColor = '#DBC34A';
+        }
+    };
+
+    removeAllHighlights(squares) {
+        squares.forEach((square) => {
+            square.style.backgroundColor = '';
+        });
+    };
+
+    defaultGame() {
+        this.createBoard();
+
+        // let whiteRook = new Rook('white', 'a1');
+        // let whiteKnight = new Knight('white', 'b1');
+        // let whiteBishop = new Bishop('white', 'c1');
+        // let whiteQueen = new Queen('white', 'd1');
+        let whiteKing = new King('white', 'e1');
+        // let whiteBishop2 = new Bishop('white', 'f1');
+        // let whiteKnight2 = new Knight('white', 'g1');
+        // let whiteRook2 = new Rook('white', 'h1');
+        let whitePawn = new Pawn('white', 'a2');
+        // let whitePawn2 = new Pawn('white', 'b2');
+        // let whitePawn3 = new Pawn('white', 'c2');
+        // let whitePawn4 = new Pawn('white', 'd2');
+        // let whitePawn5 = new Pawn('white', 'e2');
+        // let whitePawn6 = new Pawn('white', 'f2');
+        // let whitePawn7 = new Pawn('white', 'g2');
+        // let whitePawn8 = new Pawn('white', 'h2');
+        // let blackRook = new Rook('black', 'a8');
+        // let blackKnight = new Knight('black', 'b8');
+        // let blackBishop = new Bishop('black', 'c8');
+        // let blackQueen = new Queen('black', 'd8');
+        let blackKing = new King('black', 'e8');
+        // let blackBishop2 = new Bishop('black', 'f8');
+        // let blackKnight2 = new Knight('black', 'g8');
+        // let blackRook2 = new Rook('black', 'h8');
+        // let blackPawn = new Pawn('black', 'a7');
+        let blackPawn2 = new Pawn('black', 'b7');
+        // let blackPawn3 = new Pawn('black', 'c7');
+        // let blackPawn4 = new Pawn('black', 'd7');
+        // let blackPawn5 = new Pawn('black', 'e7');
+        // let blackPawn6 = new Pawn('black', 'f7');
+        // let blackPawn7 = new Pawn('black', 'g7');
+        // let blackPawn8 = new Pawn('black', 'h7');
+
+        // this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
+        this.pieces_objects = [ whitePawn, blackPawn2, whiteKing, blackKing ]
+
+        let squares = Array.from(document.getElementsByClassName('square'));
+        let previousSquare;
+
         squares.forEach((square) => {
             Object.entries({
                 dragover: '#FFFFFF',
-                dragleave: 'transparent'
+                dragleave: 'transparent',
             }).forEach(([key, value]) => {
                 square.addEventListener(key, (event) => {
                     square.style.borderColor = value;
                     event.preventDefault();
                 });
-            })
+            });
             square.addEventListener('drop', (event) => {
                 event.preventDefault();
                 square.style.borderColor = 'transparent';
@@ -141,35 +265,46 @@ class Game {
                 if (!piece) return;
 
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
-                let pieceObject = getPieceById(pieceId);
-                let possibleMoves = pieceObject.getCoordinates()
+                let pieceObject = this.getPieceById(pieceId);
+                let possibleCoordinates = pieceObject.getCoordinates();
 
-                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleMoves.includes(square.id) || Array.from(piece.classList).includes('king') || Array.from(square.children).find((child) => Array.from(child.classList).includes('king'))) return;
-                removeOverlays()
-
-                let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour))
-                let kingObject = getPieceById(king.id)
+                if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
+                let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
+                let kingObject = this.getPieceById(king.id);
                 previousSquare = piece.parentElement;
+                this.removeAllOverlays();
+                pieceObject.updateCoordinate(square.id);
                 square.appendChild(piece);
-                let check = kingObject.isCheck(piecesObjects, colour);
+                let check = kingObject.isCheck(this.pieces_objects);
                 if (check) {
+                    pieceObject.updateCoordinate(previousSquare.id);
                     previousSquare.appendChild(piece);
                     return;
-                };
-                if (piece.classList.contains('pawn')) {
-                    pieceObject.checkPromotion(piece, colour, square, piecesObjects);
                 }
-                addHighlights(square)
+                previousSquare.appendChild(piece);
+
+                if (piece.classList.contains('pawn')) {
+                    if (pieceObject.firstMove) {
+                        pieceObject.firstMove = false;
+                    }
+                    pieceObject.checkPromotion(piece, square);
+                }
+                this.removeAllHighlights(squares);
+                this.addHighlight(previousSquare);
+                this.addHighlight(square);
 
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'));
                 if (enemyPiece) {
-                    enemyPiece.remove();
+                    let enemyPieceObject = this.getPieceById(enemyPiece.id);
+                    enemyPieceObject.remove();
                 }
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
-                // game.endTurn();
+                game.endTurn();
+                console.log(`Players Turn: ${game.players_turn}`);
             });
         });
+        // console.log(this.notations)
     }
     endTurn() {
         if (this.players_turn === 'white') {
@@ -181,12 +316,12 @@ class Game {
 }
 
 class Piece {
-    static id = 0;
+    static piecesIds = [];
     constructor(name, colour, coordinate, id) {
         this.name = name;
         this.colour = colour;
         this.coordinate = coordinate;
-        this.id = id;
+        this.id = id ? id : `${colour}-${name}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${name}`)).length + 1}`;
         this.method = new Method();
         this.create();
     }
@@ -209,13 +344,13 @@ class Piece {
         return coordinate[0] + this.method.decrement(coordinate[1]);
     }
     create() {
+        let squares = Array.from(document.getElementsByClassName('square'));
         if (!squares.some((value) => value.id === this.coordinate)) return;
         let position = document.getElementById(this.coordinate);
         let piece = document.createElement('img');
-        if (!this.id) {
-            Piece.id += 1;
-            this.id = Piece.id;
-        }
+
+        Piece.piecesIds.push(this.id);
+
         piece.id = this.id;
         piece.classList.add('piece');
         piece.classList.add(this.name);
@@ -223,82 +358,58 @@ class Piece {
         piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
 
         position.appendChild(piece);
+        
+        piece.addEventListener('dragstart', (event) => {
+            let square = piece.parentElement;
+            let overlays = game.getOverlays();
+            if (overlays.length > 0) {
+                game.removeAllOverlays();
+            }
+            game.createOverlays(piece.id);
+            game.addHighlight(square);
+            event.dataTransfer.setData('text/plain', event.target.id);
+        });
+    }
+    remove() {
+        let piece = document.getElementById(this.id);
+        game.pieces_objects = game.pieces_objects.filter((pieceObject) => pieceObject.id !== this.id);
+        piece.remove();
     }
 }
 
 class King extends Piece {
     constructor(colour, coordinate, id) {
         super('king', colour, coordinate, id);
+        this.moved = 0
         this.canCastle = true;
     }
     getCoordinates() {
+        let squares = Array.from(document.getElementsByClassName('square'));
+        let sequences = [['left'], ['right'], ['up'], ['down'], ['left', 'up'], ['left', 'down'], ['right', 'up'], ['right', 'down']];
         let possibleCoordinates = [];
-
         let originalCoordinate = this.coordinate;
-        let tempCoordinate = originalCoordinate;
-
-        let sequences = [
-            ['left'],
-            ['right'],
-            ['up'],
-            ['down'],
-            ['left', 'up'],
-            ['left', 'down'],
-            ['right', 'up'],
-            ['right', 'down']
-        ];
-
-// Queen reference code
-// ----------------------
-// let possibleCoordinates = [];
-// let coordinates = [];
-// let originalCoordinate = this.coordinate;
-
-// sequences((sequence) => {
-//     let tempCoordinate = originalCoordinate;
-//     while (true) {
-//         tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
-//         if (!squares.some((value) => value.id === tempCoordinate)) {
-//             tempCoordinate = originalCoordinate;
-//             break;
-//         }
-//         coordinates.push(tempCoordinate);
-
-//         let element = document.getElementById(tempCoordinate);
-//         if (Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-//             tempCoordinate = originalCoordinate;
-//             break;
-//         }
-//     }
-// })
-// coordinates.forEach((element) => {
-//     if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
-//         possibleCoordinates.push(element);
-//     }
-// });
-// return possibleCoordinates;
 
         sequences.forEach((sequence) => {
+            let tempCoordinate = originalCoordinate;
             sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
-            })
+            });
 
-            if (squares.some((value) => value.id === tempCoordinate)) {
-                let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+            squares.forEach((square) => {
+                if (square.id === tempCoordinate && (!Array.from(square.children).some((child) => child.classList.contains('piece')) || Array.from(square.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour)))) {
                     possibleCoordinates.push(tempCoordinate);
                 }
-            }
-            tempCoordinate = originalCoordinate;
-        })
-        // castling
+            });
+        });
 
+        //                     Castling
+        // ------------------------------------------------
         // if (this.canCastle) {
         //     let rooks = Array.from(document.getElementsByClassName('rook'));
         //     rooks.forEach((rook) => {
-        //         let rookObject = getPieceById(rook)
-        //         let possibleMoves = rookObject.getMoves()
-        //         if (rookObject.canCastle && possibleMoves.includes(this.coordinate)) {
+        //         let rookObject = this.getPieceById(rook)
+        //         let possibleCoordinates = rookObject.getMoves()
+        //         if (rookObject.canCastle && possibleCoordinates.includes(this.coordinate)) {
         //             if (rookObject.coordinate < this.coordinate) {
         //                 tempCoordinate = this.coordinate
         //                 for (let x = 0; x < 2;) {
@@ -329,11 +440,10 @@ class King extends Piece {
         // }
         return possibleCoordinates;
     }
-    isCheck(piecesObjects, colour) {
-        let oppositeColour = colour === 'white' ? 'black' : 'white';
-        let check = piecesObjects.filter((pieceObject) => pieceObject.colour === oppositeColour).some((pieceObject) => {
-            let possibleMoves = pieceObject.getCoordinates()
-            if (possibleMoves.includes(this.coordinate)) return true;
+    isCheck() {
+        let check = game.pieces_objects.filter((pieceObject) => pieceObject.colour !== this.colour).some((pieceObject) => {
+            let possibleCoordinates = pieceObject.getCoordinates()
+            if (possibleCoordinates.includes(this.coordinate)) return true;
         });
         return check
     }
@@ -344,24 +454,16 @@ class Queen extends Piece {
         super('queen', colour, coordinate, id);
     }
     getCoordinates() {
-        let sequences = [
-            ['left'],
-            ['right'],
-            ['up'],
-            ['down'],
-            ['left', 'up'],
-            ['right', 'up'],
-            ['left', 'down'],
-            ['right', 'down']
-        ];
+        let squares = Array.from(document.getElementsByClassName('square'));
+        let sequences = [['left'], ['right'], ['up'], ['down'], ['left', 'up'], ['right', 'up'], ['left', 'down'], ['right', 'down']];
         let possibleCoordinates = [];
         let coordinates = [];
         let originalCoordinate = this.coordinate;
+        let tempCoordinate = originalCoordinate;
 
         sequences.forEach((sequence) => {
-            let tempCoordinate = originalCoordinate;
             while (true) {
-                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate));
+                tempCoordinate = sequence.length === 1 ? this[sequence](tempCoordinate) : (tempCoordinate = this[sequence[0]](this[sequence[1]](tempCoordinate)));
                 if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
@@ -374,7 +476,7 @@ class Queen extends Piece {
                     break;
                 }
             }
-        })
+        });
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
@@ -390,15 +492,16 @@ class Rook extends Piece {
         this.canCastle = true;
     }
     getCoordinates() {
+        let squares = Array.from(document.getElementsByClassName('square'));
         let directions = ['left', 'right', 'up', 'down'];
         let possibleCoordinates = [];
         let coordinates = [];
         let originalCoordinate = this.coordinate;
+        let tempCoordinate = originalCoordinate;
 
         directions.forEach((direction) => {
-            let tempCoordinate = originalCoordinate;
             while (true) {
-                tempCoordinate = this[direction](tempCoordinate)
+                tempCoordinate = this[direction](tempCoordinate);
                 if (!squares.some((value) => value.id === tempCoordinate)) {
                     tempCoordinate = originalCoordinate;
                     break;
@@ -411,7 +514,7 @@ class Rook extends Piece {
                     break;
                 }
             }
-        })
+        });
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
@@ -426,17 +529,18 @@ class Bishop extends Piece {
         super('bishop', colour, coordinate, id);
     }
     getCoordinates() {
+        let squares = Array.from(document.getElementsByClassName('square'));
         let sequences = [
             ['left', 'up'],
             ['right', 'up'],
             ['left', 'down'],
-            ['right', 'down']
+            ['right', 'down'],
         ];
         let coordinates = [];
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
 
-        sequences((sequence) => {
+        sequences.forEach((sequence) => {
             let tempCoordinate = originalCoordinate;
 
             while (true) {
@@ -453,14 +557,13 @@ class Bishop extends Piece {
                     break;
                 }
             }
-        })
+        });
 
         coordinates.forEach((element) => {
             if (!Array.from(document.getElementById(element).children).some((value) => value.classList.contains('piece') && value.classList.contains(this.colour))) {
                 possibleCoordinates.push(element);
             }
         });
-
         return possibleCoordinates;
     }
 }
@@ -470,6 +573,7 @@ class Knight extends Piece {
         super('knight', colour, coordinate, id);
     }
     getCoordinates() {
+        let squares = Array.from(document.getElementsByClassName('square'));
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
@@ -481,22 +585,22 @@ class Knight extends Piece {
             ['left', 'left', 'up'],
             ['left', 'left', 'down'],
             ['right', 'right', 'up'],
-            ['right', 'right', 'down']
+            ['right', 'right', 'down'],
         ];
 
-        sequences((sequence) => {
+        sequences.forEach((sequence) => {
             sequence.forEach((direction) => {
                 tempCoordinate = this[direction](tempCoordinate);
-            })
+            });
 
             if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
-                if (!Array.from(element.children).find(child => child.classList.contains('piece') && child.classList.contains(this.colour))) {
+                if (!Array.from(element.children).find((child) => child.classList.contains('piece') && child.classList.contains(this.colour))) {
                     possibleCoordinates.push(tempCoordinate);
                 }
             }
             tempCoordinate = originalCoordinate;
-        })
+        });
         return possibleCoordinates;
     }
 }
@@ -504,129 +608,64 @@ class Knight extends Piece {
 class Pawn extends Piece {
     constructor(colour, coordinate, id) {
         super('pawn', colour, coordinate, id);
+        this.firstMove = true;
     }
     getCoordinates() {
+        let squares = Array.from(document.getElementsByClassName('square'));
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
-        let directions = ['left', 'right'];
+        let verticalDirections = { white: 'up', black: 'down' };
+        let horizontalDirections = ['left', 'right'];
+        let colour = this.colour;
 
-        if (this.colour === 'white') {
-            if (originalCoordinate.charAt(1) === '2') {
-                for (let x = 0; x < 2; x++) {
-                    tempCoordinate = this.up(tempCoordinate);
-                    if (squares.some((value) => value.id === tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate);
-                        if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-                            possibleCoordinates.push(tempCoordinate);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                tempCoordinate = originalCoordinate;
-            } else {
-                tempCoordinate = this.up(tempCoordinate);
+        // if (originalCoordinate.charAt(1) === '2') {
+        if (this.firstMove) {
+            for (let x = 0; x < 2; x++) {
+                tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
                         possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
+                    } else {
+                        break;
                     }
                 }
             }
-            directions.forEach((direction) => {
-                tempCoordinate = this[direction](this.up(originalCoordinate));
-
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
-                        possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
-                    }
-                }
-            });
             tempCoordinate = originalCoordinate;
-        } else if (this.colour === 'black') {
-            if (originalCoordinate.charAt(1) === '7') {
-                for (let x = 0; x < 2; x++) {
-                    tempCoordinate = this.down(tempCoordinate);
-                    if (squares.some((value) => value.id === tempCoordinate)) {
-                        let element = document.getElementById(tempCoordinate);
-                        if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-                            possibleCoordinates.push(tempCoordinate);
-                        } else {
-                            break;
-                        }
-                    }
-                }
-                tempCoordinate = originalCoordinate;
-            } else {
-                tempCoordinate = this.down(tempCoordinate);
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
-                        possibleCoordinates.push(tempCoordinate);
-                    }
+        } else {
+            tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
                 }
             }
-            directions.forEach((direction) => {
-                tempCoordinate = this[direction](this.down(originalCoordinate));
-
-                if (squares.some((value) => value.id === tempCoordinate)) {
-                    let element = document.getElementById(tempCoordinate);
-                    if (Array.from(element.children).some(child => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
-                        possibleCoordinates.push(tempCoordinate);
-                        tempCoordinate = originalCoordinate;
-                    }
-                }
-            });
-            tempCoordinate = originalCoordinate;
         }
+        horizontalDirections.forEach((horizontalDirection) => {
+            tempCoordinate = this[horizontalDirection](this[verticalDirections[colour]](originalCoordinate));
+
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
+                }
+            }
+        });
+        tempCoordinate = originalCoordinate;
         return possibleCoordinates;
     }
-    checkPromotion(piece, colour, square, piecesObjects) {
-        let row = colour === 'white' ? '8' : '1';
+    checkPromotion(piece, square) {
+        let row = this.colour === 'white' ? '8' : '1';
         if (square.id.charAt(1) !== row) return;
 
-        let hiddenContainer = document.getElementById('hidden-container');
-        hiddenContainer.style.visibility = 'visible';
-        hiddenContainer.style.marginTop = colour === 'white' ? '0px' : '-225px';
-        square.appendChild(hiddenContainer);
-
-        let promotionOptions = {
-            'hidden-option-queen': Queen,
-            'hidden-option-knight': Knight,
-            'hidden-option-rook': Rook,
-            'hidden-option-bishop': Bishop
-        };
-
-        Object.entries(promotionOptions).forEach(([optionId, classType]) => {
-            let optionElement = document.getElementById(optionId);
-            optionElement.addEventListener('click', () => {
-                let pieceId = Number(piece.id);
-                piece.remove();
-
-                let newPiece = new classType(piece.classList.contains('white') ? 'white' : 'black', square.id, pieceId);
-                let element = document.getElementById(piece.id);
-                element && element.addEventListener('dragstart', (event) => {
-                    event.dataTransfer.setData('text/plain', event.target.id);
-                });
-                piecesObjects[pieceId - 1] = newPiece;
-                document.getElementById('hidden-container').style.visibility = 'hidden';
-            });
-        });
-
-        let hiddenCloseButton = document.getElementById('hidden-close-button');
-        hiddenCloseButton.addEventListener('click', () => {
-            hiddenContainer.style.visibility = 'hidden';
-        });
+        game.createPromotionPopup(piece, square, this.colour);
     }
 }
-let squares = Array.from(document.getElementsByClassName('square'));
 let gameContainer = document.getElementById('game-container');
 let game = new Game();
-let notations = [];
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();

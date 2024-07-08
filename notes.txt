@@ -12,7 +12,7 @@ Add click to move alongside drag on possible positions
 Add chess notations when moving pieces
 Add undo/redo feature
 Add flip board feature
-Add markings feature (maybe not needed for local 2 player)
+Add markings with arrows feature (maybe not needed for local 2 player)
 
 Chess Notations:
 x represents piece being taken
@@ -21,14 +21,14 @@ Queen moves to a1 -> Qa1
 Queen moves to pawn on a1 -> Qxa1
 Queen moves on a1 and checks -> Qa1+
 Pawn is only exception to being named, its the only unnamed piece in chess notation, if pawn moves from C4 and goes forward
-Example of chess notation: [1. b4 d5  2. c4 dxc4 ]
+Example of chess notation: [ [ 1. b4 d5,  2. c4 dxc4 ], [ 1. b4 d5,  2. c4 dxc4 ] ]
 There is also notations for castling like O-O
-
-Issues:
-This might        --->          Problem where highlights are everywhere (only on the black squares)
-be resolved       --->          Yellow highlight squares not operating exactly the same as chess.com highlights
-King might be not functioning correctly to its full potential, there are some issues, might be because of the check
 
 Date: 07/06/2024
 Update:
-Pawns can get promoted but I dont think they get the abilities on new piece.
+Types Of Draw
+Stalemate
+Dead Position
+Mutual Agreement
+Threefold Repetition
+50-Move Rule
