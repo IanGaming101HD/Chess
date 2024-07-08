@@ -26,9 +26,3 @@ Queen moves on a1 and checks -> Qa1+
 Pawn is only exception to being named, its the only unnamed piece in chess notation, if pawn moves from C4 and goes forward
 Example of chess notation: [ [ 1. b4 d5,  2. c4 dxc4 ], [ 1. b4 d5,  2. c4 dxc4 ] ]
 There is also notations for castling like O-O
-
-IMPORTANT NOTES:
-Castling only works once for each king, i didnt adjust it to double castling
-Make updateCoordinate appendChild inside it so u dont have to do both seperately
-
-Alot of issues occurred after adding castling, hard to explain
