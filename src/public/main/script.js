@@ -284,6 +284,8 @@ class Game {
 
                 let colour = piece.classList.contains('white') ? 'white' : 'black';
                 let pieceObject = this.getPieceObjectById(pieceId);
+                console.log(pieceObject, pieceId)
+                console.log(this.pieces_objects)
                 let possibleCoordinates = pieceObject.getCoordinates();
 
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
@@ -294,36 +296,37 @@ class Game {
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
 
-                let check = kingObject.isCheck(this.pieces_objects);
-                previousSquare.appendChild(piece);
-                if (check) {
-                    pieceObject.updateCoordinate(previousSquare.id);
-                    return;
-                }
+                // let check = kingObject.isCheck(this.pieces_objects);
+                // previousSquare.appendChild(piece);
+                // if (check) {
+                //     pieceObject.updateCoordinate(previousSquare.id);
+                //     return;
+                // }
 
-                if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
-                    let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`))
-                    rookObjects.forEach((rookObject) => {
-                        if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
-                            let rook = document.getElementById(rookObject.id)
-                            let tempCoordinate = rook.parentElement.id;
+                // if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
+                //     let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`))
+                //     rookObjects.forEach((rookObject) => {
+                //         if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
+                //             let rook = document.getElementById(rookObject.id)
+                //             let tempCoordinate = rook.parentElement.id;
 
-                            if (game.getDistance(rookObject.coordinate, square.id) === 1) {
-                                for (let x = 0; x < 2; x++) {
-                                    tempCoordinate = rookObject.left(tempCoordinate)
-                                }
-                            } else {
-                                for (let x = 0; x < 3; x++) {
-                                    tempCoordinate = rookObject.right(tempCoordinate)
-                                }
-                            }
-                            let newSquare = document.getElementById(tempCoordinate)
-                            newSquare.appendChild(rook);
-                            rookObject.updateCoordinate(newSquare.id);
-                            rookObject.canCastle = false
-                        }
-                    })
-                } else if (king.id === piece.id) {
+                //             if (game.getDistance(rookObject.coordinate, square.id) === 1) {
+                //                 for (let x = 0; x < 2; x++) {
+                //                     tempCoordinate = rookObject.left(tempCoordinate)
+                //                 }
+                //             } else {
+                //                 for (let x = 0; x < 3; x++) {
+                //                     tempCoordinate = rookObject.right(tempCoordinate)
+                //                 }
+                //             }
+                //             let newSquare = document.getElementById(tempCoordinate)
+                //             newSquare.appendChild(rook);
+                //             rookObject.updateCoordinate(newSquare.id);
+                //             rookObject.canCastle = false
+                //         }
+                //     })
+                // } else
+                 if (king.id === piece.id) {
                     kingObject.canCastle = false
                 }
 
@@ -447,7 +450,7 @@ class King extends Piece {
         });
 
         if (this.canCastle) {
-            let rooks = Array.from(document.getElementsByClassName('piece')).filter((piece) => piece.classList.contains(this.colour));
+            let rooks = Array.from(document.getElementsByClassName('piece')).filter((piece) => piece.id.includes(`${this.colour}-rook`));
             rooks.forEach((rook) => {
                 let rookObject = game.getPieceObjectById(rook.id);
                 if (rookObject.canCastle) {
