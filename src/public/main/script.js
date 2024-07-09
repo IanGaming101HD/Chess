@@ -40,11 +40,15 @@ class Game {
     constructor() {
         this.players_turn = 'white';
         this.pieces_objects = [];
-        // this.game_over = false;
+        this.game_over = false;
         this.selected_squareId;
         this.notations = []
         this.method = new Method();
         this.defaultGame();
+    }
+
+    isDraw() {
+
     }
 
     getDistance(square1, square2) {
