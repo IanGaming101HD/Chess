@@ -41,6 +41,7 @@ class Game {
         this.players_turn = 'white';
         this.pieces_objects = [];
         // this.game_over = false;
+        this.selected_squareId;
         this.notations = []
         this.method = new Method();
         this.defaultGame();
@@ -67,7 +68,7 @@ class Game {
 
         return Math.max(charDistance, numDistance);
     }
-
+    
     createBoard() {
         let gameContainer = document.getElementById('game-container');
         let board = document.createElement('div');
@@ -218,6 +219,10 @@ class Game {
         }
     };
 
+    removeHighlight(square) {
+        square.style.backgroundColor = '';
+    };
+
     removeAllHighlights(squares) {
         squares.forEach((square) => {
             square.style.backgroundColor = '';
@@ -228,40 +233,39 @@ class Game {
         this.createBoard();
 
         let whiteRook = new Rook('white', 'a1');
-        // let whiteKnight = new Knight('white', 'b1');
-        // let whiteBishop = new Bishop('white', 'c1');
-        // let whiteQueen = new Queen('white', 'd1');
+        let whiteKnight = new Knight('white', 'b1');
+        let whiteBishop = new Bishop('white', 'c1');
+        let whiteQueen = new Queen('white', 'd1');
         let whiteKing = new King('white', 'e1');
-        // let whiteBishop2 = new Bishop('white', 'f1');
-        // let whiteKnight2 = new Knight('white', 'g1');
+        let whiteBishop2 = new Bishop('white', 'f1');
+        let whiteKnight2 = new Knight('white', 'g1');
         let whiteRook2 = new Rook('white', 'h1');
-        // let whitePawn = new Pawn('white', 'a2');
-        // let whitePawn2 = new Pawn('white', 'b2');
-        // let whitePawn3 = new Pawn('white', 'c2');
-        // let whitePawn4 = new Pawn('white', 'd2');
-        // let whitePawn5 = new Pawn('white', 'e2');
-        // let whitePawn6 = new Pawn('white', 'f2');
-        // let whitePawn7 = new Pawn('white', 'g2');
-        // let whitePawn8 = new Pawn('white', 'h2');
+        let whitePawn = new Pawn('white', 'a2');
+        let whitePawn2 = new Pawn('white', 'b2');
+        let whitePawn3 = new Pawn('white', 'c2');
+        let whitePawn4 = new Pawn('white', 'd2');
+        let whitePawn5 = new Pawn('white', 'e2');
+        let whitePawn6 = new Pawn('white', 'f2');
+        let whitePawn7 = new Pawn('white', 'g2');
+        let whitePawn8 = new Pawn('white', 'h2');
         let blackRook = new Rook('black', 'a8');
-        // let blackKnight = new Knight('black', 'b8');
-        // let blackBishop = new Bishop('black', 'c8');
-        // let blackQueen = new Queen('black', 'd8');
+        let blackKnight = new Knight('black', 'b8');
+        let blackBishop = new Bishop('black', 'c8');
+        let blackQueen = new Queen('black', 'd8');
         let blackKing = new King('black', 'e8');
-        // let blackBishop2 = new Bishop('black', 'f8');
-        // let blackKnight2 = new Knight('black', 'g8');
+        let blackBishop2 = new Bishop('black', 'f8');
+        let blackKnight2 = new Knight('black', 'g8');
         let blackRook2 = new Rook('black', 'h8');
-        // let blackPawn = new Pawn('black', 'a7');
-        // let blackPawn2 = new Pawn('black', 'b7');
-        // let blackPawn3 = new Pawn('black', 'c7');
-        // let blackPawn4 = new Pawn('black', 'd7');
-        // let blackPawn5 = new Pawn('black', 'e7');
-        // let blackPawn6 = new Pawn('black', 'f7');
-        // let blackPawn7 = new Pawn('black', 'g7');
-        // let blackPawn8 = new Pawn('black', 'h7');
+        let blackPawn = new Pawn('black', 'a7');
+        let blackPawn2 = new Pawn('black', 'b7');
+        let blackPawn3 = new Pawn('black', 'c7');
+        let blackPawn4 = new Pawn('black', 'd7');
+        let blackPawn5 = new Pawn('black', 'e7');
+        let blackPawn6 = new Pawn('black', 'f7');
+        let blackPawn7 = new Pawn('black', 'g7');
+        let blackPawn8 = new Pawn('black', 'h7');
 
-        // this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-        this.pieces_objects = [whiteRook, whiteKing, whiteRook2, blackRook, blackKing, blackRook2 ];
+        this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
 
         let squares = Array.from(document.getElementsByClassName('square'));
         let previousSquare;
@@ -295,6 +299,7 @@ class Game {
                 let kingObject = this.getPieceObjectById(king.id);
                 previousSquare = piece.parentElement;
                 this.removeAllOverlays();
+                game.selected_squareId = null;
                 pieceObject.updateCoordinate(square.id);
 
                 let check = kingObject.isCheck(this.pieces_objects);
@@ -326,7 +331,8 @@ class Game {
                             rookObject.canCastle = false
                         }
                     })
-                } else if (king.id === piece.id) {
+                } else 
+                if (king.id === piece.id) {
                     kingObject.canCastle = false
                 }
 
@@ -351,7 +357,7 @@ class Game {
                 console.log(`Players Turn: ${game.players_turn}`);
             });
         });
-        // console.log(this.notations)
+        console.log(this.notations)
     }
     endTurn() {
         if (this.players_turn === 'white') {
@@ -379,16 +385,16 @@ class Piece {
         this.coordinate = newCoordinate;
     }
     left(coordinate) {
-        return this.method.decrement(coordinate[0]) + coordinate[1];
+        return this.method.decrement(coordinate[0]) + coordinate.slice(1);
     }
     right(coordinate) {
-        return this.method.increment(coordinate[0]) + coordinate[1];
+        return this.method.increment(coordinate[0]) + coordinate.slice(1);
     }
     up(coordinate) {
-        return coordinate[0] + this.method.increment(coordinate[1]);
+        return coordinate[0] + this.method.increment(coordinate.slice(1));
     }
     down(coordinate) {
-        return coordinate[0] + this.method.decrement(coordinate[1]);
+        return coordinate[0] + this.method.decrement(coordinate.slice(1));
     }
     create() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -413,7 +419,13 @@ class Piece {
                 game.removeAllOverlays();
             }
             game.createOverlays(piece.id);
+            if (game.selected_squareId) {
+                let previousSelectedSquare = document.getElementById(game.selected_squareId)
+                game.removeHighlight(previousSelectedSquare)
+            }
             game.addHighlight(square);
+            game.selected_squareId = square.id
+
             event.dataTransfer.setData('text/plain', event.target.id);
         });
     }
@@ -632,7 +644,7 @@ class Knight extends Piece {
             ['left', 'left', 'up'],
             ['left', 'left', 'down'],
             ['right', 'right', 'up'],
-            ['right', 'right', 'down'],
+            ['right', 'right', 'down']
         ];
 
         sequences.forEach((sequence) => {
