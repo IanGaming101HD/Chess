@@ -1,5 +1,10 @@
 Notes:                                                                                                            Date: 08/06/2024
 
+En Passent:
+Right now in the middle of adding en passent, just need to add the en passent to possibleMoves and overlays and capture enemy piece.
+e5xd6: wrong format
+exd6 e.p.: right format
+
 Pieces:
 Add king - checkmate and statemate
 Add pawn - en passent 

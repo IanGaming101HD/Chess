@@ -401,12 +401,21 @@ class Game {
                     kingObject.canCastle = false;
                 }
 
+                this.pieces_objects.filter((pieceObject) => pieceObject.classList.contains('pawn') && pieceObject.colour == pieceObject.colour).forEach((pieceObject) => {
+                    if (pieceObject.canBeEnPassent) {
+                        pieceObject.canBeEnPassent = false
+                    }
+                })
                 if (piece.classList.contains('pawn')) {
                     if (pieceObject.firstMove) {
+                        if (game.getDistance(pieceObject.coordinate, square.id) == 2) {
+                            pieceObject.canBeEnPassent = true
+                        }
                         pieceObject.firstMove = false;
                     }
                     pieceObject.checkPromotion(piece, square);
                 }
+
                 this.removeAllHighlights(squares);
                 this.addHighlight(previousSquare);
                 this.addHighlight(square);
@@ -754,6 +763,7 @@ class Pawn extends Piece {
         super('pawn', colour, coordinate, id);
         this.letter = ''
         this.firstMove = true;
+        this.canBeEnPassent = false;
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
