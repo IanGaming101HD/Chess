@@ -373,7 +373,7 @@ class Game {
                 }
 
                 let notation = `${pieceObject.letter}${square.id}`;
-                if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
+                if (piece.id === king.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
                     let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`));
                     rookObjects.forEach((rookObject) => {
                         if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
@@ -423,7 +423,6 @@ class Game {
                 if (enemyKingObject.isCheck(this.pieces_objects)) {
                     notation += '+'
                 }
-
 
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
