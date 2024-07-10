@@ -233,6 +233,7 @@ class Game {
     createOverlays(id) {
         let pieceObject = this.getPieceObjectById(id);
         if (!pieceObject) return;
+        if (game.players_turn !== pieceObject.colour) return;
 
         let possibleCoordinates = pieceObject.getCoordinates();
         possibleCoordinates.forEach((coordinate) => {
