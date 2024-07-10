@@ -768,6 +768,16 @@ class Pawn extends Piece {
 let gameContainer = document.getElementById('game-container');
 let game = new Game();
 
+let userRating = document.getElementById('user-rating')
+let userFlag = document.getElementById('user-flag')
+let enemyRating = document.getElementById('enemy-rating')
+let enemyFlag = document.getElementById('enemy-flag')
+
+userRating.innerHTML = '500'
+userFlag.innerHTML = '🇬🇧'
+enemyRating.innerHTML = '500'
+enemyFlag.innerHTML = '🇬🇧'
+
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();
 });

@@ -10,7 +10,7 @@
 
 <body>
     <div class='container'>
-        <div class='panel left-panel'>
+        <div class='left-panel'>
             <div class='logo-container'>
                 <img class='logo' src='./public/main/images/other/chess-logo.png'>
                 <h1 class='header'>Chess</h1>
@@ -21,22 +21,22 @@
                 <li class='left-panel-option'>Settings</li>
             </ul>
         </div>
-        <div class='panel centre-panel'>
+        <div class='centre-panel'>
             <div class='profile'>
                 <img class='profile-picture' src='./public/main/images/other/noavatar.png'>
                 <p class='username'>Opponent</p>
-                <p>($rating)</p>
-                <p>$flag</p>
+                <p>(<span id='enemy-rating'>$rating</span>)</p>
+                <p><span id='enemy-flag'>$flag</span></p>
             </div>
             <div id='game-container' class='game-container'></div>
             <div class='profile'>
                 <img class='profile-picture' src='./public/main/images/other/noavatar.png'>
                 <p class='username'>Player</p>
-                <p>($rating)</p>
-                <p>$flag</p>
+                <p>(<span id='user-rating'>$rating</span>)</p>
+                <p><span id='user-flag'>$flag</span></p>
             </div>
         </div>
-        <div class='panel right-panel'>
+        <div class='right-panel'>
             <div class='chat-container'>
                 <p>Chat</p>
             </div>

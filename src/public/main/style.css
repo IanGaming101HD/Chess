@@ -12,22 +12,15 @@ body {
 .left-panel {
     display: flex;
     flex-direction: column;
-    /* gap: 50px; */
-    /* justify-content: center;
-    align-items: center; */
-}
-
-.panel {
-    display: flex;
-    flex-direction: row;
+    width: fit-content;
 }
 
 .logo-container {
-    margin-left: 1.5%;
+    margin-left: 25%;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1px;
+    gap: 0.5px;
 }
 
 .logo {
@@ -36,13 +29,11 @@ body {
 }
 
 .left-panel-options {
-    position: fixed;
+    position: absolute;
     top: 7.5%;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    /* justify-content: center; */
-    /* align-items: center; */
 
 }
 
@@ -53,6 +44,11 @@ body {
     list-style-type: none;
 }
 
+.right-panel {
+    margin-top: 2%;
+    margin-left: 7.5%;
+}
+
 .centre-panel {
     display: flex;
     flex-direction: column;
@@ -60,9 +56,12 @@ body {
 }
 
 .chat-container {
-    background-color: #000000;
+    border-radius: 5px;
+    border-color: #000000;
+    border-width: 3px;
+    background-color: #00000070;
     width: 350px;
-    height: 500px;
+    height: 700px;
 }
 
 .profile {
@@ -89,16 +88,14 @@ body {
 }
 
 .container {
+    display: flex;
+    flex-direction: row;
+    /* gap: 5px; */
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .game-container {
     margin-left: 15%;
-    /* width: fit-content;
-    border-radius: 100px;
-    border: solid 5px #000000;
-    transform-origin: top;
-    transform: scale(1.2); */
 }
 
 /* .board {
@@ -136,6 +133,7 @@ body {
 
 .square {
     position: relative;
+    min-width: 90px;
     width: 90px;
     height: 90px;
     box-sizing: border-box;
@@ -156,7 +154,6 @@ body {
     position: relative;
     margin-top: 5%;
     height: 100%;
-    /* height: 110%; */
     z-index: 1;
     transform-origin: bottom;
     transform: scale(1.1);
@@ -171,7 +168,7 @@ body {
 }
 
 .label {
-    position: fixed;
+    position: absolute;
     font-size: 15px;
     z-index: 0;
 }
