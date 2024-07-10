@@ -4,6 +4,10 @@ Pieces:
 Add king - checkmate and statemate
 Add pawn - en passent 
 
+Chess Notations:
+Qe2 Qxe2#: White queen moves to e2, Black queen captures on e2 and checkmates.
+Example: e8=Q (pawn moves to e8 and promotes to a queen).
+
 Types Of Draw:
 Stalemate
 Dead Position
@@ -12,20 +16,12 @@ Threefold Repetition
 50-Move Rule
 
 Add click to move alongside drag on possible positions
-Add chess notations when moving pieces
 Add undo/redo feature
 Add flip board feature
 Add markings with arrows feature (maybe not needed for local 2 player)
 
-Chess Notations:
-x represents piece being taken
-+ represents check
-Queen moves to a1 -> Qa1
-Queen moves to pawn on a1 -> Qxa1
-Queen moves on a1 and checks -> Qa1+
-Pawn is only exception to being named, its the only unnamed piece in chess notation, if pawn moves from C4 and goes forward
-Example of chess notation: [ [ 1. b4 d5,  2. c4 dxc4 ], [ 1. b4 d5,  2. c4 dxc4 ] ]
-There is also notations for castling like O-O
-
 IMPORTANT NOTE:
 Convert updateCoordinate so it does both html and the class
+
+Issues:
+Checking - when king is check sometimes allies cant block the threat

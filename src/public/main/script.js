@@ -42,13 +42,27 @@ class Game {
         this.pieces_objects = [];
         this.game_over = false;
         this.selected_squareId;
-        this.notations = []
+        this.notations = [];
         this.method = new Method();
         this.defaultGame();
     }
 
     isDraw() {
+        function stalemate() {
 
+        }
+        function deadPosition() {
+
+        }
+        function mutualAgreement() {
+
+        }
+        function checkThreefoldRepetition() {
+
+        }
+        function check50Moves() {
+            
+        }
     }
 
     getDistance(square1, square2) {
@@ -72,7 +86,14 @@ class Game {
 
         return Math.max(charDistance, numDistance);
     }
-    
+    getOppositeColour(colour) {
+        let colourMap = {
+            white: 'black',
+            black: 'white',
+        };
+        return colourMap[colour]
+    }
+
     createBoard() {
         let gameContainer = document.getElementById('game-container');
         let board = document.createElement('div');
@@ -81,10 +102,6 @@ class Game {
         gameContainer.appendChild(board);
 
         let currentColour = 'white';
-        let oppositeColour = {
-            white: 'black',
-            black: 'white',
-        };
 
         for (let x = 8; x > 0; x--) {
             let row = document.createElement('div');
@@ -99,9 +116,9 @@ class Game {
                 square.classList.add('square');
                 square.classList.add(`${currentColour}-square`);
                 row.appendChild(square);
-                currentColour = oppositeColour[currentColour];
+                currentColour = this.getOppositeColour(currentColour);
             });
-            currentColour = oppositeColour[currentColour];
+            currentColour = this.getOppositeColour(currentColour);
         }
 
         let rows = Array.from(document.getElementsByClassName('row'));
@@ -157,16 +174,13 @@ class Game {
             'promotion-option-queen': Queen,
             'promotion-option-knight': Knight,
             'promotion-option-rook': Rook,
-            'promotion-option-bishop': Bishop
+            'promotion-option-bishop': Bishop,
         };
 
         Object.entries(promotionOptions).forEach(([optionId, pieceTypeObject]) => {
             let optionElement = document.getElementById(optionId);
             optionElement.addEventListener('click', () => {
-                let newPieceObject = new pieceTypeObject(colour,
-                    oldPiece.parentElement.id,
-                    `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`
-                );
+                let newPieceObject = new pieceTypeObject(colour, oldPiece.parentElement.id, `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`);
                 oldPiece.remove();
 
                 let element = document.getElementById(newPieceObject.id);
@@ -175,7 +189,7 @@ class Game {
                         event.dataTransfer.setData('text/plain', event.target.id);
                     });
                 }
-                game.pieces_objects = game.pieces_objects.filter((value) => value != oldPiece.id)
+                game.pieces_objects = game.pieces_objects.filter((value) => value != oldPiece.id);
                 game.pieces_objects.push(newPieceObject);
                 promotionContainer.remove();
             });
@@ -195,7 +209,7 @@ class Game {
         let possibleCapturesOverlays = Array.from(document.getElementsByClassName('possible-capture'));
         let overlays = possibleMovesOverlays.concat(possibleCapturesOverlays);
         return overlays;
-    };
+    }
 
     createOverlays(id) {
         let pieceObject = this.getPieceObjectById(id);
@@ -208,12 +222,12 @@ class Game {
             overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
             square.append(overlay);
         });
-    };
+    }
 
     removeAllOverlays() {
         let overlays = this.getOverlays();
         overlays.forEach((overlay) => overlay.remove());
-    };
+    }
 
     addHighlight(square) {
         if (square.classList.contains('white-square')) {
@@ -221,17 +235,17 @@ class Game {
         } else if (square.classList.contains('black-square')) {
             square.style.backgroundColor = '#DBC34A';
         }
-    };
+    }
 
     removeHighlight(square) {
         square.style.backgroundColor = '';
-    };
+    }
 
     removeAllHighlights(squares) {
         squares.forEach((square) => {
             square.style.backgroundColor = '';
         });
-    };
+    }
 
     defaultGame() {
         this.createBoard();
@@ -313,31 +327,33 @@ class Game {
                     return;
                 }
 
+                let notation = `${pieceObject.letter}${square.id}`;
                 if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
-                    let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`))
+                    let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`));
                     rookObjects.forEach((rookObject) => {
                         if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
-                            let rook = document.getElementById(rookObject.id)
+                            let rook = document.getElementById(rookObject.id);
                             let tempCoordinate = rook.parentElement.id;
 
                             if (game.getDistance(rookObject.coordinate, square.id) === 1) {
                                 for (let x = 0; x < 2; x++) {
-                                    tempCoordinate = rookObject.left(tempCoordinate)
+                                    tempCoordinate = rookObject.left(tempCoordinate);
                                 }
+                                notation = 'O-O'
                             } else {
                                 for (let x = 0; x < 3; x++) {
-                                    tempCoordinate = rookObject.right(tempCoordinate)
+                                    tempCoordinate = rookObject.right(tempCoordinate);
                                 }
+                                notation = 'O-O-O'
                             }
-                            let newSquare = document.getElementById(tempCoordinate)
+                            let newSquare = document.getElementById(tempCoordinate);
                             newSquare.appendChild(rook);
                             rookObject.updateCoordinate(newSquare.id);
-                            rookObject.canCastle = false
+                            rookObject.canCastle = false;
                         }
-                    })
-                } else 
-                if (king.id === piece.id) {
-                    kingObject.canCastle = false
+                    });
+                } else if (king.id === piece.id) {
+                    kingObject.canCastle = false;
                 }
 
                 if (piece.classList.contains('pawn')) {
@@ -354,14 +370,28 @@ class Game {
                 if (enemyPiece) {
                     let enemyPieceObject = this.getPieceObjectById(enemyPiece.id);
                     enemyPieceObject.remove();
+                    notation = `${pieceObject.letter}x${square.id}`
                 }
+
+                let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
+                let enemyKingObject = this.getPieceObjectById(enemyKing.id);
+                if (enemyKingObject.isCheck(this.pieces_objects)) {
+                    notation += '+'
+                }
+
+
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
+                if (game.players_turn === 'white') {
+                    this.notations.push([ notation ])
+                } else {
+                    this.notations[this.notations.length - 1].push(notation)
+                }
                 game.endTurn();
                 console.log(`Players Turn: ${game.players_turn}`);
+                console.log(this.notations.join(' '));
             });
         });
-        console.log(this.notations)
     }
     endTurn() {
         if (this.players_turn === 'white') {
@@ -415,7 +445,7 @@ class Piece {
         piece.src = `./public/main/images/pieces/${this.colour}/${this.name}.png`;
 
         position.appendChild(piece);
-        
+
         piece.addEventListener('dragstart', (event) => {
             let square = piece.parentElement;
             let overlays = game.getOverlays();
@@ -424,11 +454,11 @@ class Piece {
             }
             game.createOverlays(piece.id);
             if (game.selected_squareId) {
-                let previousSelectedSquare = document.getElementById(game.selected_squareId)
-                game.removeHighlight(previousSelectedSquare)
+                let previousSelectedSquare = document.getElementById(game.selected_squareId);
+                game.removeHighlight(previousSelectedSquare);
             }
             game.addHighlight(square);
-            game.selected_squareId = square.id
+            game.selected_squareId = square.id;
 
             event.dataTransfer.setData('text/plain', event.target.id);
         });
@@ -443,7 +473,8 @@ class Piece {
 class King extends Piece {
     constructor(colour, coordinate, id) {
         super('king', colour, coordinate, id);
-        this.moved = 0
+        this.letter = 'K'
+        this.moved = 0;
         this.canCastle = true;
     }
     getCoordinates() {
@@ -504,17 +535,20 @@ class King extends Piece {
         return possibleCoordinates;
     }
     isCheck() {
-        let check = game.pieces_objects.filter((pieceObject) => pieceObject.colour !== this.colour).some((pieceObject) => {
-            let possibleCoordinates = pieceObject.getCoordinates()
-            if (possibleCoordinates.includes(this.coordinate)) return true;
-        });
-        return check
+        let check = game.pieces_objects
+            .filter((pieceObject) => pieceObject.colour !== this.colour)
+            .some((pieceObject) => {
+                let possibleCoordinates = pieceObject.getCoordinates();
+                if (possibleCoordinates.includes(this.coordinate)) return true;
+            });
+        return check;
     }
 }
 
 class Queen extends Piece {
     constructor(colour, coordinate, id) {
         super('queen', colour, coordinate, id);
+        this.letter = 'Q'
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -552,6 +586,7 @@ class Queen extends Piece {
 class Rook extends Piece {
     constructor(colour, coordinate, id) {
         super('rook', colour, coordinate, id);
+        this.letter = 'R'
         this.canCastle = true;
     }
     getCoordinates() {
@@ -590,6 +625,7 @@ class Rook extends Piece {
 class Bishop extends Piece {
     constructor(colour, coordinate, id) {
         super('bishop', colour, coordinate, id);
+        this.letter = 'B'
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -634,6 +670,7 @@ class Bishop extends Piece {
 class Knight extends Piece {
     constructor(colour, coordinate, id) {
         super('knight', colour, coordinate, id);
+        this.letter = 'N'
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -648,7 +685,7 @@ class Knight extends Piece {
             ['left', 'left', 'up'],
             ['left', 'left', 'down'],
             ['right', 'right', 'up'],
-            ['right', 'right', 'down']
+            ['right', 'right', 'down'],
         ];
 
         sequences.forEach((sequence) => {
@@ -671,6 +708,7 @@ class Knight extends Piece {
 class Pawn extends Piece {
     constructor(colour, coordinate, id) {
         super('pawn', colour, coordinate, id);
+        this.letter = ''
         this.firstMove = true;
     }
     getCoordinates() {
