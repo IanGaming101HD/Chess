@@ -9,6 +9,76 @@ body {
     overflow-x: hidden;
 }
 
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    /* gap: 50px; */
+    /* justify-content: center;
+    align-items: center; */
+}
+
+.panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.logo-container {
+    margin-left: 1.5%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+}
+
+.left-panel-options {
+    position: fixed;
+    top: 7.5%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* justify-content: center; */
+    /* align-items: center; */
+
+}
+
+.left-panel-option {
+    color: #ffffff;
+    font-size: 20px;
+    cursor: pointer;
+    list-style-type: none;
+}
+
+.centre-panel {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.chat-container {
+    background-color: #000000;
+    width: 350px;
+    height: 500px;
+}
+
+.profile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+    margin-left: 15%;
+    margin-bottom: 0%;
+}
+
+.profile-picture {
+    width: 25px;
+    height: 25px
+}
+
 .centre {
     display: flex;
     flex-direction: row;
@@ -22,18 +92,41 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-/* .game-container {
+.game-container {
+    margin-left: 15%;
+    /* width: fit-content;
+    border-radius: 100px;
+    border: solid 5px #000000;
     transform-origin: top;
-    transform: scale(1.2);
+    transform: scale(1.2); */
+}
+
+/* .board {
+    border-radius: 5px;
 } */
+
+#a8 {
+    border-radius: 5px 0px 0px 0px;
+}
+
+#h8 {
+    border-radius: 0px 5px 0px 0px;
+}
+
+#a1 {
+    border-radius: 0px 0px 0px 5px;
+}
+
+#h1 {
+    border-radius: 0px 0px 5px 0px;
+}
 
 .header {
     color: #ffffff;
 }
 
-.player-name {
+.username {
     color: #ffffff;
-    /* margin-top: 10%; */
 }
 
 

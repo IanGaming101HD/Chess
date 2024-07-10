@@ -5,14 +5,42 @@
 <head>
     <title>Chess</title>
     <link rel='stylesheet' href='./public/main/style.css'>
+    <link rel='icon' href='./public/main/images/other/chess-logo.png'>
 </head>
 
 <body>
     <div class='container'>
-        <h1 class='header centre'>Chess</h1>
-        <p class='player-name centre'>Opponent</p>
-        <div id='game-container' class='game-container centre'></div>
-        <p class='player-name centre'>Player</p>
+        <div class='panel left-panel'>
+            <div class='logo-container'>
+                <img class='logo' src='./public/main/images/other/chess-logo.png'>
+                <h1 class='header'>Chess</h1>
+            </div>
+            <ul class='left-panel-options'>
+                <li class='left-panel-option'>Play</li>
+                <li class='left-panel-option'>Change Skin</li>
+                <li class='left-panel-option'>Settings</li>
+            </ul>
+        </div>
+        <div class='panel centre-panel'>
+            <div class='profile'>
+                <img class='profile-picture' src='./public/main/images/other/noavatar.png'>
+                <p class='username'>Opponent</p>
+                <p>($rating)</p>
+                <p>$flag</p>
+            </div>
+            <div id='game-container' class='game-container'></div>
+            <div class='profile'>
+                <img class='profile-picture' src='./public/main/images/other/noavatar.png'>
+                <p class='username'>Player</p>
+                <p>($rating)</p>
+                <p>$flag</p>
+            </div>
+        </div>
+        <div class='panel right-panel'>
+            <div class='chat-container'>
+                <p>Chat</p>
+            </div>
+        </div>
     </div>
     <script type='text/javascript' src='./public/main/script.js'></script>
 </body>
