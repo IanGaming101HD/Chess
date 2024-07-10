@@ -318,14 +318,16 @@ class Game {
                 previousSquare = piece.parentElement;
                 this.removeAllOverlays();
                 game.selected_squareId = null;
+                square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
 
                 let check = kingObject.isCheck(this.pieces_objects);
-                previousSquare.appendChild(piece);
                 if (check) {
+                    previousSquare.appendChild(piece);
                     pieceObject.updateCoordinate(previousSquare.id);
                     return;
                 }
+                previousSquare.appendChild(piece);
 
                 let notation = `${pieceObject.letter}${square.id}`;
                 if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
