@@ -22,6 +22,3 @@ Add markings with arrows feature (maybe not needed for local 2 player)
 
 IMPORTANT NOTE:
 Convert updateCoordinate so it does both html and the class
-
-Issues:
-Checking - when king is check sometimes allies cant block the threat
