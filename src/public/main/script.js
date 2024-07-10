@@ -83,7 +83,6 @@ class Game {
 
         }
     }
-
     getDistance(square1, square2) {
         let charMap = {
             a: 0,
@@ -112,7 +111,6 @@ class Game {
         };
         return colourMap[colour]
     }
-
     createBoard() {
         let gameContainer = document.getElementById('game-container');
         let board = document.createElement('div');
@@ -231,16 +229,31 @@ class Game {
     }
 
     createOverlays(id) {
+        let piece = document.getElementById(id)
+        if (!piece) return;
+
         let pieceObject = this.getPieceObjectById(id);
         if (!pieceObject) return;
         if (game.players_turn !== pieceObject.colour) return;
 
+        let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(pieceObject.colour));
+        let kingObject = this.getPieceObjectById(king.id);
+        let previousSquare = document.getElementById(pieceObject.coordinate);
         let possibleCoordinates = pieceObject.getCoordinates();
         possibleCoordinates.forEach((coordinate) => {
             let square = document.getElementById(coordinate);
             let overlay = document.createElement('div');
-            overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
-            square.append(overlay);
+
+            square.appendChild(piece);
+            pieceObject.updateCoordinate(square.id);
+
+            let check = kingObject.isCheck(this.pieces_objects);
+            previousSquare.appendChild(piece);
+            pieceObject.updateCoordinate(previousSquare.id);
+            if (!check) {
+                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
+                square.appendChild(overlay);
+            }
         });
     }
 
@@ -348,16 +361,16 @@ class Game {
                 previousSquare = piece.parentElement;
                 this.removeAllOverlays();
                 game.selected_squareId = null;
+                
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
 
                 let check = kingObject.isCheck(this.pieces_objects);
+                previousSquare.appendChild(piece);
+                pieceObject.updateCoordinate(previousSquare.id);
                 if (check) {
-                    previousSquare.appendChild(piece);
-                    pieceObject.updateCoordinate(previousSquare.id);
                     return;
                 }
-                previousSquare.appendChild(piece);
 
                 let notation = `${pieceObject.letter}${square.id}`;
                 if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
