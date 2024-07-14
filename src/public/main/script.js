@@ -2,6 +2,7 @@ class Method {
     constructor() {
         this.alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'y', 'z'];
     }
+
     increment(value) {
         if (value.toLowerCase().match(/[a-z]/i)) {
             value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) + 1];
@@ -14,6 +15,7 @@ class Method {
             return value;
         }
     }
+
     decrement(value) {
         if (value.toLowerCase().match(/[a-z]/i)) {
             value = this.alphabet[this.alphabet.indexOf(value.toLowerCase()) - 1];
@@ -26,6 +28,7 @@ class Method {
             return value;
         }
     }
+
     convertRgbToHex(rgba) {
         let hex = `#${rgba
             .match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+\.{0,1}\d*))?\)$/)
@@ -41,46 +44,41 @@ class Game {
         this.players_turn = 'white';
         this.pieces_objects = [];
         this.game_over = false;
-        this.selected_squareId;
+        this.selected_coordinate;
         this.notations = [];
         this.method = new Method();
         this.defaultGame();
     }
 
     isDraw() {
-        function stalemate() {
-            
-        }
+        function stalemate() {}
 
-        function deadPosition() {
-
-        }
+        function deadPosition() {}
 
         // function mutualAgreement() {
 
         // }
 
         function checkThreefoldRepetition() {
-            consecutiveMove = 0
+            consecutiveMove = 0;
             let status = this.notations.some((notation, index) => {
                 if (index > 0 && notation === this.notations[index - 1]) {
-                    consecutiveMove += 1
+                    consecutiveMove += 1;
                 }
                 if (consecutiveMove >= 3) {
-                    return true
+                    return true;
                 }
-            })
-            return status
+            });
+            return status;
         }
 
         function check50Moves() {
             if (this.notations.length >= 50) {
-                return true
+                return true;
             }
-            return false
+            return false;
         }
-        if (stalemate(), deadPosition(), checkThreefoldRepetition(), check50Moves()) {
-
+        if ((stalemate(), deadPosition(), checkThreefoldRepetition(), check50Moves())) {
         }
     }
     getDistance(square1, square2) {
@@ -109,7 +107,7 @@ class Game {
             white: 'black',
             black: 'white',
         };
-        return colourMap[colour]
+        return colourMap[colour];
     }
     createBoard() {
         let gameContainer = document.getElementById('game-container');
@@ -197,7 +195,7 @@ class Game {
         Object.entries(promotionOptions).forEach(([optionId, pieceTypeObject]) => {
             let optionElement = document.getElementById(optionId);
             optionElement.addEventListener('click', () => {
-                let newPieceObject = new pieceTypeObject(colour, oldPiece.parentElement.id, `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`);
+                let newPieceObject = new pieceTypeObject(colour, oldPiece.parentElement.id, `${colour}-${pieceTypeObject.name.toLowerCase()}-${Piece.pieces_ids.filter((pieceId) => pieceId.includes(`${colour}-${pieceTypeObject.name.toLowerCase()}`)).length + 1}`);
                 oldPiece.remove();
 
                 let element = document.getElementById(newPieceObject.id);
@@ -229,7 +227,7 @@ class Game {
     }
 
     createOverlays(id) {
-        let piece = document.getElementById(id)
+        let piece = document.getElementById(id);
         if (!piece) return;
 
         let pieceObject = this.getPieceObjectById(id);
@@ -247,7 +245,7 @@ class Game {
             square.appendChild(piece);
             pieceObject.updateCoordinate(square.id);
 
-            let check = kingObject.isCheck(this.pieces_objects);
+            let check = kingObject.isCheck();
             previousSquare.appendChild(piece);
             pieceObject.updateCoordinate(previousSquare.id);
             if (!check) {
@@ -283,47 +281,47 @@ class Game {
     defaultGame() {
         this.createBoard();
 
-        let whiteRook = new Rook('white', 'a1');
-        let whiteKnight = new Knight('white', 'b1');
-        let whiteBishop = new Bishop('white', 'c1');
-        let whiteQueen = new Queen('white', 'd1');
-        let whiteKing = new King('white', 'e1');
-        let whiteBishop2 = new Bishop('white', 'f1');
-        let whiteKnight2 = new Knight('white', 'g1');
-        let whiteRook2 = new Rook('white', 'h1');
-        let whitePawn = new Pawn('white', 'a2');
-        let whitePawn2 = new Pawn('white', 'b2');
-        let whitePawn3 = new Pawn('white', 'c2');
-        let whitePawn4 = new Pawn('white', 'd2');
-        let whitePawn5 = new Pawn('white', 'e2');
-        let whitePawn6 = new Pawn('white', 'f2');
-        let whitePawn7 = new Pawn('white', 'g2');
-        let whitePawn8 = new Pawn('white', 'h2');
-        let blackRook = new Rook('black', 'a8');
-        let blackKnight = new Knight('black', 'b8');
-        let blackBishop = new Bishop('black', 'c8');
-        let blackQueen = new Queen('black', 'd8');
-        let blackKing = new King('black', 'e8');
-        let blackBishop2 = new Bishop('black', 'f8');
-        let blackKnight2 = new Knight('black', 'g8');
-        let blackRook2 = new Rook('black', 'h8');
-        let blackPawn = new Pawn('black', 'a7');
-        let blackPawn2 = new Pawn('black', 'b7');
-        let blackPawn3 = new Pawn('black', 'c7');
-        let blackPawn4 = new Pawn('black', 'd7');
-        let blackPawn5 = new Pawn('black', 'e7');
-        let blackPawn6 = new Pawn('black', 'f7');
-        let blackPawn7 = new Pawn('black', 'g7');
-        let blackPawn8 = new Pawn('black', 'h7');
-
-        this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-
-        // let whitePawn = new Pawn('white', 'd3');
+        // let whiteRook = new Rook('white', 'a1');
+        // let whiteKnight = new Knight('white', 'b1');
+        // let whiteBishop = new Bishop('white', 'c1');
+        // let whiteQueen = new Queen('white', 'd1');
         // let whiteKing = new King('white', 'e1');
-        // let blackPawn = new Pawn('black', 'e7');
+        // let whiteBishop2 = new Bishop('white', 'f1');
+        // let whiteKnight2 = new Knight('white', 'g1');
+        // let whiteRook2 = new Rook('white', 'h1');
+        // let whitePawn = new Pawn('white', 'a2');
+        // let whitePawn2 = new Pawn('white', 'b2');
+        // let whitePawn3 = new Pawn('white', 'c2');
+        // let whitePawn4 = new Pawn('white', 'd2');
+        // let whitePawn5 = new Pawn('white', 'e2');
+        // let whitePawn6 = new Pawn('white', 'f2');
+        // let whitePawn7 = new Pawn('white', 'g2');
+        // let whitePawn8 = new Pawn('white', 'h2');
+        // let blackRook = new Rook('black', 'a8');
+        // let blackKnight = new Knight('black', 'b8');
+        // let blackBishop = new Bishop('black', 'c8');
+        // let blackQueen = new Queen('black', 'd8');
         // let blackKing = new King('black', 'e8');
+        // let blackBishop2 = new Bishop('black', 'f8');
+        // let blackKnight2 = new Knight('black', 'g8');
+        // let blackRook2 = new Rook('black', 'h8');
+        // let blackPawn = new Pawn('black', 'a7');
+        // let blackPawn2 = new Pawn('black', 'b7');
+        // let blackPawn3 = new Pawn('black', 'c7');
+        // let blackPawn4 = new Pawn('black', 'd7');
+        // let blackPawn5 = new Pawn('black', 'e7');
+        // let blackPawn6 = new Pawn('black', 'f7');
+        // let blackPawn7 = new Pawn('black', 'g7');
+        // let blackPawn8 = new Pawn('black', 'h7');
 
-        // this.pieces_objects = [whitePawn, whiteKing, blackPawn, blackKing];
+        // this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
+
+        let whiteRook = new Rook('white', 'g1');
+        let whiteRook2 = new Rook('white', 'g2');
+        let whiteKing = new King('white', 'a1');
+        let blackKing = new King('black', 'h8');
+
+        this.pieces_objects = [whiteRook, whiteRook2, whiteKing, blackKing];
 
         let squares = Array.from(document.getElementsByClassName('square'));
         let previousSquare;
@@ -355,14 +353,16 @@ class Game {
                 if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
                 let kingObject = this.getPieceObjectById(king.id);
+                let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
+                let enemyKingObject = this.getPieceObjectById(enemyKing.id);
                 previousSquare = piece.parentElement;
                 this.removeAllOverlays();
-                game.selected_squareId = null;
-                
+                game.selected_coordinate = null;
+
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
 
-                let check = kingObject.isCheck(this.pieces_objects);
+                let check = kingObject.isCheck();
                 previousSquare.appendChild(piece);
                 pieceObject.updateCoordinate(previousSquare.id);
                 if (check) {
@@ -381,12 +381,12 @@ class Game {
                                 for (let x = 0; x < 2; x++) {
                                     tempCoordinate = rookObject.left(tempCoordinate);
                                 }
-                                notation = 'O-O'
+                                notation = 'O-O';
                             } else {
                                 for (let x = 0; x < 3; x++) {
                                     tempCoordinate = rookObject.right(tempCoordinate);
                                 }
-                                notation = 'O-O-O'
+                                notation = 'O-O-O';
                             }
                             let newSquare = document.getElementById(tempCoordinate);
                             newSquare.appendChild(rook);
@@ -397,31 +397,33 @@ class Game {
                 } else if (king.id === piece.id) {
                     kingObject.canCastle = false;
                 }
-                this.pieces_objects.filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === colour).forEach((pieceObject) => {
-                    if (pieceObject.canBeEnPassent) {
-                        pieceObject.canBeEnPassent = false
-                    }
-                })
+                this.pieces_objects
+                    .filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === colour)
+                    .forEach((pieceObject) => {
+                        if (pieceObject.canBeEnPassent) {
+                            pieceObject.canBeEnPassent = false;
+                        }
+                    });
 
                 if (piece.classList.contains('pawn')) {
                     if (pieceObject.firstMove) {
                         if (game.getDistance(pieceObject.coordinate, square.id) == 2) {
-                            pieceObject.canBeEnPassent = true
+                            pieceObject.canBeEnPassent = true;
                         }
                         pieceObject.firstMove = false;
                     }
                     ['left', 'right'].forEach((horizontalDirection) => {
                         if (pieceObject[horizontalDirection](pieceObject[pieceObject.vertical_direction](previousSquare.id)) === square.id) {
-                            let enemyPawn = Array.from(document.getElementById(pieceObject[horizontalDirection](previousSquare.id)).children).find((child) => child.classList.contains('piece') && child.classList.contains('pawn') && child.classList.contains(this.getOppositeColour(pieceObject.colour)))
+                            let enemyPawn = Array.from(document.getElementById(pieceObject[horizontalDirection](previousSquare.id)).children).find((child) => child.classList.contains('piece') && child.classList.contains('pawn') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
                             if (enemyPawn) {
                                 let enemyPawnObject = this.getPieceObjectById(enemyPawn.id);
                                 if (enemyPawnObject.canBeEnPassent) {
                                     enemyPawnObject.remove();
-                                    notation = `${previousSquare.id[0]}x${square.id} e.p.`
+                                    notation = `${previousSquare.id[0]}x${square.id} e.p.`;
                                 }
                             }
                         }
-                    })
+                    });
                     pieceObject.checkPromotion(piece, square);
                 }
                 this.removeAllHighlights(squares);
@@ -432,24 +434,25 @@ class Game {
                 if (enemyPiece) {
                     let enemyPieceObject = this.getPieceObjectById(enemyPiece.id);
                     enemyPieceObject.remove();
-                    notation = `${pieceObject.letter}x${square.id}`
-                }
-
-                let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
-                let enemyKingObject = this.getPieceObjectById(enemyKing.id);
-                if (enemyKingObject.isCheck(this.pieces_objects)) {
-                    notation += '+'
+                    notation = `${pieceObject.letter}x${square.id}`;
                 }
 
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
+
+                if (enemyKingObject.isCheckmate()) {
+                    outcomeContainer.style.visibility = 'visible';
+                    notation += '#';
+                } else if (enemyKingObject.isCheck(this.pieces_objects)) {
+                    notation += '+';
+                }
+
                 if (game.players_turn === 'white') {
-                    this.notations.push([ notation ])
+                    this.notations.push([notation]);
                 } else {
-                    this.notations[this.notations.length - 1].push(notation)
+                    this.notations[this.notations.length - 1].push(notation);
                 }
                 game.endTurn();
-                console.log(`Players Turn: ${game.players_turn}`);
                 console.log(this.notations.join(' '));
             });
         });
@@ -464,12 +467,12 @@ class Game {
 }
 
 class Piece {
-    static piecesIds = [];
+    static pieces_ids = [];
     constructor(name, colour, coordinate, id) {
         this.name = name;
         this.colour = colour;
         this.coordinate = coordinate;
-        this.id = id ? id : `${colour}-${name}-${Piece.piecesIds.filter((pieceId) => pieceId.includes(`${colour}-${name}`)).length + 1}`;
+        this.id = id ? id : `${colour}-${name}-${Piece.pieces_ids.filter((pieceId) => pieceId.includes(`${colour}-${name}`)).length + 1}`;
         this.method = new Method();
         this.create();
     }
@@ -497,7 +500,7 @@ class Piece {
         let position = document.getElementById(this.coordinate);
         let piece = document.createElement('img');
 
-        Piece.piecesIds.push(this.id);
+        Piece.pieces_ids.push(this.id);
 
         piece.id = this.id;
         piece.classList.add('piece');
@@ -514,12 +517,12 @@ class Piece {
                 game.removeAllOverlays();
             }
             game.createOverlays(piece.id);
-            if (game.selected_squareId) {
-                let previousSelectedSquare = document.getElementById(game.selected_squareId);
+            if (game.selected_coordinate) {
+                let previousSelectedSquare = document.getElementById(game.selected_coordinate);
                 game.removeHighlight(previousSelectedSquare);
             }
             game.addHighlight(square);
-            game.selected_squareId = square.id;
+            game.selected_coordinate = square.id;
 
             event.dataTransfer.setData('text/plain', event.target.id);
         });
@@ -534,7 +537,7 @@ class Piece {
 class King extends Piece {
     constructor(colour, coordinate, id) {
         super('king', colour, coordinate, id);
-        this.letter = 'K'
+        this.letter = 'K';
         this.canCastle = true;
     }
     getCoordinates() {
@@ -603,12 +606,40 @@ class King extends Piece {
             });
         return check;
     }
+    isCheckmate() {
+        let checkmate = true;
+        game.pieces_objects
+            .filter((pieceObject) => pieceObject.colour === this.colour)
+            .forEach((pieceObject) => {
+                let piece = document.getElementById(pieceObject.id);
+                let possibleCoordinates = pieceObject.getCoordinates();
+                let updatedPossibleCoordinates = [];
+                let originalCooordinate = pieceObject.coordinate;
+                possibleCoordinates.forEach((coordinate) => {
+                    let square = document.getElementById(coordinate);
+                    square.appendChild(piece);
+                    pieceObject.updateCoordinate(square.id);
+
+                    let check = this.isCheck();
+                    let previousSquare = document.getElementById(originalCooordinate);
+                    previousSquare.appendChild(piece);
+                    pieceObject.updateCoordinate(originalCooordinate);
+                    if (!check) {
+                        updatedPossibleCoordinates.push(coordinate);
+                    }
+                });
+                if (updatedPossibleCoordinates.length > 0) {
+                    checkmate = false;
+                }
+            });
+        return checkmate;
+    }
 }
 
 class Queen extends Piece {
     constructor(colour, coordinate, id) {
         super('queen', colour, coordinate, id);
-        this.letter = 'Q'
+        this.letter = 'Q';
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -646,7 +677,7 @@ class Queen extends Piece {
 class Rook extends Piece {
     constructor(colour, coordinate, id) {
         super('rook', colour, coordinate, id);
-        this.letter = 'R'
+        this.letter = 'R';
         this.canCastle = true;
     }
     getCoordinates() {
@@ -685,7 +716,7 @@ class Rook extends Piece {
 class Bishop extends Piece {
     constructor(colour, coordinate, id) {
         super('bishop', colour, coordinate, id);
-        this.letter = 'B'
+        this.letter = 'B';
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -730,7 +761,7 @@ class Bishop extends Piece {
 class Knight extends Piece {
     constructor(colour, coordinate, id) {
         super('knight', colour, coordinate, id);
-        this.letter = 'N'
+        this.letter = 'N';
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -770,7 +801,7 @@ class Pawn extends Piece {
         super('pawn', colour, coordinate, id);
         let verticalDirections = { white: 'up', black: 'down' };
         this.vertical_direction = verticalDirections[colour];
-        this.letter = ''
+        this.letter = '';
         this.moved = 0;
         this.firstMove = true;
         this.canBeEnPassent = false;
@@ -822,7 +853,7 @@ class Pawn extends Piece {
 
             let square = squares.find((value) => value.id === tempCoordinate);
             if (square) {
-                let enemyPawn = Array.from(square.children).find((child) => child.classList.contains('piece') && child.id.includes(`${game.getOppositeColour(colour)}-pawn`))
+                let enemyPawn = Array.from(square.children).find((child) => child.classList.contains('piece') && child.id.includes(`${game.getOppositeColour(colour)}-pawn`));
                 if (enemyPawn && game.getPieceObjectById(enemyPawn.id).canBeEnPassent) {
                     tempCoordinate = this[this.vertical_direction](tempCoordinate);
                     possibleCoordinates.push(tempCoordinate);
@@ -842,16 +873,32 @@ class Pawn extends Piece {
 let gameContainer = document.getElementById('game-container');
 let game = new Game();
 
-let userRating = document.getElementById('user-rating')
-let userFlag = document.getElementById('user-flag')
-let enemyRating = document.getElementById('enemy-rating')
-let enemyFlag = document.getElementById('enemy-flag')
+let outcomeContainer = document.getElementById('outcome-container');
+let closeButton = document.getElementById('close-button');
+let newButton = document.getElementById('new-button');
+let userRating = document.getElementById('user-rating');
+let userFlag = document.getElementById('user-flag');
+let enemyRating = document.getElementById('enemy-rating');
+let enemyFlag = document.getElementById('enemy-flag');
 
-userRating.innerHTML = '500'
-userFlag.innerHTML = '🇬🇧'
-enemyRating.innerHTML = '500'
-enemyFlag.innerHTML = '🇬🇧'
+userRating.innerHTML = '500';
+userFlag.innerHTML = '🇬🇧';
+enemyRating.innerHTML = '500';
+enemyFlag.innerHTML = '🇬🇧';
 
 gameContainer.addEventListener('contextmenu', (event) => {
     event.preventDefault();
+});
+
+[closeButton, newButton].forEach((button) => {
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        Piece.pieces_ids = [];
+
+        let board = document.getElementById('board');
+        board.remove()
+
+        game = new Game();
+        outcomeContainer.style.visibility = 'hidden';
+    });
 });

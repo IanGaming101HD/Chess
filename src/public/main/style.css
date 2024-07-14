@@ -266,15 +266,17 @@ body {
 }
 
 .outcome-container {
-    visibility: hidden;
-    position: fixed;
+    /* visibility: hidden; */
+    position: absolute;
     display: flex;
     flex-direction: column;
-    width: 17.5%;
-    height: 35%;
+    /* justify-content: center;
+    align-items: center; */
+    width: 250px;
+    height: 320px;
     top: 22.5%;
-    left: 22.75%;
-    border-radius: 50px 50px 10px 10px;
+    left: 34%;
+    border-radius: 10px 10px 10px 10px;
     background-color: #ffffff;
     z-index: 1;
 }

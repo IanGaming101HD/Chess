@@ -1,10 +1,16 @@
 Notes:                                                                                                            Date: 08/06/2024
 
-En Passent:
-Not function correctly, canBeEnPassent not staying on the pawn for some reason
-
 Highlighting:
 Found small issue with highlighting on previous piece that just moved, highlighting can be removed but it should stay
+
+Issues - Check:
+king can capture piece even tho it will be checked
+
+some black pawn cant diag kill at start or maybe when king is check
+
+TypeError: document.getElementById(...) is null
+    defaultGame http://localhost/public/main/script.js:401
+    defaultGame http://localhost/public/main/script.js:401
 
 Pieces:
 Add king - checkmate and statemate
