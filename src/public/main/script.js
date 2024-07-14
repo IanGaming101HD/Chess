@@ -397,9 +397,8 @@ class Game {
                 } else if (king.id === piece.id) {
                     kingObject.canCastle = false;
                 }
-                this.pieces_objects.filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === pieceObject.colour).forEach((pieceObject) => {
+                this.pieces_objects.filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === colour).forEach((pieceObject) => {
                     if (pieceObject.canBeEnPassent) {
-                        console.log(pieceObject.name, pieceObject.coordinate, 'no longer can be en passented')
                         pieceObject.canBeEnPassent = false
                     }
                 })
