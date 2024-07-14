@@ -399,6 +399,7 @@ class Game {
                 }
                 this.pieces_objects.filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === pieceObject.colour).forEach((pieceObject) => {
                     if (pieceObject.canBeEnPassent) {
+                        console.log(pieceObject.name, pieceObject.coordinate, 'no longer can be en passented')
                         pieceObject.canBeEnPassent = false
                     }
                 })
@@ -415,8 +416,10 @@ class Game {
                             let enemyPawn = Array.from(document.getElementById(pieceObject[horizontalDirection](previousSquare.id)).children).find((child) => child.classList.contains('piece') && child.classList.contains('pawn') && child.classList.contains(this.getOppositeColour(pieceObject.colour)))
                             if (enemyPawn) {
                                 let enemyPawnObject = this.getPieceObjectById(enemyPawn.id);
-                                enemyPawnObject.remove();
-                                notation = `${previousSquare.id[0]}x${square.id} e.p.`
+                                if (enemyPawnObject.canBeEnPassent) {
+                                    enemyPawnObject.remove();
+                                    notation = `${previousSquare.id[0]}x${square.id} e.p.`
+                                }
                             }
                         }
                     })
@@ -805,13 +808,26 @@ class Pawn extends Piece {
             }
         }
         horizontalDirections.forEach((horizontalDirection) => {
+            tempCoordinate = this[horizontalDirection](this[this.vertical_direction](originalCoordinate));
+
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
+                }
+            }
+        });
+        horizontalDirections.forEach((horizontalDirection) => {
             tempCoordinate = this[horizontalDirection](originalCoordinate);
 
-            let square = document.getElementById(tempCoordinate);
-            let enemyPawn = Array.from(square.children).find((child) => child.classList.contains('piece') && child.id.includes(`${game.getOppositeColour(colour)}-pawn`))
-            if (square && enemyPawn && game.getPieceObjectById(enemyPawn.id).canBeEnPassent) {
-                tempCoordinate = this[this.vertical_direction](tempCoordinate);
-                possibleCoordinates.push(tempCoordinate);
+            let square = squares.find((value) => value.id === tempCoordinate);
+            if (square) {
+                let enemyPawn = Array.from(square.children).find((child) => child.classList.contains('piece') && child.id.includes(`${game.getOppositeColour(colour)}-pawn`))
+                if (enemyPawn && game.getPieceObjectById(enemyPawn.id).canBeEnPassent) {
+                    tempCoordinate = this[this.vertical_direction](tempCoordinate);
+                    possibleCoordinates.push(tempCoordinate);
+                }
             }
             tempCoordinate = originalCoordinate;
         });

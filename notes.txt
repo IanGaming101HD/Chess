@@ -1,5 +1,11 @@
 Notes:                                                                                                            Date: 08/06/2024
 
+En Passent:
+Not function correctly, canBeEnPassent not staying on the pawn for some reason
+
+Highlighting:
+Found small issue with highlighting on previous piece that just moved, highlighting can be removed but it should stay
+
 Pieces:
 Add king - checkmate and statemate
 

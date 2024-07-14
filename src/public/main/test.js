@@ -83,6 +83,7 @@ class Game {
 
         }
     }
+
     getDistance(square1, square2) {
         let charMap = {
             a: 0,
@@ -111,6 +112,7 @@ class Game {
         };
         return colourMap[colour]
     }
+
     createBoard() {
         let gameContainer = document.getElementById('game-container');
         let board = document.createElement('div');
@@ -229,31 +231,16 @@ class Game {
     }
 
     createOverlays(id) {
-        let piece = document.getElementById(id)
-        if (!piece) return;
-
         let pieceObject = this.getPieceObjectById(id);
         if (!pieceObject) return;
         if (game.players_turn !== pieceObject.colour) return;
 
-        let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(pieceObject.colour));
-        let kingObject = this.getPieceObjectById(king.id);
-        let previousSquare = document.getElementById(pieceObject.coordinate);
         let possibleCoordinates = pieceObject.getCoordinates();
         possibleCoordinates.forEach((coordinate) => {
             let square = document.getElementById(coordinate);
             let overlay = document.createElement('div');
-
-            square.appendChild(piece);
-            pieceObject.updateCoordinate(square.id);
-
-            let check = kingObject.isCheck(this.pieces_objects);
-            previousSquare.appendChild(piece);
-            pieceObject.updateCoordinate(previousSquare.id);
-            if (!check) {
-                overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
-                square.appendChild(overlay);
-            }
+            overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
+            square.append(overlay);
         });
     }
 
@@ -283,47 +270,50 @@ class Game {
     defaultGame() {
         this.createBoard();
 
-        let whiteRook = new Rook('white', 'a1');
-        let whiteKnight = new Knight('white', 'b1');
-        let whiteBishop = new Bishop('white', 'c1');
-        let whiteQueen = new Queen('white', 'd1');
-        let whiteKing = new King('white', 'e1');
-        let whiteBishop2 = new Bishop('white', 'f1');
-        let whiteKnight2 = new Knight('white', 'g1');
-        let whiteRook2 = new Rook('white', 'h1');
-        let whitePawn = new Pawn('white', 'a2');
-        let whitePawn2 = new Pawn('white', 'b2');
-        let whitePawn3 = new Pawn('white', 'c2');
-        let whitePawn4 = new Pawn('white', 'd2');
-        let whitePawn5 = new Pawn('white', 'e2');
-        let whitePawn6 = new Pawn('white', 'f2');
-        let whitePawn7 = new Pawn('white', 'g2');
-        let whitePawn8 = new Pawn('white', 'h2');
-        let blackRook = new Rook('black', 'a8');
-        let blackKnight = new Knight('black', 'b8');
-        let blackBishop = new Bishop('black', 'c8');
-        let blackQueen = new Queen('black', 'd8');
-        let blackKing = new King('black', 'e8');
-        let blackBishop2 = new Bishop('black', 'f8');
-        let blackKnight2 = new Knight('black', 'g8');
-        let blackRook2 = new Rook('black', 'h8');
-        let blackPawn = new Pawn('black', 'a7');
-        let blackPawn2 = new Pawn('black', 'b7');
-        let blackPawn3 = new Pawn('black', 'c7');
-        let blackPawn4 = new Pawn('black', 'd7');
-        let blackPawn5 = new Pawn('black', 'e7');
-        let blackPawn6 = new Pawn('black', 'f7');
-        let blackPawn7 = new Pawn('black', 'g7');
-        let blackPawn8 = new Pawn('black', 'h7');
-
-        this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-
-        // let whitePawn = new Pawn('white', 'd3');
+        // let whiteRook = new Rook('white', 'a1');
+        // let whiteKnight = new Knight('white', 'b1');
+        // let whiteBishop = new Bishop('white', 'c1');
+        // let whiteQueen = new Queen('white', 'd1');
         // let whiteKing = new King('white', 'e1');
-        // let blackPawn = new Pawn('black', 'e7');
+        // let whiteBishop2 = new Bishop('white', 'f1');
+        // let whiteKnight2 = new Knight('white', 'g1');
+        // let whiteRook2 = new Rook('white', 'h1');
+        // let whitePawn = new Pawn('white', 'a2');
+        // let whitePawn2 = new Pawn('white', 'b2');
+        // let whitePawn3 = new Pawn('white', 'c2');
+        // let whitePawn4 = new Pawn('white', 'd2');
+        // let whitePawn5 = new Pawn('white', 'e2');
+        // let whitePawn6 = new Pawn('white', 'f2');
+        // let whitePawn7 = new Pawn('white', 'g2');
+        // let whitePawn8 = new Pawn('white', 'h2');
+        // let blackRook = new Rook('black', 'a8');
+        // let blackKnight = new Knight('black', 'b8');
+        // let blackBishop = new Bishop('black', 'c8');
+        // let blackQueen = new Queen('black', 'd8');
         // let blackKing = new King('black', 'e8');
+        // let blackBishop2 = new Bishop('black', 'f8');
+        // let blackKnight2 = new Knight('black', 'g8');
+        // let blackRook2 = new Rook('black', 'h8');
+        // let blackPawn = new Pawn('black', 'a7');
+        // let blackPawn2 = new Pawn('black', 'b7');
+        // let blackPawn3 = new Pawn('black', 'c7');
+        // let blackPawn4 = new Pawn('black', 'd7');
+        // let blackPawn5 = new Pawn('black', 'e7');
+        // let blackPawn6 = new Pawn('black', 'f7');
+        // let blackPawn7 = new Pawn('black', 'g7');
+        // let blackPawn8 = new Pawn('black', 'h7');
 
-        // this.pieces_objects = [whitePawn, whiteKing, blackPawn, blackKing];
+        // this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
+
+        let whiteRook = new Rook('white', 'g1');
+        let whiteKing = new King('white', 'h1');
+        let whiteRook2 = new Rook('white', 'b2');
+        let blackRook = new Rook('black', 'a8');
+        let blackKing = new King('black', 'h8');
+        let blackRook2 = new Rook('black', 'b8');
+
+        this.pieces_objects = [whiteRook, whiteKing, whiteRook2, blackRook, blackKing, blackRook2];
+
 
         let squares = Array.from(document.getElementsByClassName('square'));
         let previousSquare;
@@ -363,14 +353,15 @@ class Game {
                 pieceObject.updateCoordinate(square.id);
 
                 let check = kingObject.isCheck(this.pieces_objects);
-                previousSquare.appendChild(piece);
-                pieceObject.updateCoordinate(previousSquare.id);
                 if (check) {
+                    previousSquare.appendChild(piece);
+                    pieceObject.updateCoordinate(previousSquare.id);
                     return;
                 }
+                previousSquare.appendChild(piece);
 
                 let notation = `${pieceObject.letter}${square.id}`;
-                if (piece.id === king.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
+                if (king.id === piece.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
                     let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`));
                     rookObjects.forEach((rookObject) => {
                         if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
@@ -397,29 +388,11 @@ class Game {
                 } else if (king.id === piece.id) {
                     kingObject.canCastle = false;
                 }
-                this.pieces_objects.filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === pieceObject.colour).forEach((pieceObject) => {
-                    if (pieceObject.canBeEnPassent) {
-                        pieceObject.canBeEnPassent = false
-                    }
-                })
 
                 if (piece.classList.contains('pawn')) {
                     if (pieceObject.firstMove) {
-                        if (game.getDistance(pieceObject.coordinate, square.id) == 2) {
-                            pieceObject.canBeEnPassent = true
-                        }
                         pieceObject.firstMove = false;
                     }
-                    ['left', 'right'].forEach((horizontalDirection) => {
-                        if (pieceObject[horizontalDirection](pieceObject[pieceObject.vertical_direction](previousSquare.id)) === square.id) {
-                            let enemyPawn = Array.from(document.getElementById(pieceObject[horizontalDirection](previousSquare.id)).children).find((child) => child.classList.contains('piece') && child.classList.contains('pawn') && child.classList.contains(this.getOppositeColour(pieceObject.colour)))
-                            if (enemyPawn) {
-                                let enemyPawnObject = this.getPieceObjectById(enemyPawn.id);
-                                enemyPawnObject.remove();
-                                notation = `${previousSquare.id[0]}x${square.id} e.p.`
-                            }
-                        }
-                    })
                     pieceObject.checkPromotion(piece, square);
                 }
                 this.removeAllHighlights(squares);
@@ -438,6 +411,7 @@ class Game {
                 if (enemyKingObject.isCheck(this.pieces_objects)) {
                     notation += '+'
                 }
+
 
                 square.appendChild(piece);
                 pieceObject.updateCoordinate(square.id);
@@ -533,6 +507,7 @@ class King extends Piece {
     constructor(colour, coordinate, id) {
         super('king', colour, coordinate, id);
         this.letter = 'K'
+        this.moved = 0;
         this.canCastle = true;
     }
     getCoordinates() {
@@ -766,24 +741,22 @@ class Knight extends Piece {
 class Pawn extends Piece {
     constructor(colour, coordinate, id) {
         super('pawn', colour, coordinate, id);
-        let verticalDirections = { white: 'up', black: 'down' };
-        this.vertical_direction = verticalDirections[colour];
         this.letter = ''
-        this.moved = 0;
         this.firstMove = true;
-        this.canBeEnPassent = false;
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
         let possibleCoordinates = [];
         let originalCoordinate = this.coordinate;
         let tempCoordinate = originalCoordinate;
+        let verticalDirections = { white: 'up', black: 'down' };
         let horizontalDirections = ['left', 'right'];
         let colour = this.colour;
 
+        // if (originalCoordinate.charAt(1) === '2') {
         if (this.firstMove) {
             for (let x = 0; x < 2; x++) {
-                tempCoordinate = this[this.vertical_direction](tempCoordinate);
+                tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
                 if (squares.some((value) => value.id === tempCoordinate)) {
                     let element = document.getElementById(tempCoordinate);
                     if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
@@ -795,7 +768,7 @@ class Pawn extends Piece {
             }
             tempCoordinate = originalCoordinate;
         } else {
-            tempCoordinate = this[this.vertical_direction](tempCoordinate);
+            tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
             if (squares.some((value) => value.id === tempCoordinate)) {
                 let element = document.getElementById(tempCoordinate);
                 if (!Array.from(element.children).some((value) => value.classList.contains('piece'))) {
@@ -805,16 +778,17 @@ class Pawn extends Piece {
             }
         }
         horizontalDirections.forEach((horizontalDirection) => {
-            tempCoordinate = this[horizontalDirection](originalCoordinate);
+            tempCoordinate = this[horizontalDirection](this[verticalDirections[colour]](originalCoordinate));
 
-            let square = document.getElementById(tempCoordinate);
-            let enemyPawn = Array.from(square.children).find((child) => child.classList.contains('piece') && child.id.includes(`${game.getOppositeColour(colour)}-pawn`))
-            if (square && enemyPawn && game.getPieceObjectById(enemyPawn.id).canBeEnPassent) {
-                tempCoordinate = this[this.vertical_direction](tempCoordinate);
-                possibleCoordinates.push(tempCoordinate);
+            if (squares.some((value) => value.id === tempCoordinate)) {
+                let element = document.getElementById(tempCoordinate);
+                if (Array.from(element.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+                    possibleCoordinates.push(tempCoordinate);
+                    tempCoordinate = originalCoordinate;
+                }
             }
-            tempCoordinate = originalCoordinate;
         });
+        tempCoordinate = originalCoordinate;
         return possibleCoordinates;
     }
     checkPromotion(piece, square) {
