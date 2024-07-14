@@ -1,13 +1,7 @@
 Notes:                                                                                                            Date: 08/06/2024
 
-En Passent:
-Right now in the middle of adding en passent, just need to add the en passent to capture enemy piece and notations.
-e5xd6: wrong format
-exd6 e.p.: right format
-
 Pieces:
 Add king - checkmate and statemate
-Add pawn - en passent 
 
 Chess Notations:
 Qe2 Qxe2#: White queen moves to e2, Black queen captures on e2 and checkmates.
