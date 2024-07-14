@@ -318,15 +318,12 @@ class Game {
 
         // this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
 
-        let whiteRook = new Rook('white', 'g1');
-        let whiteKing = new King('white', 'h1');
-        let whiteRook2 = new Rook('white', 'b2');
-        let blackRook = new Rook('black', 'a8');
-        let blackKing = new King('black', 'h8');
-        let blackRook2 = new Rook('black', 'b8');
+        let whitePawn = new Pawn('white', 'd3');
+        let whiteKing = new King('white', 'e1');
+        let blackPawn = new Pawn('black', 'e7');
+        let blackKing = new King('black', 'e8');
 
-        this.pieces_objects = [whiteRook, whiteKing, whiteRook2, blackRook, blackKing, blackRook2];
-
+        this.pieces_objects = [whitePawn, whiteKing, blackPawn, blackKing];
 
         let squares = Array.from(document.getElementsByClassName('square'));
         let previousSquare;
@@ -400,12 +397,12 @@ class Game {
                 } else if (king.id === piece.id) {
                     kingObject.canCastle = false;
                 }
-
-                this.pieces_objects.filter((pieceObject) => pieceObject.classList.contains('pawn') && pieceObject.colour == pieceObject.colour).forEach((pieceObject) => {
+                this.pieces_objects.filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour == pieceObject.colour).forEach((pieceObject) => {
                     if (pieceObject.canBeEnPassent) {
                         pieceObject.canBeEnPassent = false
                     }
                 })
+
                 if (piece.classList.contains('pawn')) {
                     if (pieceObject.firstMove) {
                         if (game.getDistance(pieceObject.coordinate, square.id) == 2) {
@@ -415,7 +412,6 @@ class Game {
                     }
                     pieceObject.checkPromotion(piece, square);
                 }
-
                 this.removeAllHighlights(squares);
                 this.addHighlight(previousSquare);
                 this.addHighlight(square);
@@ -774,7 +770,6 @@ class Pawn extends Piece {
         let horizontalDirections = ['left', 'right'];
         let colour = this.colour;
 
-        // if (originalCoordinate.charAt(1) === '2') {
         if (this.firstMove) {
             for (let x = 0; x < 2; x++) {
                 tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
@@ -799,15 +794,15 @@ class Pawn extends Piece {
             }
         }
         horizontalDirections.forEach((horizontalDirection) => {
-            tempCoordinate = this[horizontalDirection](this[verticalDirections[colour]](originalCoordinate));
+            tempCoordinate = this[horizontalDirection](originalCoordinate);
 
-            if (squares.some((value) => value.id === tempCoordinate)) {
-                let element = document.getElementById(tempCoordinate);
-                if (Array.from(element.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
-                    possibleCoordinates.push(tempCoordinate);
-                    tempCoordinate = originalCoordinate;
-                }
+            let square = document.getElementById(tempCoordinate);
+            let enemyPawn = Array.from(square.children).find((child) => child.classList.contains('piece') && child.id.includes(`${game.getOppositeColour(colour)}-pawn`))
+            if (square && enemyPawn && game.getPieceObjectById(enemyPawn.id).canBeEnPassent) {
+                tempCoordinate = this[verticalDirections[colour]](tempCoordinate);
+                possibleCoordinates.push(tempCoordinate);
             }
+            tempCoordinate = originalCoordinate;
         });
         tempCoordinate = originalCoordinate;
         return possibleCoordinates;

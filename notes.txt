@@ -1,7 +1,7 @@
 Notes:                                                                                                            Date: 08/06/2024
 
 En Passent:
-Right now in the middle of adding en passent, just need to add the en passent to possibleMoves and overlays and capture enemy piece.
+Right now in the middle of adding en passent, just need to add the en passent to capture enemy piece and notations.
 e5xd6: wrong format
 exd6 e.p.: right format
 
