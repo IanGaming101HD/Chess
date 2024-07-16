@@ -50,6 +50,13 @@ class Game {
         this.defaultGame();
     }
 
+    restart() {
+        let board = document.getElementById('board');
+        board.remove()
+
+        game = new Game();
+    }
+
     isDraw() {
         function stalemate() {}
 
@@ -895,10 +902,7 @@ gameContainer.addEventListener('contextmenu', (event) => {
         event.preventDefault();
         Piece.pieces_ids = [];
 
-        let board = document.getElementById('board');
-        board.remove()
-
-        game = new Game();
         outcomeContainer.style.visibility = 'hidden';
+        game.restart()
     });
 });

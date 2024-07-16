@@ -266,12 +266,10 @@ body {
 }
 
 .outcome-container {
-    /* visibility: hidden; */
+    visibility: hidden;
     position: absolute;
     display: flex;
     flex-direction: column;
-    /* justify-content: center;
-    align-items: center; */
     width: 250px;
     height: 320px;
     top: 22.5%;
