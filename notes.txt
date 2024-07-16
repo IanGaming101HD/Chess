@@ -1,5 +1,7 @@
 Notes:                                                                                                            Date: 08/06/2024
 
+Right now trying to tranfer isCheck to all pieces so it auto removes moves that are illegal and puts ur king as check
+
 Highlighting:
 Found small issue with highlighting on previous piece that just moved, highlighting can be removed but it should stay
 
@@ -11,6 +13,8 @@ some black pawn cant diag kill at start or maybe when king is check
 TypeError: document.getElementById(...) is null
     defaultGame http://localhost/public/main/script.js:401
     defaultGame http://localhost/public/main/script.js:401
+
+Possible issue with castling also
 
 Pieces:
 Add king - checkmate and statemate
