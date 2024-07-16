@@ -1,5 +1,7 @@
 Notes:                                                                                                            Date: 08/06/2024
 
+Main trouble rn being caused by castling.
+
 Right now trying to tranfer isCheck to all pieces so it auto removes moves that are illegal and puts ur king as check
 
 Highlighting:

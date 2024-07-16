@@ -361,10 +361,6 @@ class Game {
                 let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
                 let kingObject = this.getPieceObjectById(king.id);
                 let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
-                console.log(1, enemyKing)
-                console.log(2, enemyKing.id)
-                console.log(3, this.getPieceObjectById(enemyKing.id))
-                console.log(this.pieces_objects)
                 let enemyKingObject = this.getPieceObjectById(enemyKing.id);
                 previousSquare = piece.parentElement;
                 this.removeAllOverlays();
@@ -437,7 +433,6 @@ class Game {
                 let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
                 if (enemyPiece) {
                     let enemyPieceObject = this.getPieceObjectById(enemyPiece.id);
-                    console.log(enemyPieceObject.name, 'getting deleted')
                     enemyPieceObject.remove();
                     notation = `${pieceObject.letter}x${square.id}`;
                 }
@@ -544,7 +539,7 @@ class King extends Piece {
         super('king', colour, coordinate, id);
         this.letter = 'K';
         this.canCastle = true;
-        this.checkingForCheck = false;
+        this.check_in_progress = false;
     }
     getCoordinates() {
         let squares = Array.from(document.getElementsByClassName('square'));
@@ -566,7 +561,7 @@ class King extends Piece {
         });
 
         // if (this.canCastle) {
-        //     let rooks = Array.from(document.getElementsByClassName('piece')).filter((piece) => piece.classList.contains(this.colour));
+        //     let rooks = Array.from(document.getElementsByClassName('piece')).filter((piece) => piece.classList.contains('rook') && piece.classList.contains(this.colour));
         //     rooks.forEach((rook) => {
         //         let rookObject = game.getPieceObjectById(rook.id);
         //         if (rookObject.canCastle) {
@@ -575,6 +570,7 @@ class King extends Piece {
         //             if (game.getDistance(rookObject.coordinate, this.coordinate) === 3) {
         //                 for (let x = 0; x < 2; x++) {
         //                     tempCoordinate = this.right(tempCoordinate);
+        //                     console.log(tempCoordinate)
         //                     let square = document.getElementById(tempCoordinate);
         //                     if (Array.from(square.children).some((value) => value.classList.contains('piece'))) {
         //                         castlingPossible = false;
@@ -601,35 +597,25 @@ class King extends Piece {
         //         }
         //     });
         // }
-        console.log(possibleCoordinates, 1)
+        
         let previousSquare = document.getElementById(originalCoordinate);
-        let newPossibleCoordinates = []
 
-        if (!this.checkingForCheck) {
-            possibleCoordinates.forEach((possibleCoordinate) => {
+        if (!this.check_in_progress) {
+            possibleCoordinates = possibleCoordinates.filter((possibleCoordinate) => {
                 let square = document.getElementById(possibleCoordinate);
                 let piece = document.getElementById(this.id)
                 square.appendChild(piece);
                 this.updateCoordinate(square.id);
 
-                console.log(this.name, this.colour)
-                this.checkingForCheck = true;  // Set the flag before calling isCheck
+                this.check_in_progress = true;
                 let check = this.isCheck();
-                this.checkingForCheck = false;  // Unset the flag after calling isCheck
+                this.check_in_progress = false;
 
                 previousSquare.appendChild(piece);
                 this.updateCoordinate(originalCoordinate);
-                if (!check) {
-                    newPossibleCoordinates.push(possibleCoordinate);
-                }
+                return !check;
             });
-        } else {
-            newPossibleCoordinates = possibleCoordinates;  // Avoid further recursion if checking for check
         }
-
-        console.log(newPossibleCoordinates, 2)
-        return newPossibleCoordinates;
-
         return possibleCoordinates;
     }
     isCheck() {

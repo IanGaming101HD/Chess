@@ -446,7 +446,7 @@ class Game {
                 this.addHighlight(previousSquare);
                 this.addHighlight(square);
 
-                let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece'));
+                let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
                 if (enemyPiece) {
                     let enemyPieceObject = this.getPieceObjectById(enemyPiece.id);
                     enemyPieceObject.remove();
