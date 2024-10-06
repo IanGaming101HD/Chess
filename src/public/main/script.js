@@ -319,12 +319,19 @@ class Game {
     testGame() {
         this.createBoard();
 
-        let whiteRook = new Rook('white', 'g1');
-        let whiteRook2 = new Rook('white', 'g2');
-        let blackRook = new Rook('black', 'b8');
-        let blackRook2 = new Rook('black', 'b7');
-        let whiteKing = new King('white', 'a1');
-        let blackKing = new King('black', 'h8');
+        // let whiteRook = new Rook('white', 'g1');
+        // let whiteRook2 = new Rook('white', 'g2');
+        // let blackRook = new Rook('black', 'b8');
+        // let blackRook2 = new Rook('black', 'b7');
+        // let whiteKing = new King('white', 'a1');
+        // let blackKing = new King('black', 'h8');
+
+        let whiteRook = new Rook('white', 'a1');
+        let whiteRook2 = new Rook('white', 'h1');
+        let blackRook = new Rook('black', 'a8');
+        let blackRook2 = new Rook('black', 'h8');
+        let whiteKing = new King('white', 'e1');
+        let blackKing = new King('black', 'e8');
 
         this.pieces_objects = [whiteRook, whiteRook2, blackRook, blackRook2, whiteKing, blackKing];
         this.main()
