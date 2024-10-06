@@ -220,7 +220,7 @@ class Game {
         });
         promotionCloseButton.addEventListener('click', () => {
             promotionContainer.remove();
-            //   undo move or stop them from making move or something over here idk
+            // undo move or stop them from making move or something over here idk
         });
     }
 
@@ -568,43 +568,43 @@ class King extends Piece {
             });
         });
 
-        // if (this.canCastle) {
-        //     let rooks = Array.from(document.getElementsByClassName('piece')).filter((piece) => piece.classList.contains('rook') && piece.classList.contains(this.colour));
-        //     rooks.forEach((rook) => {
-        //         let rookObject = game.getPieceObjectById(rook.id);
-        //         if (rookObject.canCastle) {
-        //             let tempCoordinate = originalCoordinate;
-        //             let castlingPossible = true;
-        //             if (game.getDistance(rookObject.coordinate, this.coordinate) === 3) {
-        //                 for (let x = 0; x < 2; x++) {
-        //                     tempCoordinate = this.right(tempCoordinate);
-        //                     console.log(tempCoordinate)
-        //                     let square = document.getElementById(tempCoordinate);
-        //                     if (Array.from(square.children).some((value) => value.classList.contains('piece'))) {
-        //                         castlingPossible = false;
-        //                         break;
-        //                     }
-        //                 }
-        //                 if (castlingPossible) {
-        //                     possibleCoordinates.push(tempCoordinate);
-        //                 }
-        //             } else if (game.getDistance(rookObject.coordinate, this.coordinate) === 4) {
-        //                 for (let x = 0; x < 3; x++) {
-        //                     tempCoordinate = this.left(tempCoordinate);
-        //                     let square = document.getElementById(tempCoordinate);
-        //                     if (Array.from(square.children).some((value) => value.classList.contains('piece'))) {
-        //                         castlingPossible = false;
-        //                         break;
-        //                     }
-        //                 }
-        //                 if (castlingPossible) {
-        //                     tempCoordinate = this.right(tempCoordinate);
-        //                     possibleCoordinates.push(tempCoordinate);
-        //                 }
-        //             }
-        //         }
-        //     });
-        // }
+        // Castling
+        if (this.canCastle) {
+            let rooks = Array.from(document.getElementsByClassName('piece')).filter((piece) => piece.classList.contains('rook') && piece.classList.contains(this.colour));
+            rooks.forEach((rook) => {
+                let rookObject = game.getPieceObjectById(rook.id);
+                if (rookObject.canCastle) {
+                    let tempCoordinate = originalCoordinate;
+                    let castlingPossible = true;
+                    if (game.getDistance(rookObject.coordinate, this.coordinate) === 3) {
+                        for (let x = 0; x < 2; x++) {
+                            tempCoordinate = this.right(tempCoordinate);
+                            let square = document.getElementById(tempCoordinate);
+                            if (Array.from(square.children).some((value) => value.classList.contains('piece'))) {
+                                castlingPossible = false;
+                                break;
+                            }
+                        }
+                        if (castlingPossible) {
+                            possibleCoordinates.push(tempCoordinate);
+                        }
+                    } else if (game.getDistance(rookObject.coordinate, this.coordinate) === 4) {
+                        for (let x = 0; x < 3; x++) {
+                            tempCoordinate = this.left(tempCoordinate);
+                            let square = document.getElementById(tempCoordinate);
+                            if (Array.from(square.children).some((value) => value.classList.contains('piece'))) {
+                                castlingPossible = false;
+                                break;
+                            }
+                        }
+                        if (castlingPossible) {
+                            tempCoordinate = this.right(tempCoordinate);
+                            possibleCoordinates.push(tempCoordinate);
+                        }
+                    }
+                }
+            });
+        }
         
         let previousSquare = document.getElementById(originalCoordinate);
 

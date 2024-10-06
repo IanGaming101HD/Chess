@@ -41,3 +41,7 @@ IMPORTANT NOTE:
 Convert updateCoordinate so it does both html and the class
 
 A hyperlink html tag is draggable and can be placed on board (NOT WANTED!)
+
+Maybe add toggle dark/light mode.
+
+King can castle illegally and during that it results king being check 
