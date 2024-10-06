@@ -80,12 +80,13 @@ class Game {
             return status;
         }
 
-        function check50Moves() {
-            if (this.notations.length >= 50) {
-                return true;
-            }
-            return false;
-        }
+        // 50 moves without capture
+        // function check50Moves() {
+        //     if (this.notations.length >= 50) {
+        //         return true;
+        //     }
+        //     return false;
+        // }
         if ((stalemate(), deadPosition(), checkThreefoldRepetition(), check50Moves())) {
         }
     }

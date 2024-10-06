@@ -39,3 +39,5 @@ Add markings with arrows feature (maybe not needed for local 2 player)
 
 IMPORTANT NOTE:
 Convert updateCoordinate so it does both html and the class
+
+A hyperlink html tag is draggable and can be placed on board (NOT WANTED!)
