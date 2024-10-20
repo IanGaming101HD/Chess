@@ -44,4 +44,7 @@ A hyperlink html tag is draggable and can be placed on board (NOT WANTED!)
 
 Maybe add toggle dark/light mode.
 
-King can castle illegally and during that it results king being check 
+King can castle illegally and during that it results king being check
+
+NEW Rotating board function
+Issue: labels visual position looks weird when board is rotated and the label is sharing the square with a piece 

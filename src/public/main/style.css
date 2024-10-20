@@ -18,6 +18,12 @@ a {
     text-decoration: none;
 }
 
+.flip-button {
+    cursor: pointer;
+    height: 2.5%;
+    background-color: transparent;
+}
+
 .left-panel {
     display: flex;
     flex-direction: column;
@@ -124,22 +130,6 @@ a {
 /* .board {
     border-radius: 5px;
 } */
-
-#a8 {
-    border-radius: 5px 0px 0px 0px;
-}
-
-#h8 {
-    border-radius: 0px 5px 0px 0px;
-}
-
-#a1 {
-    border-radius: 0px 0px 0px 5px;
-}
-
-#h1 {
-    border-radius: 0px 0px 5px 0px;
-}
 
 .header {
     color: #ffffff;
