@@ -360,6 +360,11 @@ class Game {
 
       overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
       square.appendChild(overlay);
+      square.addEventListener('click', () => {
+        this.movePiece(id, square);
+
+        // this.removeAllOverlays();
+      });
     });
   }
 
@@ -407,113 +412,118 @@ class Game {
         let pieceId = event.dataTransfer.getData('text/plain');
         if (pieceId === event.target.id) return;
 
-        let piece = document.getElementById(pieceId);
-        if (!piece) return;
-
-        let colour = piece.classList.contains('white') ? 'white' : 'black';
-        let pieceObject = this.getPieceObjectById(pieceId);
-        let possibleCoordinates = pieceObject.getCoordinates();
-
-        if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
-        let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
-        let kingObject = this.getPieceObjectById(king.id);
-        let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
-        let enemyKingObject = this.getPieceObjectById(enemyKing.id);
-        previousSquare = piece.parentElement;
-        this.removeAllOverlays();
-        game.selected_coordinate = null;
-
-        square.appendChild(piece);
-        pieceObject.updateCoordinate(square.id);
-
-        let notation = `${pieceObject.letter}${square.id}`;
-        if (piece.id === king.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
-          let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`));
-          rookObjects.forEach((rookObject) => {
-            if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
-              let rook = document.getElementById(rookObject.id);
-              let tempCoordinate = rook.parentElement.id;
-
-              if (game.getDistance(rookObject.coordinate, square.id) === 1) {
-                for (let x = 0; x < 2; x++) {
-                  tempCoordinate = rookObject.left(tempCoordinate);
-                }
-                notation = 'O-O';
-              } else {
-                for (let x = 0; x < 3; x++) {
-                  tempCoordinate = rookObject.right(tempCoordinate);
-                }
-                notation = 'O-O-O';
-              }
-              let newSquare = document.getElementById(tempCoordinate);
-              newSquare.appendChild(rook);
-              rookObject.updateCoordinate(newSquare.id);
-              rookObject.canCastle = false;
-            }
-          });
-        } else if (piece.id === king.id || piece.classList.contains('rook')) {
-          pieceObject.canCastle = false;
-        }
-
-        this.pieces_objects
-          .filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === colour)
-          .forEach((pieceObject) => {
-            if (pieceObject.canBeEnPassent) {
-              pieceObject.canBeEnPassent = false;
-            }
-          });
-        if (piece.classList.contains('pawn')) {
-          if (pieceObject.firstMove) {
-            if (game.getDistance(previousSquare.id, square.id) == 2) {
-              pieceObject.canBeEnPassent = true;
-            }
-            pieceObject.firstMove = false;
-          }
-          ['left', 'right'].forEach((horizontalDirection) => {
-            if (pieceObject[horizontalDirection](pieceObject[pieceObject.vertical_direction](previousSquare.id)) === square.id) {
-              let enemyPawn = Array.from(document.getElementById(pieceObject[horizontalDirection](previousSquare.id)).children).find((child) => child.classList.contains('piece') && child.classList.contains('pawn') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
-              if (enemyPawn) {
-                let enemyPawnObject = this.getPieceObjectById(enemyPawn.id);
-                if (enemyPawnObject.canBeEnPassent) {
-                  enemyPawnObject.remove();
-                  notation = `${previousSquare.id[0]}x${square.id} e.p.`;
-                }
-              }
-            }
-          });
-          pieceObject.checkPromotion(piece, square);
-        }
-
-        this.removeAllHighlights(squares);
-        this.addHighlight(previousSquare);
-        this.addHighlight(square);
-
-        let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
-        if (enemyPiece) {
-          let enemyPieceObject = this.getPieceObjectById(enemyPiece.id);
-          enemyPieceObject.remove();
-          notation = `${pieceObject.letter}x${square.id}`;
-        }
-
-        square.appendChild(piece);
-        pieceObject.updateCoordinate(square.id);
-
-        if (enemyKingObject.isCheckmate()) {
-          outcomeContainer.style.visibility = 'visible';
-          notation += '#';
-        } else if (enemyKingObject.isCheck(this.pieces_objects)) {
-          notation += '+';
-        }
-
-        if (game.players_turn === 'white') {
-          this.notations.push([notation]);
-        } else {
-          this.notations[this.notations.length - 1].push(notation);
-        }
-        game.endTurn();
-        console.log(this.notations.join(' '));
+        this.movePiece(pieceId, square);
       });
     });
+  }
+
+  movePiece(pieceId, square) {
+    let squares = Array.from(document.getElementsByClassName('square'));
+    let previousSquare = piece.parentElement;
+    let piece = document.getElementById(pieceId);
+    if (!piece) return;
+
+    let colour = piece.classList.contains('white') ? 'white' : 'black';
+    let pieceObject = this.getPieceObjectById(pieceId);
+    let possibleCoordinates = pieceObject.getCoordinates();
+
+    if ((game.players_turn === 'white' && piece.classList.contains('black')) || (game.players_turn === 'black' && piece.classList.contains('white')) || !possibleCoordinates.includes(square.id)) return;
+    let king = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(colour));
+    let kingObject = this.getPieceObjectById(king.id);
+    let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
+    let enemyKingObject = this.getPieceObjectById(enemyKing.id);
+    this.removeAllOverlays();
+    game.selected_coordinate = null;
+
+    square.appendChild(piece);
+    pieceObject.updateCoordinate(square.id);
+
+    let notation = `${pieceObject.letter}${square.id}`;
+    if (piece.id === king.id && kingObject.canCastle && game.getDistance(previousSquare.id, square.id) === 2) {
+      let rookObjects = this.pieces_objects.filter((pieceObject) => pieceObject.id.includes(`${colour}-rook`));
+      rookObjects.forEach((rookObject) => {
+        if ([1, 2].includes(game.getDistance(rookObject.coordinate, square.id))) {
+          let rook = document.getElementById(rookObject.id);
+          let tempCoordinate = rook.parentElement.id;
+
+          if (game.getDistance(rookObject.coordinate, square.id) === 1) {
+            for (let x = 0; x < 2; x++) {
+              tempCoordinate = rookObject.left(tempCoordinate);
+            }
+            notation = 'O-O';
+          } else {
+            for (let x = 0; x < 3; x++) {
+              tempCoordinate = rookObject.right(tempCoordinate);
+            }
+            notation = 'O-O-O';
+          }
+          let newSquare = document.getElementById(tempCoordinate);
+          newSquare.appendChild(rook);
+          rookObject.updateCoordinate(newSquare.id);
+          rookObject.canCastle = false;
+        }
+      });
+    } else if (piece.id === king.id || piece.classList.contains('rook')) {
+      pieceObject.canCastle = false;
+    }
+
+    this.pieces_objects
+      .filter((pieceObject) => document.getElementById(pieceObject.id).classList.contains('pawn') && pieceObject.colour === colour)
+      .forEach((pieceObject) => {
+        if (pieceObject.canBeEnPassent) {
+          pieceObject.canBeEnPassent = false;
+        }
+      });
+    if (piece.classList.contains('pawn')) {
+      if (pieceObject.firstMove) {
+        if (game.getDistance(previousSquare.id, square.id) == 2) {
+          pieceObject.canBeEnPassent = true;
+        }
+        pieceObject.firstMove = false;
+      }
+      ['left', 'right'].forEach((horizontalDirection) => {
+        if (pieceObject[horizontalDirection](pieceObject[pieceObject.vertical_direction](previousSquare.id)) === square.id) {
+          let enemyPawn = Array.from(document.getElementById(pieceObject[horizontalDirection](previousSquare.id)).children).find((child) => child.classList.contains('piece') && child.classList.contains('pawn') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
+          if (enemyPawn) {
+            let enemyPawnObject = this.getPieceObjectById(enemyPawn.id);
+            if (enemyPawnObject.canBeEnPassent) {
+              enemyPawnObject.remove();
+              notation = `${previousSquare.id[0]}x${square.id} e.p.`;
+            }
+          }
+        }
+      });
+      pieceObject.checkPromotion(piece, square);
+    }
+
+    this.removeAllHighlights(squares);
+    this.addHighlight(previousSquare);
+    this.addHighlight(square);
+
+    let enemyPiece = Array.from(square.children).find((child) => child.classList.contains('piece') && child.classList.contains(this.getOppositeColour(pieceObject.colour)));
+    if (enemyPiece) {
+      let enemyPieceObject = this.getPieceObjectById(enemyPiece.id);
+      enemyPieceObject.remove();
+      notation = `${pieceObject.letter}x${square.id}`;
+    }
+
+    square.appendChild(piece);
+    pieceObject.updateCoordinate(square.id);
+
+    if (enemyKingObject.isCheckmate()) {
+      outcomeContainer.style.visibility = 'visible';
+      notation += '#';
+    } else if (enemyKingObject.isCheck(this.pieces_objects)) {
+      notation += '+';
+    }
+
+    if (game.players_turn === 'white') {
+      this.notations.push([notation]);
+    } else {
+      this.notations[this.notations.length - 1].push(notation);
+    }
+    game.endTurn();
+    console.log(this.notations.join(' '));
   }
 
   endTurn() {
@@ -921,15 +931,13 @@ class Pawn extends Piece {
       tempCoordinate = this[horizontalDirection](this[this.vertical_direction](originalCoordinate));
 
       if (squares.some((value) => value.id === tempCoordinate)) {
-        let element = document.getElementById(tempCoordinate);
-        if (Array.from(element.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
+        let square = document.getElementById(tempCoordinate);
+        if (Array.from(square.children).some((child) => child.classList.contains('piece') && !child.classList.contains(this.colour))) {
           possibleCoordinates.push(tempCoordinate);
           tempCoordinate = originalCoordinate;
         }
       }
-    });
 
-    horizontalDirections.forEach((horizontalDirection) => {
       tempCoordinate = this[horizontalDirection](originalCoordinate);
 
       let square = squares.find((value) => value.id === tempCoordinate);
