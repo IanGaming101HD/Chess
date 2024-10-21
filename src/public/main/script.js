@@ -393,7 +393,6 @@ class Game {
 
   main() {
     let squares = Array.from(document.getElementsByClassName('square'));
-    let previousSquare;
 
     squares.forEach((square) => {
       Object.entries({
