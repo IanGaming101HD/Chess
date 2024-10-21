@@ -346,19 +346,21 @@ class Game {
     if (game.players_turn !== pieceObject.colour) return;
 
     let possibleCoordinates = pieceObject.getCoordinates();
-    possibleCoordinates.forEach((coordinate) => {
-      let square = document.getElementById(coordinate);
+    possibleCoordinates.forEach((possibleCoordinate) => {
+      let square = document.getElementById(possibleCoordinate);
       let overlay = document.createElement('div');
 
       overlay.classList.add(Array.from(square.children).some((element) => element.classList.contains('piece')) ? 'possible-capture' : 'possible-move');
       square.appendChild(overlay);
-      square.addEventListener('click', () => {
-        this.movePiece(id, square);
-      });
+
+      // Click to move feature vvv
+      // overlay.addEventListener('click', () => {
+      //   this.movePiece(id, square);
+      // });
     });
   }
 
-  removeAllOverlays() {
+  clearOverlays() {
     let overlays = this.getOverlays();
     overlays.forEach((overlay) => overlay.remove());
   }
@@ -375,7 +377,7 @@ class Game {
     square.style.backgroundColor = '';
   }
 
-  removeAllHighlights(squares) {
+  clearHighlights(squares) {
     squares.forEach((square) => {
       square.style.backgroundColor = '';
     });
@@ -422,7 +424,7 @@ class Game {
     let kingObject = this.getPieceObjectById(king.id);
     let enemyKing = Array.from(document.getElementsByClassName('king')).find((element) => element.classList.contains(this.getOppositeColour(colour)));
     let enemyKingObject = this.getPieceObjectById(enemyKing.id);
-    this.removeAllOverlays();
+    this.clearOverlays();
     game.selected_coordinate = null;
 
     square.appendChild(piece);
@@ -486,7 +488,7 @@ class Game {
       pieceObject.checkPromotion(piece, square);
     }
 
-    this.removeAllHighlights(squares);
+    this.clearHighlights(squares);
     this.addHighlight(previousSquare);
     this.addHighlight(square);
 
@@ -580,7 +582,7 @@ class Piece {
       let square = piece.parentElement;
       let overlays = game.getOverlays();
       if (overlays.length > 0) {
-        game.removeAllOverlays();
+        game.clearOverlays();
       }
       game.createOverlays(piece.id);
       if (game.selected_coordinate) {
@@ -596,7 +598,7 @@ class Piece {
       let square = piece.parentElement;
       let overlays = game.getOverlays();
       if (overlays.length > 0) {
-        game.removeAllOverlays();
+        game.clearOverlays();
       }
       game.createOverlays(piece.id);
       if (game.selected_coordinate) {
