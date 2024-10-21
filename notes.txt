@@ -1,22 +1,17 @@
-Notes:                                                                                                            Date: 08/06/2024
-
-Main trouble rn being caused by castling.
-
-Right now trying to tranfer isCheck to all pieces so it auto removes moves that are illegal and puts ur king as check
+Notes:
+Right now trying to tranfer isCheck to all pieces so it auto removes
+moves that are illegal and puts ur king as check
+(IDK IF I WILL DO THIS, TOO DIFFICULT TO THINK HOW TO DO IT,
+MIGHT JUST KEEP IT THE SAME FOR NOW)
 
 Highlighting:
-Found small issue with highlighting on previous piece that just moved, highlighting can be removed but it should stay
+Found small issue with highlighting on previous piece that just moved,
+highlighting can be removed but it should stay
 
 Issues - Check:
 king can capture piece even tho it will be checked
 
 some black pawn cant diag kill at start or maybe when king is check
-
-TypeError: document.getElementById(...) is null
-    defaultGame http://localhost/public/main/script.js:401
-    defaultGame http://localhost/public/main/script.js:401
-
-Possible issue with castling also
 
 Pieces:
 Add king - checkmate and statemate
@@ -32,9 +27,9 @@ Mutual Agreement
 Threefold Repetition
 50-Move Rule
 
+Extra Features:
 Add click to move alongside drag on possible positions
 Add undo/redo feature
-Add flip board feature
 Add markings with arrows feature (maybe not needed for local 2 player)
 
 IMPORTANT NOTE:
@@ -46,5 +41,10 @@ Maybe add toggle dark/light mode.
 
 King can castle illegally and during that it results king being check
 
-NEW Rotating board function
-Issue: labels visual position looks weird when board is rotated and the label is sharing the square with a piece 
+22/10/24 UPDATE:
+Castling perfected, double castling is not possible rn
+but I don't even know if its legal and if I should add it.
+I believe pawn promotions are fixed
+
+Issue: labels visual position looks weird when board is rotated
+and the label is sharing the square with a piece
