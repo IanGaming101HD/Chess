@@ -45,6 +45,7 @@ class Game {
     this.pieces_objects = [];
     this.game_over = false;
     this.selected_coordinate;
+    this.selected_pieceId;
     this.notations = [];
     this.utility = new Utility();
     this.defaultGame();
@@ -88,7 +89,7 @@ class Game {
     let blackPawn8 = new Pawn('black', 'h7');
 
     this.pieces_objects = [whiteRook, whiteKnight, whiteBishop, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2, whitePawn, whitePawn2, whitePawn3, whitePawn4, whitePawn5, whitePawn6, whitePawn7, whitePawn8, blackRook, blackKnight, blackBishop, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2, blackPawn, blackPawn2, blackPawn3, blackPawn4, blackPawn5, blackPawn6, blackPawn7, blackPawn8];
-    this.main();
+    this.initSquareEvents();
   }
 
   testGame() {
@@ -102,7 +103,7 @@ class Game {
     let blackRook2 = new Rook('black', 'b7');
 
     this.pieces_objects = [whiteRook, whiteRook2, blackRook, blackRook2, whiteKing, blackKing];
-    this.main();
+    this.initSquareEvents();
   }
 
   createBoard() {
@@ -305,16 +306,7 @@ class Game {
   }
 
   getDistance(square1, square2) {
-    let charMap = {
-      a: 0,
-      b: 1,
-      c: 2,
-      d: 3,
-      e: 4,
-      f: 5,
-      g: 6,
-      h: 7,
-    };
+    let charMap = { a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7 };
     let char1 = charMap[square1[0]];
     let char2 = charMap[square2[0]];
     let num1 = parseInt(square1[1]) - 1;
@@ -362,8 +354,6 @@ class Game {
       square.appendChild(overlay);
       square.addEventListener('click', () => {
         this.movePiece(id, square);
-
-        // this.removeAllOverlays();
       });
     });
   }
@@ -391,7 +381,7 @@ class Game {
     });
   }
 
-  main() {
+  initSquareEvents() {
     let squares = Array.from(document.getElementsByClassName('square'));
 
     squares.forEach((square) => {
@@ -404,11 +394,12 @@ class Game {
           event.preventDefault();
         });
       });
+
       square.addEventListener('drop', (event) => {
         event.preventDefault();
         square.style.borderColor = 'transparent';
 
-        let pieceId = event.dataTransfer.getData('text/plain');
+        let pieceId = this.selected_pieceId;
         if (pieceId === event.target.id) return;
 
         this.movePiece(pieceId, square);
@@ -418,10 +409,10 @@ class Game {
 
   movePiece(pieceId, square) {
     let squares = Array.from(document.getElementsByClassName('square'));
-    let previousSquare = piece.parentElement;
     let piece = document.getElementById(pieceId);
     if (!piece) return;
 
+    let previousSquare = piece.parentElement;
     let colour = piece.classList.contains('white') ? 'white' : 'black';
     let pieceObject = this.getPieceObjectById(pieceId);
     let possibleCoordinates = pieceObject.getCoordinates();
@@ -585,6 +576,22 @@ class Piece {
 
     position.appendChild(piece);
 
+    piece.addEventListener('click', (event) => {
+      let square = piece.parentElement;
+      let overlays = game.getOverlays();
+      if (overlays.length > 0) {
+        game.removeAllOverlays();
+      }
+      game.createOverlays(piece.id);
+      if (game.selected_coordinate) {
+        let previousSelectedSquare = document.getElementById(game.selected_coordinate);
+        game.removeHighlight(previousSelectedSquare);
+      }
+      game.addHighlight(square);
+      game.selected_coordinate = square.id;
+      game.selected_pieceId = this.id;
+    });
+
     piece.addEventListener('dragstart', (event) => {
       let square = piece.parentElement;
       let overlays = game.getOverlays();
@@ -598,8 +605,7 @@ class Piece {
       }
       game.addHighlight(square);
       game.selected_coordinate = square.id;
-
-      event.dataTransfer.setData('text/plain', event.target.id);
+      game.selected_pieceId = this.id;
     });
   }
 
