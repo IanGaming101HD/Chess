@@ -47,6 +47,7 @@ class Game {
     this.selected_coordinate;
     this.selected_pieceId;
     this.notations = [];
+    this.temporary_events = [];
     this.utility = new Utility();
     this.defaultGame();
     // this.testGame();
@@ -187,7 +188,7 @@ class Game {
       label.classList.add('number');
       label.classList.add(`${colour}-number`);
       label.innerHTML = number;
-      firstSquare.appendChild(label);
+      firstSquare.prepend(label);
     });
 
     let firstRow = rows[0];
@@ -200,7 +201,7 @@ class Game {
       label.classList.add('letter');
       label.classList.add(`${colour}-letter`);
       label.innerHTML = letter;
-      square.appendChild(label);
+      square.prepend(label);
     });
 
     Array.from(firstRow.children)[0].style['border-radius'] = '5px 0px 0px 0px';
@@ -354,15 +355,19 @@ class Game {
       square.appendChild(overlay);
 
       // Click to move feature vvv
-      // overlay.addEventListener('click', () => {
-      //   this.movePiece(id, square);
-      // });
+
+      let overlayEvent = square.addEventListener('click', () => {
+        this.movePiece(id, square);
+      });
+      this.temporary_events.push(overlayEvent)
     });
   }
 
   clearOverlays() {
     let overlays = this.getOverlays();
     overlays.forEach((overlay) => overlay.remove());
+
+    this.temporary_events = []
   }
 
   addHighlight(square) {
@@ -977,6 +982,7 @@ let outcomeContainer = document.getElementById('outcome-container');
 let closeButton = document.getElementById('close-button');
 let newButton = document.getElementById('new-button');
 let flipButton = document.getElementById('flip-button');
+let newGameButton = document.getElementById('new-game-button');
 let userRating = document.getElementById('user-rating');
 let userFlag = document.getElementById('user-flag');
 let enemyRating = document.getElementById('enemy-rating');
@@ -990,6 +996,11 @@ enemyFlag.innerHTML = '🇬🇧';
 flipButton.addEventListener('click', (event) => {
   event.preventDefault();
   game.flipBoard();
+});
+
+newGameButton.addEventListener('click', (event) => {
+  event.preventDefault();
+  game.restart();
 });
 
 gameContainer.addEventListener('contextmenu', (event) => {
