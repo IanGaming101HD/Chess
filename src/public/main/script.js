@@ -359,7 +359,7 @@ class Game {
       let overlayEvent = square.addEventListener('click', () => {
         this.movePiece(id, square);
       });
-      this.temporary_events.push(overlayEvent)
+      this.temporary_events.push(overlayEvent);
     });
   }
 
@@ -367,7 +367,7 @@ class Game {
     let overlays = this.getOverlays();
     overlays.forEach((overlay) => overlay.remove());
 
-    this.temporary_events = []
+    this.temporary_events = [];
   }
 
   addHighlight(square) {
@@ -388,8 +388,16 @@ class Game {
     });
   }
 
+  addArrow(coord1, coord2) {
+    let arrow = document.createElement('div');
+    arrow.classList.add('arrow');
+
+    coord1.appendChild(arrow);
+  }
+
   initSquareEvents() {
     let squares = Array.from(document.getElementsByClassName('square'));
+    let originalTarget = null;
 
     squares.forEach((square) => {
       Object.entries({
@@ -410,6 +418,40 @@ class Game {
         if (pieceId === event.target.id) return;
 
         this.movePiece(pieceId, square);
+      });
+
+      square.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+
+        if (event.button === 0) {
+          squares.forEach((sqr) => {
+            if (['#EB7863', '#E06853'].includes(this.utility.convertRgbToHex(getComputedStyle(sqr).backgroundColor))) {
+              this.removeHighlight(sqr);
+            }
+          });
+        } else if (event.button === 2) {
+          originalTarget = event.target;
+        }
+      });
+
+      square.addEventListener('mouseup', (event) => {
+        event.preventDefault();
+
+        if (event.button !== 2) return;
+
+        if (square === originalTarget) {
+          if (['#EB7863', '#E06853'].includes(this.utility.convertRgbToHex(getComputedStyle(square).backgroundColor))) {
+            this.removeHighlight(square);
+          } else {
+            if (square.classList.contains('white-square')) {
+              square.style.backgroundColor = '#eb7863';
+            } else if (square.classList.contains('black-square')) {
+              square.style.backgroundColor = '#e06853';
+            }
+          }
+        } else {
+          this.addArrow(originalTarget, square);
+        }
       });
     });
   }
